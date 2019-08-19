@@ -1,7 +1,6 @@
 #!/bin/bash
 
-scurl()
-{
+scurl() {
     curl --tlsv1.2 --proto =https "$@"
 }
 
