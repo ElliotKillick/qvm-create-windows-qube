@@ -1,6 +1,6 @@
 # qvm-create-windows-qube
 
-qvm-create-windows-qube is a tool for quickly and conveniently creating new Windows qubes with Qubes Windows Tools as well as other packages such as Firefox pre-installed modularly and automatically. It also benefits privacy and anominity by reseting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Number and more.
+qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows qubes with Qubes Windows Tools as well as other packages such as Firefox pre-installed modularly and automatically. It also benefits privacy and anominity by reseting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Number and more.
 
 ## Installation
 
@@ -8,7 +8,7 @@ qvm-create-windows-qube is a tool for quickly and conveniently creating new Wind
 2. In Documents folder of the new qube: `git clone https://github.com/crazyqube/qvm-create-windows-qube`
 3. cd `qvm-create-windows-qube`
 4. Run `./download-windows.sh` to securely download necessary Windows ISOs and update packages
-5. In Dom0 run `sudo qubes-dom0-update --enablerepo=qubes-dom0-current-testing qubes-windows-tools`
+5. In Dom0 run: `sudo qubes-dom0-update --enablerepo=qubes-dom0-current-testing qubes-windows-tools`
 6. Move "qvm-create-windows-qube.sh" into Dom0 by running the following command in Dom0: `qvm-run -p windows-mgmt 'cat $HOME/Documents/qvm-create-windows-qube/qvm-create-windows-qube.sh' > qvm-create-windows-qube.sh`
 7. Review the code of the script to ensure its integrity
 
