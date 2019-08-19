@@ -4,15 +4,13 @@ qvm-create-windows-qube is a tool for quickly and conveniently creating new Wind
 
 ## Installation
 
-```
 1. Create a new Fedora or Debian based AppVM named windows-mgmt with a black lock and 20 GB (20,480 MB) of storage
 2. Git clone this repository into the ~/Documents of that qube
 3. Navigate into the cloned repo
-4. Run "./download-windows.sh" to securely download necessary ISOs and update packages
+4. Run `./download-windows.sh` to securely download necessary Windows ISOs and update packages
 5. In Dom0 run `sudo qubes-dom0-update --enablerepo=qubes-dom0-current-testing qubes-windows-tools`
 6. Move "qvm-create-windows-qube.sh" into Dom0
 7. Review the code of the script to ensure its integrity
-```
 
 Pro Tip: Use `cat -v` during code review so [terminal escape sequences aren't interpreted](https://ma.ttias.be/terminal-escape-sequences-the-new-xss-for-linux-sysadmins/)
 
