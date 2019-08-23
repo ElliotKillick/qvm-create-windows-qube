@@ -215,7 +215,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Pack latest QWT into Auto Tools
     qvm-run -p "$resources_vm" "cat > '$resources_dir/qubes-windows-tools/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
-    qvm-run -p "$resources_vm" "cd '$resources_dir/qubes-windows-tools' || exit 1; './unpack-qwt-iso.sh'"
+    qvm-run -p "$resources_vm" "cd '$resources_dir/qubes-windows-tools' || exit 1; './unpack-qwt-iso.sh'" &> /dev/null
 
     # Create Auto Tools Media
     qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools' || exit 1; './create-media.sh'" &> /dev/null
