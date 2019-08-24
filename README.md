@@ -1,6 +1,6 @@
 # qvm-create-windows-qube
 
-qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows qubes with Qubes Windows Tools as well as other packages such as Firefox pre-installed modularly and automatically. It also benefits privacy and anominity by reseting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Number and more.
+qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows qubes with Qubes Windows Tools as well as other packages such as Firefox pre-installed modularly and automatically. It also benefits privacy and anominity by reseting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Numbers and more.
 
 ## Installation
 
