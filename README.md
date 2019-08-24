@@ -4,16 +4,12 @@ qvm-create-windows-qube is a tool for quickly and conveniently installing fresh 
 
 ## Installation
 
-1. Create a new Fedora or Debian based AppVM named windows-mgmt with a black lock and 20 GB (20,480 MB) of storage
-2. In Documents folder of the new qube: `git clone https://github.com/crazyqube/qvm-create-windows-qube`
-3. cd `qvm-create-windows-qube`
-4. Run `./download-windows.sh` to securely download necessary Windows ISOs and update packages
-5. In Dom0 run: `sudo qubes-dom0-update --enablerepo=qubes-dom0-current-testing qubes-windows-tools`
-6. Copy "qvm-create-windows-qube.sh" into Dom0 by running the following command in Dom0: `qvm-run -p windows-mgmt 'cat $HOME/Documents/qvm-create-windows-qube/qvm-create-windows-qube.sh' > qvm-create-windows-qube.sh`
-7. Review the code of the script to ensure its integrity
+1. Download the [installation script](https://raw.githubusercontent.com/crazyqube/qvm-create-windows-qube/master/install-qvm-create-windows-qube.sh) by right-clicking then selecting "Save as..."
+2. Copy "install-qvm-create-windows-qube.sh" into Dom0 by running the following command in Dom0: `qvm-run -p QUBE_SCRIPT_IS_LOCATED_ON 'cat $HOME/Downloads/install-qvm-create-windows-qube.sh' > install-qvm-create-windows-qube.sh`
+3. Review the code of the script to ensure its integrity
+4. Run it
 
 Pro Tip: Use `cat -v` during code review so [terminal escape sequences aren't interpreted](https://ma.ttias.be/terminal-escape-sequences-the-new-xss-for-linux-sysadmins/)
-
 
 ## Usage
 
