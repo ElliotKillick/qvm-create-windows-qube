@@ -41,7 +41,7 @@ PRs are welcome! The codebase of this project was built to be as modular as poss
     2.  This could be done by a tool that allows you to insert a file directly into an ISO without having to repack it (This is also faster than having to undergo the process of extracting and repacking)
     3.  This seems perfect: https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso/ (guestfish, dnf info libguestfs-tools or apt show libguestfs-tools)
 - [ ] Auto Tools takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
-- [ ] Support Windows 10
+- [ ] Support Windows 10 (Note: QWT doesn't fully support Windows 10 yet)
 - [ ] Add more modules
 - [ ] Add an option to slim down Windows as documented in: https://www.qubes-os.org/doc/windows-template-customization/
 - [ ] Improve background option (What happened to the --no-guid/--no-start-guid option in qvm-start? Before R4 it seemed to be present)
