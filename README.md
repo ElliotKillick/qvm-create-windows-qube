@@ -48,7 +48,7 @@ PRs are welcome! The codebase of this project was built to be as modular as poss
 - [ ] Support Windows 10
 - [ ] Add more modules
 - [ ]  Add an option to slim down Windows as documented in: https://www.qubes-os.org/doc/windows-template-customization/
-- [ ] Improve background option (Is it possible to make it actually be in the background or at least not popup at the start)
+- [ ] Improve background option (What happened to the --no-guid/--no-start-guid option in qvm-start? Before R4 it seemed to be present)
 - [ ]  Make windows-mgmt air-gapped. This is easy to for the inital ISO and update download, however the Firefox module is also frequently updated
     1. We could switch from the offline Firefox installer to the online installer so then we can just have a DispVM download it one time (assuming no updates for the Firefox online installer). However, this means that the Windows qube could not be air-gapped (because it needs to download from the internet). Also, we may have wait for it to download for every install. This also is potentially limiting for future modules.
     2. Download the latest Firefox offline installer in a DispVM then copy it over to windows-mgmt and verify it's from Mozilla by looking at the PE verified signer using the tool osslsigncode. Problem: This would still make it possible for [data smugling](https://www.blackhat.com/docs/us-16/materials/us-16-Nipravsky-Certificate-Bypass-Hiding-And-Executing-Malware-From-A-Digitally-Signed-Executable-wp.pdf) between VMs to take place
