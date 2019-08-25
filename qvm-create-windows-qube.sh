@@ -108,7 +108,7 @@ elif [ "$(qvm-prefs "$netvm" provides_network)" != "True" ]; then
 fi
 
 resources_vm="windows-mgmt"
-resources_dir="$HOME/Documents/qvm-create-windows-qube"
+resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
 # Validate module
 IFS="," read -ra module_arr <<< "$module"
@@ -165,6 +165,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$current_name" memory 400
     qvm-prefs "$current_name" maxmem 400
     qvm-prefs "$current_name" kernel ''
+    qvm-prefs "$current_name" qrexec_timeout 120 # windows startup can take longer, esp. if a disk scan is performed
     qvm-features "$current_name" video-model cirrus
     qvm-volume extend "$current_name":root 30g
     qvm-prefs "$current_name" netvm "$netvm"
