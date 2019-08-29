@@ -1,7 +1,7 @@
 @echo off
 title %~f0
 
-rem Automatically run by answer file upon first boot after after installation
+rem Automatically run by answer file upon first boot after installation
 
 cd /d D:
 
