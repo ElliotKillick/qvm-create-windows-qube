@@ -7,7 +7,8 @@ qvm-create-windows-qube is a tool for quickly and conveniently installing fresh 
 1. Download the [installation script](https://raw.githubusercontent.com/crazyqube/qvm-create-windows-qube/master/install-qvm-create-windows-qube.sh) by right-clicking then selecting "Save as..."
 2. Copy "install-qvm-create-windows-qube.sh" into Dom0 by running the following command in Dom0: `qvm-run -p QUBE_SCRIPT_IS_LOCATED_ON 'cat $HOME/Downloads/install-qvm-create-windows-qube.sh' > install-qvm-create-windows-qube.sh`
 3. Review the code of the script to ensure its integrity
-4. Run it
+4. Run `chmod +x install-qvm-create-windows-qube.sh && ./install-qvm-create-windows-qube.sh`
+5. Review the code of the resulting `qvm-create-windows-qube.sh`
 
 Pro Tip: Use `cat -v` during code review so [terminal escape sequences aren't interpreted](https://ma.ttias.be/terminal-escape-sequences-the-new-xss-for-linux-sysadmins/)
 
