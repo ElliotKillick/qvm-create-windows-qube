@@ -9,7 +9,7 @@ for /f %%i in ('wmic qfe list /format:list ^| findstr HotFixID ^| find /v /c ""'
 if %updates% geq 4 (
     rem Certificates are added so there won't be a "Would you like to install this device software?" prompt during install
     start /wait cmd /c "add-certificates-to-trusted-publishers.bat"
-    start cmd /c "install-qwt-silently.bat"
+    start cmd /c "install-qwt.bat"
 
     rem Necessary to close "Qubes private disk image initalized as disk <drive>" prompt so installer will proceed to reboot computer
     rem It looks for "prepare-volume.exe" and if found, waits 20 seconds, then (hopefully after it's done making the volume), kills it
