@@ -163,7 +163,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-create --class StandaloneVM --label red "$current_name"
     qvm-prefs "$current_name" virt_mode hvm
     qvm-prefs "$current_name" memory 400
-    qvm-prefs "$current_name" maxmem 400
+    qvm-prefs "$current_name" maxmem 0 # Disables currently unstable Qubes memory manager (Also grays the option out in Qubes Manager)
     qvm-prefs "$current_name" kernel ''
     qvm-prefs "$current_name" qrexec_timeout 120 # Windows startup can take longer, especially if a disk scan is performed
     qvm-features "$current_name" video-model cirrus
