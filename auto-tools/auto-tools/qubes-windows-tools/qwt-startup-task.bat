@@ -12,7 +12,7 @@ if %updates% geq 4 (
     start cmd /c "install-qwt-silently.bat"
 
     rem Necessary to close "Qubes private disk image initalized as disk <drive>" prompt so installer will proceed to reboot computer
-    rem It looks for "prepare-volume.exe" and if found, waits 10 seconds, then (hopefully after it's done making the volume), kills it
+    rem It looks for "prepare-volume.exe" and if found, waits 20 seconds, then (hopefully after it's done making the volume), kills it
     set app=prepare-volume.exe
     :loop
     tasklist /FI "IMAGENAME eq %app%" 2>NUL | find /I /N "%app%">NUL
