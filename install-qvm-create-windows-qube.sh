@@ -23,7 +23,7 @@ qvm-run -p windows-mgmt 'cd Documents/qvm-create-windows-qube && ./download-wind
 sudo qubes-dom0-update --enablerepo=qubes-dom0-current-testing qubes-windows-tools
 
 # Copy script to Dom0
-qvm-run -p windows-mgmt 'cat /home/user/Documents/qvm-create-windows-qube/qvm-create-windows-qube.sh' > qvm-create-windows-qube.sh
+qvm-run -p windows-mgmt 'cat $HOME/Documents/qvm-create-windows-qube/qvm-create-windows-qube.sh' > qvm-create-windows-qube.sh
 
 # Allow execution of script
 chmod +x qvm-create-windows-qube.sh
