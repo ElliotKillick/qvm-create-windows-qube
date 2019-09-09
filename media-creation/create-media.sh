@@ -15,7 +15,7 @@ fi
 usage() { echo -e "Usage: ${0} iso answer_file"; }
 
 for arg in "$@"; do
-    if [ "$arg" == "--help" ] ||  [ "$arg" == "-h" ]; then
+    if [ "$arg" == "-h" ] ||  [ "$arg" == "--help" ]; then
         usage
 	exit
     fi
