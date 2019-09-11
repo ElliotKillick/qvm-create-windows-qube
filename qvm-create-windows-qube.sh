@@ -207,10 +207,6 @@ for (( counter = 1; counter <= count; counter++ )); do
     while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
 
     echo -e "${BLUE}[i]${NC} Setting up Auto Tools..." >&2
-    # Not not used because once QWT is installed it configures the networking automatically but still included for manual running (for testing)
-    #ip="$(qvm-prefs "$current_name" ip)"
-    #qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools' || exit 1; sed -i 's/^netsh interface ipv4 set address \"Local Area Connection\" static .*$/netsh interface ipv4 set address \"Local Area Connection\" static $ip 255.255.0.0 10.137.0.8/' 'connect-to-network.bat'"
-    
     # Add packages to install list
     qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' || exit 1; rm package-list" &> /dev/null
     for item in "${package_arr[@]}"; do
