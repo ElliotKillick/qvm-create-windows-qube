@@ -46,7 +46,7 @@ PRs are welcome! The codebase of this project was built to be as modular as poss
     6. In my experience QWT also seems to be the most stable on the lastest version of Windows 7
 - [ ] Auto Tools takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
 - [ ] Support Windows 10 (Note: QWT doesn't fully support Windows 10 yet)
-- [ ] Provision Chocolatey (#2)
+- [x] Provision Chocolatey (#2)
 - [ ] Add an option to slim down Windows as documented in: https://www.qubes-os.org/doc/windows-template-customization/
 - [ ] Improve background option (What happened to the --no-guid/--no-start-guid option in qvm-start? Before R4 it seemed to be present)
 - [ ] Make windows-mgmt air gapped
