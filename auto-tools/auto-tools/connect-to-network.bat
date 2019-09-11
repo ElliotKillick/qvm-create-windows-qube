@@ -4,7 +4,7 @@ title %~f0
 rem Qubes Windows Tools configures networking automatically but without it we must configure networking statically ourselves
 
 rem Configure static IP addresses
-netsh interface ipv4 set address "Local Area Connection" static 10.137.0.48 255.255.0.0 10.137.0.8
+netsh interface ipv4 set address "Local Area Connection" static 10.137.0.24 255.255.0.0 10.137.0.8
 
 rem Set primary and secondary DNS servers
 netsh interface ipv4 set dnsservers "Local Area Connection" static 84.200.69.80 validate=no

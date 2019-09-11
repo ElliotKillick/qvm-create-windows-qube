@@ -17,14 +17,14 @@ usage() {
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
     echo "  -n, --netvm <netvm> NetVM for Windows to use (default: sys-firewall)"
     echo "  -b, --background Installation process will happen in a minimized window"
-    echo "  -m, --module <modules> Comma-separated list of modules to pre-install"
+    echo "  -p, --package <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)"
 }
 
 # Option strings
-short="hc:n:bm:i:a:"
-long="help,count:,netvm:,background,module:,iso:,answer-file:"
+short="hc:n:bp:i:a:"
+long="help,count:,netvm:,background,package:,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -57,8 +57,8 @@ while true; do
             background="true"
             shift
             ;;
-        -m | --module)
-            module="$2"
+        -p | --package)
+            package="$2"
             shift 2
             ;;
         -i | --iso)
@@ -110,14 +110,19 @@ fi
 resources_vm="windows-mgmt"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
-# Validate module
-IFS="," read -ra module_arr <<< "$module"
-for item in "${module_arr[@]}"; do
-    if ! qvm-run -p "$resources_vm" "cd '$resources_dir/modules/$item' || exit 1"; then
-        echo -e "${RED}[!]${NC} Module $item does not exist" >&2
-        exit 1
-    fi
-done
+# Validate package
+if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_vm" netvm)" != "sys-whonix" ]; then
+    IFS="," read -ra package_arr <<< "$package"
+    for item in "${package_arr[@]}"; do
+        if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' "https://chocolatey.org/api/v2/package/$item")\" == 404 ]; then exit 1; fi"; then
+            echo -e "${RED}[!]${NC} Package $item not found" >&2
+            exit 1
+        fi
+    done
+else
+    echo -e "${RED}[!]${NC} Cannot install Chocolatey packages because they use Cloudflare to indiscriminately block requests from curl/PowerShell over Tor. Websites may defend this practice by saying that the majority of Tor requests are malicious. However, this is a faulty comparision because just like with email or generally any other part of the internet these bad requests are made by a few bad apples that take more than their fair share of resources. To make a change, please visit https://chocolatey.org/contact and submit a blocked IP report refrencing Tor and this project." >&2
+    exit 1
+fi
 
 # Validate iso
 if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation/isos' || exit 1; if ! [ -f '$iso' ]; then exit 1; fi"; then
@@ -206,12 +211,10 @@ for (( counter = 1; counter <= count; counter++ )); do
     #ip="$(qvm-prefs "$current_name" ip)"
     #qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools' || exit 1; sed -i 's/^netsh interface ipv4 set address \"Local Area Connection\" static .*$/netsh interface ipv4 set address \"Local Area Connection\" static $ip 255.255.0.0 10.137.0.8/' 'connect-to-network.bat'"
     
-    # Process modules
-    enabled_modules_file="enabled"
-    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/modules' || exit 1; truncate -s 0 $enabled_modules_file"
-    for item in "${module_arr[@]}"; do
-        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/modules' || exit 1; echo $item >> $enabled_modules_file"
-        qvm-run -p "$resources_vm" "cd '$resources_dir/modules/$item' || exit 1; ./run.sh"
+    # Add packages to install list
+    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' || exit 1; rm package-list" &> /dev/null
+    for item in "${package_arr[@]}"; do
+        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' || exit 1; echo -n '$item ' >> package-list"
     done
 
     # Pack latest QWT into Auto Tools
@@ -233,7 +236,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         done
     fi
 
-    # Waiting for modules and updates to install...
+    # Waiting for packages and updates to install...
     sleep 3
     while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
 
