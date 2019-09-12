@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'exit 1' ERR
+trap 'exit' ERR
 
 if [ "$(hostname)" != "dom0" ]; then
     echo "This script must be run in Dom0!" >&2

@@ -139,27 +139,27 @@ if [ "$package" != "" ]; then
 fi
 
 # Validate iso
-if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation/isos' || exit 1; if ! [ -f '$iso' ]; then exit 1; fi"; then
+if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
     echo -e "${RED}[!]${NC} File not found in $resources_vm:$resources_dir/media-creation/isos: $iso" >&2
     exit 1
 fi
 
 # Validate answer-file
-if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation/answer-files' || exit 1; if ! [ -f '$answer_file' ]; then exit 1; fi"; then
+if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
     echo -e "${RED}[!]${NC} File not found in $resources_vm:$resources_dir/media-creation/answer-files: $answer_file" >&2
     exit 1
 fi
 
 # Install dependencies
 echo -e "${BLUE}[i]${NC} Installing package dependencies on $resources_vm..." >&2
-until qvm-run -p "$resources_vm" "cd '$resources_dir' || exit 1; './install-dependencies.sh'" &> /dev/null; do
+until qvm-run -p "$resources_vm" "cd '$resources_dir' && './install-dependencies.sh'" &> /dev/null; do
     echo -e "${RED}[!]${NC} Failed to install dependencies! Retrying in 10 seconds..." >&2
     sleep 10
 done
 
 # Put answer file into Windows media
 autounattend_iso="$(echo "$iso" | sed 's/\.[^.]*$//')-autounattend.iso"
-if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation' || exit 1; if ! [ -f $autounattend_iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi" &> /dev/null; then
+if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation' && if ! [ -f $autounattend_iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi" &> /dev/null; then
     echo -e "${RED}[!]${NC} Failed to create media! Possibly out of disk space? Exiting..." >&2
     exit 1
 fi
@@ -222,23 +222,23 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Setting up Auto Tools..." >&2
     # Add packages to install list
-    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' || exit 1; rm package-list" &> /dev/null
+    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' && rm package-list" &> /dev/null
     for item in "${package_arr[@]}"; do
-        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' || exit 1; echo -n '$item ' >> package-list"
+        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' && echo -n '$item ' >> package-list"
     done
 
     # Configure automatic updates
-    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' || exit 1; rm disable-updates" &> /dev/null
+    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' && rm disable-updates" &> /dev/null
     if [ "$disable_updates" == "true" ]; then
-        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' || exit 1; touch disable-updates"
+        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' && touch disable-updates"
     fi
 
     # Pack latest QWT into Auto Tools
     qvm-run -p "$resources_vm" "cat > '$resources_dir/qubes-windows-tools/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
-    qvm-run -p "$resources_vm" "cd '$resources_dir/qubes-windows-tools' || exit 1; './unpack-qwt-iso.sh'" &> /dev/null
+    qvm-run -p "$resources_vm" "cd '$resources_dir/qubes-windows-tools' && './unpack-qwt-iso.sh'" &> /dev/null
 
     # Create Auto Tools Media
-    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools' || exit 1; './create-media.sh'" &> /dev/null
+    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools' && './create-media.sh'" &> /dev/null
 
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
     qvm-prefs "$current_name" memory 1536
