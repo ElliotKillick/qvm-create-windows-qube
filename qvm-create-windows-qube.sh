@@ -18,13 +18,14 @@ usage() {
     echo "  -n, --netvm <netvm> NetVM for Windows to use (default: sys-firewall)"
     echo "  -b, --background Installation process will happen in a minimized window"
     echo "  -p, --package <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
+    echo "  -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)"
     echo "  -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)"
 }
 
 # Option strings
-short="hc:n:bp:i:a:"
-long="help,count:,netvm:,background,package:,iso:,answer-file:"
+short="hc:n:bp:di:a:"
+long="help,count:,netvm:,background,package:,disable-updates,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -60,6 +61,10 @@ while true; do
         -p | --package)
             package="$2"
             shift 2
+            ;;
+        -d | --disable-updates)
+            disable_updates="true"
+            shift
             ;;
         -i | --iso)
             iso="$2"
@@ -219,6 +224,12 @@ for (( counter = 1; counter <= count; counter++ )); do
     for item in "${package_arr[@]}"; do
         qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' || exit 1; echo -n '$item ' >> package-list"
     done
+
+    # Configure automatic updates
+    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' || exit 1; rm disable-updates" &> /dev/null
+    if [ "$disable_updates" == "true" ]; then
+        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' || exit 1; touch disable-updates"
+    fi
 
     # Pack latest QWT into Auto Tools
     qvm-run -p "$resources_vm" "cat > '$resources_dir/qubes-windows-tools/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
