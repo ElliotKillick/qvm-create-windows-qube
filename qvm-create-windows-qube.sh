@@ -242,7 +242,10 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
     qvm-prefs "$current_name" memory 1536
-    qvm-prefs "$current_name" netvm "$netvm"
+    # If packages are being downloaded than we must enable network access earlier
+    if [ "$package" != "" ]; then
+        qvm-prefs "$current_name" netvm "$netvm"
+    fi
     until qvm-start --cdrom "$resources_vm:$resources_dir/auto-tools/auto-tools.iso" "$current_name"; do
         echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
         sleep 10
@@ -288,6 +291,9 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
     sleep 45
     qvm-shutdown "$current_name"
+    if [ "$package" == "" ]; then
+        qvm-prefs "$current_name" netvm "$netvm"
+    fi
 done
 
 echo -e "${GREEN}[+]${NC} Completed successfully!"
