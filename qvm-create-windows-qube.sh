@@ -114,7 +114,7 @@ resources_dir="/home/user/Documents/qvm-create-windows-qube"
 if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_vm" netvm)" != "sys-whonix" ]; then
     IFS="," read -ra package_arr <<< "$package"
     for item in "${package_arr[@]}"; do
-        if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' "https://chocolatey.org/api/v2/package/$item")\" == 404 ]; then exit 1; fi"; then
+        if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' \"https://chocolatey.org/api/v2/package/$item\")\" == 404 ]; then exit 1; fi"; then
             echo -e "${RED}[!]${NC} Package $item not found" >&2
             exit 1
         fi
