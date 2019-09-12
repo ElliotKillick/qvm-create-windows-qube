@@ -118,22 +118,24 @@ resources_vm="windows-mgmt"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
 # Validate package
-if [ "$netvm" != "" ]; then
-    if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_vm" netvm)" != "sys-whonix" ]; then
-        IFS="," read -ra package_arr <<< "$package"
-        for item in "${package_arr[@]}"; do
-            if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' \"https://chocolatey.org/api/v2/package/$item\")\" == 404 ]; then exit 1; fi"; then
-                echo -e "${RED}[!]${NC} Package $item not found" >&2
-                exit 1
-            fi
-        done
+if [ "$package" != "" ]; then
+    if [ "$netvm" != "" ]; then
+        if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_vm" netvm)" != "sys-whonix" ]; then
+            IFS="," read -ra package_arr <<< "$package"
+            for item in "${package_arr[@]}"; do
+                if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' \"https://chocolatey.org/api/v2/package/$item\")\" == 404 ]; then exit 1; fi"; then
+                    echo -e "${RED}[!]${NC} Package $item not found" >&2
+                    exit 1
+                fi
+            done
+        else
+            echo -e "${RED}[!]${NC} Cannot install Chocolatey packages because they use Cloudflare to indiscriminately block requests from curl/PowerShell over Tor. Websites may defend this practice by saying that the majority of Tor requests are malicious. However, this is a faulty comparision because just like with email or generally any other part of the internet these bad requests are made by a few bad apples that take more than their fair share of resources. To make a change, please visit https://chocolatey.org/contact and submit a blocked IP report refrencing Tor and this project." >&2
+            exit 1
+        fi
     else
-        echo -e "${RED}[!]${NC} Cannot install Chocolatey packages because they use Cloudflare to indiscriminately block requests from curl/PowerShell over Tor. Websites may defend this practice by saying that the majority of Tor requests are malicious. However, this is a faulty comparision because just like with email or generally any other part of the internet these bad requests are made by a few bad apples that take more than their fair share of resources. To make a change, please visit https://chocolatey.org/contact and submit a blocked IP report refrencing Tor and this project." >&2
+        echo -e "${RED}[!]${NC} A NetVM must be configured to use packages" >&2
         exit 1
     fi
-else
-    echo -e "${RED}[!]${NC} A NetVM must be configured to use packages" >&2
-    exit 1
 fi
 
 # Validate iso
