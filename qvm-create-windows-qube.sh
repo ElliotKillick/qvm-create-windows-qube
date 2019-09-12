@@ -170,7 +170,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 	    current_name="$name-$i"
         done
     fi
-    
+
     echo -e "${BLUE}[i]${NC} Starting creation of $current_name"
     qvm-create --class StandaloneVM --label red "$current_name"
     qvm-prefs "$current_name" virt_mode hvm
@@ -226,7 +226,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Create Auto Tools Media
     qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools' || exit 1; './create-media.sh'" &> /dev/null
-    
+
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
     qvm-prefs "$current_name" memory 1536
     until qvm-start --cdrom "$resources_vm:$resources_dir/auto-tools/auto-tools.iso" "$current_name"; do
