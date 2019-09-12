@@ -180,7 +180,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$current_name" qrexec_timeout 300 # Windows startup can take longer, especially if a disk scan is performed
     qvm-features "$current_name" video-model cirrus
     qvm-volume extend "$current_name":root 30g
-    qvm-prefs "$current_name" netvm "$netvm"
+    qvm-prefs "$current_name" netvm ""
 
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
     until qvm-start --cdrom "$resources_vm:$resources_dir/media-creation/$autounattend_iso" "$current_name"; do
@@ -229,6 +229,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
     qvm-prefs "$current_name" memory 1536
+    qvm-prefs "$current_name" netvm "$netvm"
     until qvm-start --cdrom "$resources_vm:$resources_dir/auto-tools/auto-tools.iso" "$current_name"; do
         echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
         sleep 10
