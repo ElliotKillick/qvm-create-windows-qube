@@ -70,7 +70,7 @@ while true; do
             iso="$2"
             shift 2
             ;;
-        -a | --answer_file)
+        -a | --answer-file)
             answer_file="$2"
             shift 2
             ;;
