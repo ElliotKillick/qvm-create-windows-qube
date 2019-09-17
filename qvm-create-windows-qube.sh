@@ -44,7 +44,7 @@ usage() {
     echo "Usage: $0 [options] <name>"
     echo "  -h, --help"
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
-    echo "  -n, --netvm <netvm> NetVM for Windows to use (default: sys-firewall)"
+    echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
     echo "  -b, --background Installation process will happen in a minimized window"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)"

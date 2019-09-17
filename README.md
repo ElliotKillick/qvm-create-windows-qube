@@ -18,7 +18,7 @@ Pro Tip: Use `cat -v` during code review so [terminal escape sequences aren't in
 Usage: ./qvm-create-windows-qube.sh [options] <name>
   -h, --help
   -c, --count <number> Number of Windows qubes with given basename desired
-  -n, --netvm <netvm> NetVM for Windows to use (default: sys-firewall)
+  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)
   -b, --background Installation process will happen in a minimized window
   -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
   -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)
