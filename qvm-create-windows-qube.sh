@@ -285,7 +285,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
     # If a NetVM is used then it must be set now because if done later then on the next boot a message will be received from Xen saying that the "Xen PV Network Class" driver hasn't been setup yet and a restart is required to do so (Also in Device Manager there will be error messages about the network driver). The NetVM cannot be set on the previous boot where QWT installation takes place because Windows suddenly shuts down during the "Configuring Windows updates" screen at boot
-    # qvm-run doesn't work unless a NetVM is set (It appears to be a QWT bug because vchan should work even if the qube is specifed to be isolated from a NetVM like it does in Dom0). Vchan does work if you set a NetVM, allow the network driver to be setup and then unset the NetVM, however, then the airgap has been violated
+    # qvm-run doesn't work on this boot unless a NetVM is set. Upon next reboot vchan will work either way meaning qvm-run will work (More research required, may have changed)
     if [ "$netvm" ]; then
         qvm-prefs "$current_name" netvm "$netvm"
     fi
