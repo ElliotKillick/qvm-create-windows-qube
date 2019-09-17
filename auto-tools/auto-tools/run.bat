@@ -5,7 +5,6 @@ rem Automatically run by answer file upon first boot after installation
 
 cd /d D:\
 
-start cmd /c "cd chocolatey && "get-packages.bat""
 start cmd /c "cd updates && "auto-updates.bat""
 start cmd /c "cd updates && "install-updates.bat""
 start cmd /c "cd qubes-windows-tools && "allow-unsigned-drivers.bat""

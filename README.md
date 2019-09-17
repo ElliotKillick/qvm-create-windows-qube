@@ -1,6 +1,6 @@
 # qvm-create-windows-qube
 
-qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows qubes with Qubes Windows Tools as well as other packages such as Firefox, Office 365, Notepad++ and Visual Studio pre-installed modularly and automatically. It also benefits privacy and anominity by reseting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Numbers and more.
+qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows qubes with Qubes Windows Tools as well as other packages such as Firefox, Office 365, Notepad++ and Visual Studio pre-installed modularly and automatically. It also benefits privacy and anominity by reseting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Numbers (VSNs) and more.
 
 ## Installation
 
@@ -20,16 +20,17 @@ Usage: ./qvm-create-windows-qube.sh [options] <name>
   -c, --count <number> Number of Windows qubes with given basename desired
   -n, --netvm <netvm> NetVM for Windows to use (default: sys-firewall)
   -b, --background Installation process will happen in a minimized window
-  -p, --package <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
+  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
+  -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)
   -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)
   -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)
 ```
 
-Example: `./qvm-create-windows-qube.sh -bp firefox windows-7`
+Example: `./qvm-create-windows-qube.sh -n sys-firewall -p firefox,notepadplusplus,office365business windows-7`
 
 ## Security
 
-To mitigate the fallout of another shellshock-like Bash vulnerability, the dom0 script communicates to the windows-mgmt qube in a one-way fashion. Downloading of the Windows ISOs and update packages are made as secure as possible by encforcing HTTPS with public key pinning whenever possible as well as verifying the SHA256 of the files after download. Packages such as Firefox are offered out of the box so the infamously insecure Internet Explorer never has to be used.
+To mitigate the fallout of another shellshock-like Bash vulnerability, the Dom0 script communicates to the windows-mgmt qube in a one-way fashion. Downloading of the Windows ISOs and update packages are made as secure as possible by encforcing HTTPS with public key pinning whenever possible as well as verifying the SHA256 of the files after download. Packages such as Firefox are offered out of the box so the infamously insecure Internet Explorer never has to be used.
 
 ## Contributing
 

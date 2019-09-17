@@ -5,9 +5,26 @@ BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
+get_window_id() {
+    name="$1"
+    xdotool search --name "$name" 2> /dev/null
+}
+
+is_window_minimized() {
+    name="$1"
+    id="$(get_window_id "$name")"
+    if [ "$id" ]; then
+        if [ "$(xwininfo -id "$id" | grep "Map State: " | awk '{ print $3 }')" == "IsUnMapped" ]; then
+            return
+        fi
+    fi
+
+    false
+}
+
 minimize_window() {
-    window="$1"
-    id="$(xwininfo -root -tree | grep -w "$window" | awk '{ print $1 }')"
+    name="$1"
+    id="$(get_window_id "$name")"
     xdotool windowminimize "$id" &> /dev/null
 }
 
@@ -17,7 +34,7 @@ usage() {
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
     echo "  -n, --netvm <netvm> NetVM for Windows to use (default: sys-firewall)"
     echo "  -b, --background Installation process will happen in a minimized window"
-    echo "  -p, --package <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
+    echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)"
     echo "  -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)"
@@ -25,7 +42,7 @@ usage() {
 
 # Option strings
 short="hc:n:bp:di:a:"
-long="help,count:,netvm:,background,package:,disable-updates,iso:,answer-file:"
+long="help,count:,netvm:,background,packages:,disable-updates,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -58,8 +75,8 @@ while true; do
             background="true"
             shift
             ;;
-        -p | --package)
-            package="$2"
+        -p | --packages)
+            packages="$2"
             shift 2
             ;;
         -d | --disable-updates)
@@ -117,14 +134,14 @@ fi
 resources_vm="windows-mgmt"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
-# Validate package
-if [ "$package" != "" ]; then
+# Validate packages
+if [ "$packages" != "" ]; then
     if [ "$netvm" != "" ]; then
         if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_vm" netvm)" != "sys-whonix" ]; then
-            IFS="," read -ra package_arr <<< "$package"
-            for item in "${package_arr[@]}"; do
-                if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' \"https://chocolatey.org/api/v2/package/$item\")\" == 404 ]; then exit 1; fi"; then
-                    echo -e "${RED}[!]${NC} Package $item not found" >&2
+            IFS="," read -ra package_arr <<< "$packages"
+            for package in "${package_arr[@]}"; do
+                if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' \"https://chocolatey.org/api/v2/package/$package\")\" == 404 ]; then exit 1; fi"; then
+                    echo -e "${RED}[!]${NC} Package $package not found" >&2
                     exit 1
                 fi
             done
@@ -188,20 +205,24 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-features "$current_name" video-model cirrus
     qvm-volume extend "$current_name":root 30g
     qvm-prefs "$current_name" netvm ""
+    
+    if [ "$background" == "true" ]; then
+	while true; do
+            if ! is_window_minimized "$current_name"; then
+                minimize_window "$current_name"
+            fi
+            sleep 1
+        done &
+    fi
 
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
     until qvm-start --cdrom "$resources_vm:$resources_dir/media-creation/$autounattend_iso" "$current_name"; do
         echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
         sleep 10
     done
-    if [ "$background" == "true" ]; then
-        until minimize_window "$current_name"; do
-            sleep 0.1
-        done
-    fi
 
     # Waiting for first part of Windows installation process to finish...
-    sleep 3
+    sleep 5
     while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
 
     echo -e "${BLUE}[i]${NC} Commencing second part of Windows installation process..." >&2
@@ -210,23 +231,12 @@ for (( counter = 1; counter <= count; counter++ )); do
         echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
         sleep 10
     done
-    if [ "$background" == "true" ]; then
-        until minimize_window "$current_name"; do
-            sleep 0.1
-        done
-    fi
 
     # Waiting for second part of Windows installation process to finish...
-    sleep 3
+    sleep 5
     while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
 
     echo -e "${BLUE}[i]${NC} Setting up Auto Tools..." >&2
-    # Add packages to install list
-    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' && rm package-list" &> /dev/null
-    for item in "${package_arr[@]}"; do
-        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/chocolatey' && echo -n '$item ' >> package-list"
-    done
-
     # Configure automatic updates
     qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' && rm disable-updates" &> /dev/null
     if [ "$disable_updates" == "true" ]; then
@@ -243,21 +253,16 @@ for (( counter = 1; counter <= count; counter++ )); do
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
     qvm-prefs "$current_name" memory 1536
     # If packages are being downloaded than we must enable network access earlier
-    if [ "$package" != "" ]; then
+    if [ "$packages" != "" ]; then
         qvm-prefs "$current_name" netvm "$netvm"
     fi
     until qvm-start --cdrom "$resources_vm:$resources_dir/auto-tools/auto-tools.iso" "$current_name"; do
         echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
         sleep 10
     done
-    if [ "$background" == "true" ]; then
-        until minimize_window "$current_name"; do
-            sleep 0.1
-        done
-    fi
 
-    # Waiting for packages and updates to install...
-    sleep 3
+    # Waiting for updates to install...
+    sleep 5
     while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
 
     echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
@@ -265,35 +270,46 @@ for (( counter = 1; counter <= count; counter++ )); do
         echo -e "${RED}[!]${NC} $current_name failed to start! Retrying in 10 seconds..." >&2
         sleep 10
     done
-    if [ "$background" == "true" ]; then
-        until minimize_window "$current_name"; do
-            sleep 0.1
-        done
-    fi
 
     # Waiting for Qubes Windows Tools to shutdown computer automatically after install...
-    sleep 3
+    sleep 5
     while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
 
-    echo -e "${BLUE}[i]${NC} Booting up then shutting back down to complete setup of Qubes Windows Tools..." >&2
-    qvm-start "$current_name"
-    if [ "$background" == "true" ]; then
-        until minimize_window "$current_name"; do
-            sleep 0.1
-        done
-    fi
-    # Need another one because of the new window created when QWT makes Windows adapt to the size of the monitor
-    sleep 10
-    if [ "$background" == "true" ]; then
-        until minimize_window "$current_name"; do
-            sleep 0.1
-        done
-    fi
-    sleep 45
-    qvm-shutdown "$current_name"
-    if [ "$package" == "" ]; then
+    echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
+    # If a NetVM is used then it must be set now because if done later then on the next boot a message will be received from Xen saying that the "Xen PV Network Class" driver hasn't been setup yet and a restart is required to do so (Also in Device Manager there will be error messages about the network driver). The NetVM cannot be set on the previous boot where QWT installation takes place because Windows suddenly shuts down during the "Configuring Windows updates" screen at boot
+    # qvm-run doesn't work unless a NetVM is set (It appears to be a QWT bug because vchan should work even if the qube is specifed to be isolated from a NetVM like it does in Dom0). Vchan does work if you set a NetVM, allow the network driver to be setup and then unset the NetVM, however, then the airgap has been violated
+    if [ "$netvm" ]; then
         qvm-prefs "$current_name" netvm "$netvm"
     fi
+    # For an unknown reason, if the window is minimized at the "Welcome" logon screen (where QWT first enlarges Windows to fit the entire screen) the whole system will freeze until forcefully rebooted
+    if [ "$background" == "true" ]; then
+        kill "$!"
+	wait "$!" 2> /dev/null
+    fi
+    qvm-start "$current_name"
+
+    # Time must be given for the QWT drivers to complete setup
+    # If packages are being installed then the time in which that is happening should be more than enough
+    if [ "$packages" == "" ]; then
+        sleep 180
+    else
+        echo -e "${BLUE}[i]${NC} Installing Chocolatey and packages..." >&2
+        # Upon initial install of the Windows qube, qvm-run fails to run the command because it appears to try too early while Xen is still setting up drivers
+        # To fix this, we wait until qvm-run successfully runs one time at which point we know the Windows qube is ready to accept further commands
+        until qvm-run "$current_name" "echo Ready to accept commands?" &> /dev/null; do
+            sleep 1
+        done
+        # Install Chocolatey (Command provided by: https://chocolatey.org/install)
+        # Just added environment variable to use Windows compression so 7-Zip is not a mandatory install
+        # shellcheck disable=SC2016
+        qvm-run -p "$current_name" '@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "$env:chocolateyUseWindowsCompression = '\''true'\''; iex ((New-Object System.Net.WebClient).DownloadString('\''https://chocolatey.org/install.ps1'\''))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"' &> /dev/null
+	# Install packages
+        qvm-run -p "$current_name" "choco install -y ${packages//,/ }"
+    fi
+
+    # Shutdown and wait until complete before finishing or starting next installation
+    qvm-shutdown "$current_name"
+    while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
 done
 
 echo -e "${GREEN}[+]${NC} Completed successfully!"
