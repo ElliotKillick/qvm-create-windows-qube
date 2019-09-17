@@ -5,6 +5,18 @@ BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
+wait_for_shutdown() {
+    name="$1"
+    is_boot="$2"
+    # There is a small delay upon booting a qube before qvm-check will detect it as running
+    if [ "$is_boot" == "true" ]; then
+        sleep 5
+    fi
+    while qvm-check --running "$name" &> /dev/null; do
+        sleep 1
+    done
+}
+
 get_window_id() {
     name="$1"
     xdotool search --name "$name" 2> /dev/null
@@ -222,8 +234,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for first part of Windows installation process to finish...
-    sleep 5
-    while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
+    wait_for_shutdown "$current_name" "true"
 
     echo -e "${BLUE}[i]${NC} Commencing second part of Windows installation process..." >&2
     qvm-features --unset "$current_name" video-model
@@ -233,8 +244,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for second part of Windows installation process to finish...
-    sleep 5
-    while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
+    wait_for_shutdown "$current_name" "true"
 
     echo -e "${BLUE}[i]${NC} Setting up Auto Tools..." >&2
     # Configure automatic updates
@@ -262,8 +272,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for updates to install...
-    sleep 5
-    while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
+    wait_for_shutdown "$current_name" "true"
 
     echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
     until qvm-start --cdrom "$resources_vm:$resources_dir/auto-tools/auto-tools.iso" "$current_name"; do
@@ -272,8 +281,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for Qubes Windows Tools to shutdown computer automatically after install...
-    sleep 5
-    while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
+    wait_for_shutdown "$current_name" "true"
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
     # If a NetVM is used then it must be set now because if done later then on the next boot a message will be received from Xen saying that the "Xen PV Network Class" driver hasn't been setup yet and a restart is required to do so (Also in Device Manager there will be error messages about the network driver). The NetVM cannot be set on the previous boot where QWT installation takes place because Windows suddenly shuts down during the "Configuring Windows updates" screen at boot
@@ -309,7 +317,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Shutdown and wait until complete before finishing or starting next installation
     qvm-shutdown "$current_name"
-    while qvm-check --running "$current_name" &> /dev/null; do sleep 1; done
+    wait_for_shutdown "$current_name" "false"
 done
 
 echo -e "${GREEN}[+]${NC} Completed successfully!"
