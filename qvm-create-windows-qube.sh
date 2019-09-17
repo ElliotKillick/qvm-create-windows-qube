@@ -175,7 +175,7 @@ until qvm-run -p "$resources_vm" "cd '$resources_dir' && './install-dependencies
 done
 
 # Put answer file into Windows media
-autounattend_iso="$(echo "$iso" | sed 's/\.[^.]*$//')-autounattend.iso"
+autounattend_iso="${iso%.*}-autounattend.iso"
 if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation' && if ! [ -f $autounattend_iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi" &> /dev/null; then
     echo -e "${RED}[!]${NC} Failed to create media! Possibly out of disk space? Exiting..." >&2
     exit 1
