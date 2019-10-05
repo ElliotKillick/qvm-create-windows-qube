@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# The lastest version of QWT is stored in dom0 at: /usr/lib/qubes/qubes-windows-tools.iso
+# The latest version of QWT is stored in Dom0 at: /usr/lib/qubes/qubes-windows-tools.iso
 
 iso_device="$(udisksctl loop-setup -f qubes-windows-tools.iso | awk '{ print $NF }' | sed 's/.$//')"
 
