@@ -152,7 +152,7 @@ if [ "$packages" != "" ]; then
         if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_vm" netvm)" != "sys-whonix" ]; then
             IFS="," read -ra package_arr <<< "$packages"
             for package in "${package_arr[@]}"; do
-                if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' \"https://chocolatey.org/api/v2/package/$package\")\" == 404 ]; then exit 1; fi"; then
+                if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')\" == 404 ]; then exit 1; fi"; then
                     echo -e "${RED}[!]${NC} Package $package not found" >&2
                     exit 1
                 fi
