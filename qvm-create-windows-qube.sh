@@ -262,10 +262,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
     qvm-prefs "$current_name" memory 1536
-    # If packages are being downloaded than we must enable network access earlier
-    if [ "$packages" != "" ]; then
-        qvm-prefs "$current_name" netvm "$netvm"
-    fi
+    qvm-prefs "$current_name" netvm "$netvm"
     until qvm-start --cdrom "$resources_vm:$resources_dir/auto-tools/auto-tools.iso" "$current_name"; do
         echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
         sleep 10
@@ -284,11 +281,6 @@ for (( counter = 1; counter <= count; counter++ )); do
     wait_for_shutdown "$current_name" "true"
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
-    # If a NetVM is used then it must be set now because if done later then on the next boot a message will be received from Xen saying that the "Xen PV Network Class" driver hasn't been setup yet and a restart is required to do so (Also in Device Manager there will be error messages about the network driver). The NetVM cannot be set on the previous boot where QWT installation takes place because Windows suddenly shuts down during the "Configuring Windows updates" screen at boot
-    # qvm-run doesn't work on this boot unless a NetVM is set. Upon next reboot vchan will work either way meaning qvm-run will work (More research required, may have changed)
-    if [ "$netvm" ]; then
-        qvm-prefs "$current_name" netvm "$netvm"
-    fi
     # For an unknown reason, if the window is minimized at the "Welcome" logon screen (where QWT first enlarges Windows to fit the entire screen) the whole system will freeze until forcefully rebooted
     if [ "$background" == "true" ]; then
         kill "$!"
@@ -296,17 +288,13 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
     qvm-start "$current_name"
 
-    # Time must be given for the QWT drivers to complete setup
-    # If packages are being installed then the time in which that is happening should be more than enough
-    if [ "$packages" == "" ]; then
-        sleep 180
-    else
+    # Wait until QWT installation is advertised to Dom0
+    until [ "$(qvm-features "$current_name" os)" == "Windows" ]; do
+        sleep 1
+    done
+
+    if [ "$packages" ]; then
         echo -e "${BLUE}[i]${NC} Installing Chocolatey and packages..." >&2
-        # Upon initial install of the Windows qube, qvm-run fails to run the command because it appears to try too early while Xen is still setting up drivers
-        # To fix this, we wait until qvm-run successfully runs one time at which point we know the Windows qube is ready to accept further commands
-        until qvm-run "$current_name" "echo Ready to accept commands?" &> /dev/null; do
-            sleep 1
-        done
         # Install Chocolatey (Command provided by: https://chocolatey.org/install)
         # Just added environment variable to use Windows compression so 7-Zip is not a mandatory install
         # shellcheck disable=SC2016
