@@ -6,13 +6,14 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 wait_for_shutdown() {
-    name="$1"
-    is_boot="$2"
+    local is_boot="$2"
+
     # There is a small delay upon booting a qube before qvm-check will detect it as running
     if [ "$is_boot" == "true" ]; then
         sleep 5
     fi
-    while qvm-check --running "$name" &> /dev/null; do
+
+    while qvm-check --running "$qube" &> /dev/null; do
         sleep 1
     done
 }
@@ -143,16 +144,16 @@ if [ "$netvm" != "" ]; then
     fi
 fi
 
-resources_vm="windows-mgmt"
+resources_qube="windows-mgmt"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
 # Validate packages
 if [ "$packages" != "" ]; then
     if [ "$netvm" != "" ]; then
-        if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_vm" netvm)" != "sys-whonix" ]; then
+        if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_qube" netvm)" != "sys-whonix" ]; then
             IFS="," read -ra package_arr <<< "$packages"
             for package in "${package_arr[@]}"; do
-                if ! qvm-run -p "$resources_vm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')\" == 404 ]; then exit 1; fi"; then
+                if ! qvm-run -q "$resources_qube" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')\" == 404 ]; then exit 1; fi"; then
                     echo -e "${RED}[!]${NC} Package $package not found" >&2
                     exit 1
                 fi
@@ -168,117 +169,118 @@ if [ "$packages" != "" ]; then
 fi
 
 # Validate iso
-if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
-    echo -e "${RED}[!]${NC} File not found in $resources_vm:$resources_dir/media-creation/isos: $iso" >&2
+if ! qvm-run -q "$resources_qube" "cd '$resources_dir/media-creation/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
+    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/media-creation/isos: $iso" >&2
     exit 1
 fi
 
 # Validate answer-file
-if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
-    echo -e "${RED}[!]${NC} File not found in $resources_vm:$resources_dir/media-creation/answer-files: $answer_file" >&2
+if ! qvm-run -q "$resources_qube" "cd '$resources_dir/media-creation/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
+    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/media-creation/answer-files: $answer_file" >&2
     exit 1
 fi
 
 # Install dependencies
-echo -e "${BLUE}[i]${NC} Installing package dependencies on $resources_vm..." >&2
-until qvm-run -p "$resources_vm" "cd '$resources_dir' && './install-dependencies.sh'" &> /dev/null; do
+echo -e "${BLUE}[i]${NC} Installing package dependencies on $resources_qube..." >&2
+until qvm-run -q "$resources_qube" "cd '$resources_dir' && './install-dependencies.sh'"; do
     echo -e "${RED}[!]${NC} Failed to install dependencies! Retrying in 10 seconds..." >&2
     sleep 10
 done
 
 # Put answer file into Windows media
 autounattend_iso="${iso%.*}-autounattend.iso"
-if ! qvm-run -p "$resources_vm" "cd '$resources_dir/media-creation' && if ! [ -f $autounattend_iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
+if ! qvm-run -p "$resources_qube" "cd '$resources_dir/media-creation' && if ! [ -f $autounattend_iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
     echo -e "${RED}[!]${NC} Failed to create media! Possibly out of disk space? Exiting..." >&2
     exit 1
 fi
 
 # Create Windows qube the number of times specified using name as the basename if creating more than 1
-current_name="$name"
 for (( counter = 1; counter <= count; counter++ )); do
     if [ "$count" -gt 1 ]; then
-        current_name="$name-$counter"
+        qube="$name-$counter"
 
-	# If qube with that number already exists, keep incrementing until one that does not exist is found
+	# If qube with that name already exists, keep incrementing the number until one that does not exist is found
 	i=0
-	while qvm-check "$current_name" &> /dev/null; do
+	while qvm-check "$qube" &> /dev/null; do
             ((i++))
-	    current_name="$name-$i"
+	    qube="$name-$i"
         done
+    else
+        qube="$name"
     fi
 
-    echo -e "${BLUE}[i]${NC} Starting creation of $current_name"
-    qvm-create --class StandaloneVM --label red "$current_name"
-    qvm-prefs "$current_name" virt_mode hvm
-    qvm-prefs "$current_name" memory 400
-    qvm-prefs "$current_name" maxmem 0 # Disables currently unstable Qubes memory manager (Also grays the option out in Qubes Manager)
-    qvm-prefs "$current_name" kernel ''
-    qvm-prefs "$current_name" qrexec_timeout 300 # Windows startup can take longer, especially if a disk scan is performed
-    qvm-features "$current_name" video-model cirrus
-    qvm-volume extend "$current_name":root 30g
-    qvm-prefs "$current_name" netvm ""
+    echo -e "${BLUE}[i]${NC} Starting creation of $qube"
+    qvm-create --class StandaloneVM --label red "$qube"
+    qvm-prefs "$qube" virt_mode hvm
+    qvm-prefs "$qube" memory 400
+    qvm-prefs "$qube" maxmem 0 # Disables currently unstable Qubes memory manager (Also grays the option out in Qubes Manager)
+    qvm-prefs "$qube" kernel ''
+    qvm-prefs "$qube" qrexec_timeout 300 # Windows startup can take longer, especially if a disk scan is performed
+    qvm-features "$qube" video-model cirrus
+    qvm-volume extend "$qube":root 30g
+    qvm-prefs "$qube" netvm ""
     
     if [ "$background" == "true" ]; then
 	while true; do
-            if ! is_window_minimized "$current_name"; then
-                minimize_window "$current_name"
+            if ! is_window_minimized "$qube"; then
+                minimize_window "$qube"
             fi
             sleep 1
         done &
     fi
 
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
-    until qvm-start --cdrom "$resources_vm:$resources_dir/media-creation/$autounattend_iso" "$current_name"; do
-        echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
+    until qvm-start --cdrom "$resources_qube:$resources_dir/media-creation/$autounattend_iso" "$qube"; do
+        echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
         sleep 10
     done
 
     # Waiting for first part of Windows installation process to finish...
-    wait_for_shutdown "$current_name" "true"
+    wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Commencing second part of Windows installation process..." >&2
-    qvm-features --unset "$current_name" video-model
-    until qvm-start "$current_name"; do
-        echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
+    qvm-features --unset "$qube" video-model
+    until qvm-start "$qube"; do
+        echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
         sleep 10
     done
 
     # Waiting for second part of Windows installation process to finish...
-    wait_for_shutdown "$current_name" "true"
+    wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Setting up Auto Tools..." >&2
     # Configure automatic updates
-    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' && rm disable-updates" &> /dev/null
+    qvm-run -q "$resources_qube" "cd '$resources_dir/auto-tools/auto-tools/updates' && rm disable-updates"
     if [ "$disable_updates" == "true" ]; then
-        qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools/auto-tools/updates' && touch disable-updates"
+        qvm-run -q "$resources_qube" "cd '$resources_dir/auto-tools/auto-tools/updates' && touch disable-updates"
     fi
 
     # Pack latest QWT into Auto Tools
-    qvm-run -p "$resources_vm" "cat > '$resources_dir/qubes-windows-tools/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
-    qvm-run -p "$resources_vm" "cd '$resources_dir/qubes-windows-tools' && './unpack-qwt-iso.sh'" &> /dev/null
+    qvm-run -p "$resources_qube" "cat > '$resources_dir/qubes-windows-tools/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
+    qvm-run -q "$resources_qube" "cd '$resources_dir/qubes-windows-tools' && './unpack-qwt-iso.sh'"
 
     # Create Auto Tools Media
-    qvm-run -p "$resources_vm" "cd '$resources_dir/auto-tools' && './create-media.sh'" &> /dev/null
+    qvm-run -q "$resources_qube" "cd '$resources_dir/auto-tools' && './create-media.sh'"
 
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
-    qvm-prefs "$current_name" memory 1536
-    qvm-prefs "$current_name" netvm "$netvm"
-    until qvm-start --cdrom "$resources_vm:$resources_dir/auto-tools/auto-tools.iso" "$current_name"; do
-        echo -e "${RED}[!]${NC} Failed to start $current_name! Retrying in 10 seconds..." >&2
+    qvm-prefs "$qube" memory 1536
+    qvm-prefs "$qube" netvm "$netvm"
+    until qvm-start --cdrom "$resources_qube:$resources_dir/auto-tools/auto-tools.iso" "$qube"; do
+        echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
         sleep 10
     done
 
     # Waiting for updates to install...
-    wait_for_shutdown "$current_name" "true"
+    wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
-    until qvm-start --cdrom "$resources_vm:$resources_dir/auto-tools/auto-tools.iso" "$current_name"; do
-        echo -e "${RED}[!]${NC} $current_name failed to start! Retrying in 10 seconds..." >&2
+    until qvm-start --cdrom "$resources_qube:$resources_dir/auto-tools/auto-tools.iso" "$qube"; do
+        echo -e "${RED}[!]${NC} $qube failed to start! Retrying in 10 seconds..." >&2
         sleep 10
     done
 
     # Waiting for Qubes Windows Tools to shutdown computer automatically after install...
-    wait_for_shutdown "$current_name" "true"
+    wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
     # For an unknown reason, if the window is minimized at the "Welcome" logon screen (where QWT first enlarges Windows to fit the entire screen) the whole system will freeze until forcefully rebooted
@@ -286,10 +288,10 @@ for (( counter = 1; counter <= count; counter++ )); do
         kill "$!"
 	wait "$!" 2> /dev/null
     fi
-    qvm-start "$current_name"
+    qvm-start "$qube"
 
     # Wait until QWT installation is advertised to Dom0
-    until [ "$(qvm-features "$current_name" os)" == "Windows" ]; do
+    until [ "$(qvm-features "$qube" os)" == "Windows" ]; do
         sleep 1
     done
 
@@ -298,14 +300,14 @@ for (( counter = 1; counter <= count; counter++ )); do
         # Install Chocolatey (Command provided by: https://chocolatey.org/install)
         # Just added environment variable to use Windows compression so 7-Zip is not a mandatory install
         # shellcheck disable=SC2016
-        qvm-run -p "$current_name" '@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "$env:chocolateyUseWindowsCompression = '\''true'\''; iex ((New-Object System.Net.WebClient).DownloadString('\''https://chocolatey.org/install.ps1'\''))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"' &> /dev/null
+        qvm-run -q "$qube" '@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "$env:chocolateyUseWindowsCompression = '\''true'\''; iex ((New-Object System.Net.WebClient).DownloadString('\''https://chocolatey.org/install.ps1'\''))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"'
 	# Install packages
-        qvm-run -p "$current_name" "choco install -y ${packages//,/ }"
+        qvm-run -p "$qube" "choco install -y ${packages//,/ }"
     fi
 
     # Shutdown and wait until complete before finishing or starting next installation
-    qvm-shutdown "$current_name"
-    wait_for_shutdown "$current_name" "false"
+    qvm-shutdown "$qube"
+    wait_for_shutdown "false"
 done
 
 echo -e "${GREEN}[+]${NC} Completed successfully!"
