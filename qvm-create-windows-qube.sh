@@ -18,35 +18,11 @@ wait_for_shutdown() {
     done
 }
 
-get_window_id() {
-    name="$1"
-    xdotool search --name "$name" 2> /dev/null
-}
-
-is_window_minimized() {
-    name="$1"
-    id="$(get_window_id "$name")"
-    if [ "$id" ]; then
-        if [ "$(xwininfo -id "$id" | grep "Map State: " | awk '{ print $3 }')" == "IsUnMapped" ]; then
-            return
-        fi
-    fi
-
-    false
-}
-
-minimize_window() {
-    name="$1"
-    id="$(get_window_id "$name")"
-    xdotool windowminimize "$id" &> /dev/null
-}
-
 usage() {
     echo "Usage: $0 [options] <name>"
     echo "  -h, --help"
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
     echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
-    echo "  -b, --background Installation process will happen in a minimized window"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)"
     echo "  -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
@@ -54,8 +30,8 @@ usage() {
 }
 
 # Option strings
-short="hc:n:bp:di:a:"
-long="help,count:,netvm:,background,packages:,disable-updates,iso:,answer-file:"
+short="hc:n:p:di:a:"
+long="help,count:,netvm:,packages:,disable-updates,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -83,10 +59,6 @@ while true; do
 	-n | --netvm)
             netvm="$2"
             shift 2
-            ;;
-        -b | --background)
-            background="true"
-            shift
             ;;
         -p | --packages)
             packages="$2"
@@ -220,15 +192,6 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-volume extend "$qube":root 30g
     qvm-prefs "$qube" netvm ""
     
-    if [ "$background" == "true" ]; then
-	while true; do
-            if ! is_window_minimized "$qube"; then
-                minimize_window "$qube"
-            fi
-            sleep 1
-        done &
-    fi
-
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
     until qvm-start --cdrom "$resources_qube:$resources_dir/media-creation/$autounattend_iso" "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
@@ -283,11 +246,6 @@ for (( counter = 1; counter <= count; counter++ )); do
     wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
-    # For an unknown reason, if the window is minimized at the "Welcome" logon screen (where QWT first enlarges Windows to fit the entire screen) the whole system will freeze until forcefully rebooted
-    if [ "$background" == "true" ]; then
-        kill "$!"
-	wait "$!" 2> /dev/null
-    fi
     qvm-start "$qube"
 
     # Wait until QWT installation is advertised to Dom0
