@@ -228,12 +228,6 @@ for (( counter = 1; counter <= count; counter++ )); do
     wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Setting up Auto Tools..." >&2
-    # Configure automatic updates
-    qvm-run -q "$resources_qube" "cd '$resources_dir/auto-tools/auto-tools/updates' && rm disable-updates"
-    if [ "$disable_updates" == "true" ]; then
-        qvm-run -q "$resources_qube" "cd '$resources_dir/auto-tools/auto-tools/updates' && touch disable-updates"
-    fi
-
     # Pack latest QWT into Auto Tools
     qvm-run -p "$resources_qube" "cat > '$resources_dir/qubes-windows-tools/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
     qvm-run -q "$resources_qube" "cd '$resources_dir/qubes-windows-tools' && './unpack-qwt-iso.sh'"
@@ -269,9 +263,20 @@ for (( counter = 1; counter <= count; counter++ )); do
         sleep 1
     done
 
+    # At this point, qvm-run is working
+
     if [ "$seamless" == "true" ]; then
         qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Invisible Things Lab\Qubes Tools\qga" /v SeamlessMode /t REG_DWORD /d 1 /f'
     fi
+
+    if [ "$disable_updates" == "true" ]; then
+        qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /v AUOptions /t REG_DWORD /d 1 /f'
+    fi
+
+    # Nobody likes random reboots
+    qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /ve /f'
+    qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /ve /f'
+    qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f'
 
     if [ "$packages" ]; then
         echo -e "${BLUE}[i]${NC} Installing Chocolatey and packages..." >&2
