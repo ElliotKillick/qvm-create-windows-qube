@@ -22,6 +22,7 @@ usage() {
     echo "Usage: $0 [options] <name>"
     echo "  -h, --help"
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
+    echo "  -t, --template Make this qube a TemplateVM instead of a StandaloneVM"
     echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)"
@@ -30,8 +31,8 @@ usage() {
 }
 
 # Option strings
-short="hc:n:p:di:a:"
-long="help,count:,netvm:,packages:,disable-updates,iso:,answer-file:"
+short="hc:tn:p:di:a:"
+long="help,count:,template,netvm:,packages:,disable-updates,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -55,6 +56,10 @@ while true; do
         -c | --count)
             count="$2"
             shift 2
+            ;;
+        -t | --template)
+            template="true"
+            shift
             ;;
 	-n | --netvm)
             netvm="$2"
@@ -103,6 +108,13 @@ if ! [[ "$count" =~ ^[0-9]+$ ]]; then
 elif [ "$count" -lt 1 ]; then
     echo -e "${RED}[!]${NC} Count should be 1 or more" >&2
     exit 1
+fi
+
+# Parse template
+if [ "$template" == "true" ]; then
+    class="TemplateVM"
+else
+    class="StandaloneVM"
 fi
 
 # Validate netvm
@@ -182,7 +194,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     echo -e "${BLUE}[i]${NC} Starting creation of $qube"
-    qvm-create --class StandaloneVM --label red "$qube"
+    qvm-create --class "$class" --label red "$qube"
     qvm-prefs "$qube" virt_mode hvm
     qvm-prefs "$qube" memory 400
     qvm-prefs "$qube" maxmem 0 # Disables currently unstable Qubes memory manager (Also grays the option out in Qubes Manager)
