@@ -234,7 +234,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-run -p "$resources_qube" "cat > '$resources_dir/qubes-windows-tools/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
     qvm-run -q "$resources_qube" "cd '$resources_dir/qubes-windows-tools' && './unpack-qwt-iso.sh'"
 
-    # Create Auto Tools Media
+    # Create Auto Tools media
     qvm-run -q "$resources_qube" "cd '$resources_dir/auto-tools' && './create-media.sh'"
 
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
