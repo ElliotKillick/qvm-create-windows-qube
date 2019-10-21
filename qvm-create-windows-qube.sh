@@ -24,6 +24,7 @@ usage() {
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
     echo "  -t, --template Make this qube a TemplateVM instead of a StandaloneVM"
     echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
+    echo "  -s, --seamless Enable seamless GUI persistently across restarts"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)"
     echo "  -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
@@ -31,8 +32,8 @@ usage() {
 }
 
 # Option strings
-short="hc:tn:p:di:a:"
-long="help,count:,template,netvm:,packages:,disable-updates,iso:,answer-file:"
+short="hc:tn:sp:di:a:"
+long="help,count:,template,netvm:,seamless,packages:,disable-updates,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -64,6 +65,10 @@ while true; do
 	-n | --netvm)
             netvm="$2"
             shift 2
+            ;;
+        -s | --seamless)
+            seamless="true"
+            shift
             ;;
         -p | --packages)
             packages="$2"
@@ -264,6 +269,10 @@ for (( counter = 1; counter <= count; counter++ )); do
     until [ "$(qvm-features "$qube" os)" == "Windows" ]; do
         sleep 1
     done
+
+    if [ "$seamless" == "true" ]; then
+        qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Invisible Things Lab\Qubes Tools\qga" /v SeamlessMode /t REG_DWORD /d 1 /f'
+    fi
 
     if [ "$packages" ]; then
         echo -e "${BLUE}[i]${NC} Installing Chocolatey and packages..." >&2
