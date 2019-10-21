@@ -43,7 +43,6 @@ eval set -- "$opts"
 
 # Set defaults
 count="1"
-netvm=""
 iso="Win7_Pro_SP1_English_x64.iso"
 answer_file="windows-7.xml"
 
@@ -102,7 +101,7 @@ name="$1"
 
 # Validate name
 if qvm-check "$name" &> /dev/null; then
-    echo -e "${RED}[!]${NC} Qube $name already exists" >&2
+    echo -e "${RED}[!]${NC} Qube already exists: $name" >&2
     exit 1
 fi
 
@@ -123,12 +122,12 @@ else
 fi
 
 # Validate netvm
-if [ "$netvm" != "" ]; then
+if [ "$netvm" ]; then
     if ! qvm-check "$netvm" &> /dev/null; then
         echo -e "${RED}[!]${NC} NetVM does not exist: $netvm" >&2
         exit 1
     elif [ "$(qvm-prefs "$netvm" provides_network)" != "True" ]; then
-        echo -e "${RED}[!]${NC} $netvm is not a NetVM" >&2
+        echo -e "${RED}[!]${NC} Not a NetVM: $netvm" >&2
         exit 1
     fi
 fi
@@ -137,13 +136,13 @@ resources_qube="windows-mgmt"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
 # Validate packages
-if [ "$packages" != "" ]; then
-    if [ "$netvm" != "" ]; then
+if [ "$packages" ]; then
+    if [ "$netvm" ]; then
         if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_qube" netvm)" != "sys-whonix" ]; then
             IFS="," read -ra package_arr <<< "$packages"
             for package in "${package_arr[@]}"; do
                 if ! qvm-run -q "$resources_qube" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')\" == 404 ]; then exit 1; fi"; then
-                    echo -e "${RED}[!]${NC} Package $package not found" >&2
+                    echo -e "${RED}[!]${NC} Package not found: $package" >&2
                     exit 1
                 fi
             done
