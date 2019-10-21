@@ -186,7 +186,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" virt_mode hvm
     qvm-prefs "$qube" memory 400
     qvm-prefs "$qube" maxmem 0 # Disables currently unstable Qubes memory manager (Also grays the option out in Qubes Manager)
-    qvm-prefs "$qube" kernel ''
+    qvm-prefs "$qube" kernel ""
     qvm-prefs "$qube" qrexec_timeout 300 # Windows startup can take longer, especially if a disk scan is performed
     qvm-features "$qube" video-model cirrus
     qvm-volume extend "$qube":root 30g
