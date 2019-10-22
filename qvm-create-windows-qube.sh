@@ -288,6 +288,11 @@ for (( counter = 1; counter <= count; counter++ )); do
         qvm-run -p "$qube" "choco install -y ${packages//,/ }"
     fi
 
+    # This is run automatically by QWT, however, the qube shuts down too early before it has created the app menu
+    # So to make sure it is fully created, we run it again and wait for it to finish
+    # When packages are specified, doing this adds those new apps to the app menu
+    qvm-sync-appmenus "$qube" &> /dev/null
+
     # Shutdown and wait until complete before finishing or starting next installation
     qvm-shutdown "$qube"
     wait_for_shutdown "false"
