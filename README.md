@@ -38,18 +38,14 @@ PRs are welcome! The codebase of this project was built to be as modular as poss
 
 ## Todo
 
-- [ ] Find out how to use `7601.24214.180801-1700.win7sp1_ldr_escrow_CLIENT_ULTIMATE_x64FRE_en-us.iso` as ISO because it packages a lot of updates with it making it so we don't have to install those MSU files at the start as well as have less updates to install afterwards
-    1. It seems like the pre-installed updates appear to be packaged in a weird way that gets loss upon extracting the ISO and repacking it. (Quite telling due to how the outputted ISO loses around 2GB) The result is a broken ISO that installs but has a lot of weird error messages on the way and no updates
-    2. This could be done by a tool that allows you to insert a file directly into an ISO without having to repack it (This is also faster than having to undergo the process of extracting and repacking)
-    3. This seems perfect: https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso/ (guestfish, dnf info libguestfs-tools or apt show libguestfs-tools)
-    4. New development! We should instead use packer (apt show packer) to further automate deployment: https://www.hurryupandwait.io/blog/creating-windows-base-images-for-virtualbox-and-hyper-v-using-packer-boxstarter-and-vagrant (Possibly also Boxstarter)
-    5. Issues with packer: There doesn't seem to be a dnf package and lots of dependencies to install on every boot of windows-mgmt if it is to remain an AppVM
-    6. In my experience QWT also seems to be the most stable on the lastest version of Windows 7
-    7. Mind changed: Not using packer because it seems to provide little support for Xen and there aren't really any obvious benefits that stick out to me. Also making the ISO with guestfish will take way less time because Packer still has to repack the ISO whereas guestfish just "injects" into it
+- Use libguestfs for a more efficient way of putting answer files into ISOs: https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso/ (guestfish, dnf info libguestfs-tools or apt show libguestfs-tools)
+    - While trying to install this package on Fedora there are many conflicts with older versions of the same packages Qubes tools relies on
+    - If --allowerasing option is enabled dnf prompts to remove those Qubes packages
+    - Qubes seems to be the third party repository: https://unix.stackexchange.com/questions/442064/package-x-requires-y-but-none-of-the-providers-can-be-installed
+    - Installation on Debian works
 - [ ] Auto Tools takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
 - [ ] Support Windows 10 (Note: QWT doesn't fully support Windows 10 yet)
 - [x] Provision Chocolatey (#2)
 - [ ] Add an option to slim down Windows as documented in: https://www.qubes-os.org/doc/windows-template-customization/
-- [ ] Improve background option (What happened to the --no-guid/--no-start-guid option in qvm-start? Before R4 it seemed to be present)
 - [ ] Make windows-mgmt air gapped
 - [ ] Put this todo list into GitHub issues
