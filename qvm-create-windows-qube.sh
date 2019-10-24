@@ -6,7 +6,7 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 wait_for_shutdown() {
-    local is_boot="$2"
+    local is_boot="$1"
 
     # There is a small delay upon booting a qube before qvm-check will detect it as running
     if [ "$is_boot" == "true" ]; then
