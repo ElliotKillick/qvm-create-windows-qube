@@ -1,4 +1,4 @@
-rem @echo off
+@echo off
 title %~f0
 
 rem Change directory from shell:startup
