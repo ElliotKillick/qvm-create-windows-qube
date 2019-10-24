@@ -54,7 +54,7 @@
                         </ModifyPartition>
                     </ModifyPartitions>
                     <DiskID>0</DiskID>
-                    <WillWipeDisk>false</WillWipeDisk>
+                    <WillWipeDisk>true</WillWipeDisk>
                 </Disk>
             </DiskConfiguration>
         </component>
