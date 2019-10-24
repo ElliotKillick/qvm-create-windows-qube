@@ -19,6 +19,6 @@ echo "Downlading update packages..." >&2
 cd "auto-tools/auto-tools/updates/updates" || exit
 scurl --pinnedpubkey "$download_microsoft_com_key" https://download.microsoft.com/download/5/D/0/5D0821EB-A92D-4CA2-9020-EC41D56B074F/Windows6.1-KB3020369-x64.msu -O
 curl "http://download.windowsupdate.com/d/msdownload/update/software/updt/2016/05/windows6.1-kb3125574-v4-x64_2dafb1d203c8964239af3048b5dd4b1264cd93b9.msu" -O # Microsoft doesn't have HTTPS setup correctly for this domain
-sha256sums -c SHA256SUMS
+sha256sum -c SHA256SUMS
 
 echo "Finished downloading Windows media!"
