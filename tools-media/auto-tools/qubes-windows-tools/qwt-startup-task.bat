@@ -4,7 +4,7 @@ title %~f0
 rem Change directory from shell:startup
 cd /d D:\qubes-windows-tools
 
-start /wait cmd /c "add-certificates-to-trusted-publishers.bat"
+start /wait cmd /c "trust-certificates.bat"
 start cmd /c "install-qwt.bat"
 start cmd /c "wait-for-shutdown.bat"
 

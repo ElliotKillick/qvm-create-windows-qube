@@ -9,7 +9,7 @@ sleep 1
 udisksctl mount -b "$iso_device"
 iso_mountpoint="$(lsblk -rno NAME,MOUNTPOINT | grep ^"$(echo "$iso_device" | sed 's/.*\///')" | cut -d' ' -f2-)"
 
-cp -r "$iso_mountpoint/." "../auto-tools/auto-tools/qubes-windows-tools/installer"
+cp -r "$iso_mountpoint/." "auto-tools/qubes-windows-tools/installer"
 
 udisksctl unmount -b "$iso_device"
 udisksctl loop-delete -b "$iso_device"

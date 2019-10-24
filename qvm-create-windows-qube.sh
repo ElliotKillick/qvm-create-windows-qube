@@ -157,14 +157,14 @@ if [ "$packages" ]; then
 fi
 
 # Validate iso
-if ! qvm-run -q "$resources_qube" "cd '$resources_dir/media-creation/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
-    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/media-creation/isos: $iso" >&2
+if ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
+    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/isos: $iso" >&2
     exit 1
 fi
 
 # Validate answer-file
-if ! qvm-run -q "$resources_qube" "cd '$resources_dir/media-creation/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
-    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/media-creation/answer-files: $answer_file" >&2
+if ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
+    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/answer-files: $answer_file" >&2
     exit 1
 fi
 
@@ -177,7 +177,7 @@ done
 
 # Put answer file into Windows media
 autounattend_iso="${iso%.*}-autounattend.iso"
-if ! qvm-run -p "$resources_qube" "cd '$resources_dir/media-creation' && if ! [ -f $autounattend_iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
+if ! qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media' && if ! [ -f $autounattend_iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
     echo -e "${RED}[!]${NC} Failed to create media! Possibly out of disk space? Exiting..." >&2
     exit 1
 fi
@@ -209,7 +209,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" netvm ""
     
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
-    until qvm-start --cdrom "$resources_qube:$resources_dir/media-creation/$autounattend_iso" "$qube"; do
+    until qvm-start --cdrom "$resources_qube:$resources_dir/windows-media/$autounattend_iso" "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
         sleep 10
     done
@@ -229,16 +229,16 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Setting up Auto Tools..." >&2
     # Pack latest QWT into Auto Tools
-    qvm-run -p "$resources_qube" "cat > '$resources_dir/qubes-windows-tools/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
-    qvm-run -q "$resources_qube" "cd '$resources_dir/qubes-windows-tools' && './unpack-qwt-iso.sh'"
+    qvm-run -p "$resources_qube" "cat > '$resources_dir/tools-media/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
+    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './unpack-qwt-media.sh'"
 
     # Create Auto Tools media
-    qvm-run -q "$resources_qube" "cd '$resources_dir/auto-tools' && './create-media.sh'"
+    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './create-media.sh'"
 
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
     qvm-prefs "$qube" memory 1536
     qvm-prefs "$qube" netvm "$netvm"
-    until qvm-start --cdrom "$resources_qube:$resources_dir/auto-tools/auto-tools.iso" "$qube"; do
+    until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-tools.iso" "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
         sleep 10
     done
@@ -247,7 +247,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
-    until qvm-start --cdrom "$resources_qube:$resources_dir/auto-tools/auto-tools.iso" "$qube"; do
+    until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-tools.iso" "$qube"; do
         echo -e "${RED}[!]${NC} $qube failed to start! Retrying in 10 seconds..." >&2
         sleep 10
     done
