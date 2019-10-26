@@ -4,13 +4,13 @@ qvm-create-windows-qube is a tool for quickly and conveniently installing fresh 
 
 ## Installation
 
-1. Download the [installation script](https://raw.githubusercontent.com/crazyqube/qvm-create-windows-qube/master/install-qvm-create-windows-qube.sh) by right-clicking then selecting "Save as..."
-2. Copy "install-qvm-create-windows-qube.sh" into Dom0 by running the following command in Dom0: `qvm-run -p QUBE_SCRIPT_IS_LOCATED_ON 'cat $HOME/Downloads/install-qvm-create-windows-qube.sh' > install-qvm-create-windows-qube.sh`
+1. Download the [installation script](https://raw.githubusercontent.com/crazyqube/qvm-create-windows-qube/master/install.sh) by right-clicking then selecting "Save as..."
+2. Copy "install.sh" into Dom0 by running the following command in Dom0: `qvm-run -p <qube_script_is_located_on> 'cat $HOME/Downloads/install.sh' > install-qvm-create-windows-qube.sh`
 3. Review the code of `install-qvm-create-windows-qube.sh` to ensure its integrity
 4. Run `chmod +x install-qvm-create-windows-qube.sh && ./install-qvm-create-windows-qube.sh` in Dom0
 5. Review the code of the resulting `qvm-create-windows-qube.sh`
 
-Pro Tip: Use `cat -v` during code review so [terminal escape sequences aren't interpreted](https://ma.ttias.be/terminal-escape-sequences-the-new-xss-for-linux-sysadmins/)
+Pro Tip: Use `cat -v` for code review so [terminal escape sequences aren't interpreted](https://ma.ttias.be/terminal-escape-sequences-the-new-xss-for-linux-sysadmins/)
 
 ## Usage
 
@@ -18,15 +18,15 @@ Pro Tip: Use `cat -v` during code review so [terminal escape sequences aren't in
 Usage: ./qvm-create-windows-qube.sh [options] <name>
   -h, --help
   -c, --count <number> Number of Windows qubes with given basename desired
+  -t, --template Make this qube a TemplateVM instead of a StandaloneVM
   -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)
-  -b, --background Installation process will happen in a minimized window
+  -s, --seamless Enable seamless GUI persistently across restarts
   -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
   -d, --disable-updates Disables installing of future updates (automatic reboots are disabled either way)
   -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)
   -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)
-```
 
-Example: `./qvm-create-windows-qube.sh -n sys-firewall -p firefox,notepadplusplus,office365business windows-7`
+Example: `./qvm-create-windows-qube.sh -sn sys-firewall -p firefox,notepadplusplus,office365business windows-7`
 
 ## Security
 
@@ -34,7 +34,7 @@ To mitigate the fallout of another shellshock-like Bash vulnerability, the Dom0 
 
 ## Contributing
 
-PRs are welcome! The codebase of this project was built to be as modular as possible to allow for frictionless extensibility. Take a look at the todo list below if you're looking for things that need improvement.
+PRs are welcome! Take a look at the todo list below if you're looking for things that need improvement. Other improvements such as simpler ways of doing things, code cleanup and other fixes are also welcome.
 
 ## Todo
 
