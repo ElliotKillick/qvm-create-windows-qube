@@ -233,7 +233,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './unpack-qwt-media.sh'"
 
     # Create Auto Tools media
-    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './create-media.sh'"
+    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './pack-auto-tools.sh'"
 
     echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
     qvm-prefs "$qube" memory 1536

@@ -1,15 +1,18 @@
 #!/bin/bash
 
-# The latest version of QWT is stored in Dom0 at: /usr/lib/qubes/qubes-windows-tools.iso
+iso_device="$(udisksctl loop-setup -f qubes-windows-tools.iso)"
+iso_device="${iso_device#Mapped file * as }"
+iso_device="${iso_device%.}"
 
-iso_device="$(udisksctl loop-setup -f qubes-windows-tools.iso | awk '{ print $NF }' | sed 's/.$//')"
+# Fix race condition where disk tries to mount before finishing setup
+until iso_mntpoint="$(udisksctl mount -b "$iso_device")"; do
+    sleep 1
+done
+iso_mntpoint="${iso_mntpoint#Mounted * at }"
+iso_mntpoint="${iso_mntpoint%.}"
 
-sleep 1
-
-udisksctl mount -b "$iso_device"
-iso_mountpoint="$(lsblk -rno NAME,MOUNTPOINT | grep ^"$(echo "$iso_device" | sed 's/.*\///')" | cut -d' ' -f2-)"
-
-cp -r "$iso_mountpoint/." "auto-tools/qubes-windows-tools/installer"
+# Unpack installer into auto-tools
+cp -r "$iso_mntpoint/." "auto-tools/qubes-windows-tools/installer"
 
 udisksctl unmount -b "$iso_device"
 udisksctl loop-delete -b "$iso_device"
