@@ -17,13 +17,13 @@ usage() { echo -e "Usage: ${0} iso answer_file"; }
 for arg in "$@"; do
     if [ "$arg" == "-h" ] ||  [ "$arg" == "--help" ]; then
         usage
-	exit
+        exit
     fi
 done
 
 if [ "$#" != "2" ]; then
     usage >&2
-    exit 1 
+    exit 1
 fi
 
 iso="$1"
@@ -39,26 +39,26 @@ fi
 
 cleanup() {
     exit_code="$?"
-    
+
     if [ "$iso_device" ]; then
         echo -e "${BLUE}[i]${NC} Unmounting and deleting original ISO loop device..." >&2
         udisksctl unmount -b "$iso_device"
         udisksctl loop-delete -b "$iso_device"
     fi
-    
+
     if [ "$temp_dir" ]; then
         echo -e "${BLUE}[i]${NC} Deleting temporary folder..." >&2
         chmod -R +w "$temp_dir" # Permissions are originally read-only because ISO is a read-only format
         rm -r "$temp_dir"
     fi
-    
+
     if [ "$exit_code" != 0 ]; then
-	if [ "$final_iso_name" ]; then
+        if [ "$final_iso_name" ]; then
             echo -e "${BLUE}[i]${NC} Deleting incomplete outputted ISO..." >&2
             rm "$final_iso_name"
         fi
-        
-	exit "$exit_code"
+
+        exit "$exit_code"
     fi
 }
 

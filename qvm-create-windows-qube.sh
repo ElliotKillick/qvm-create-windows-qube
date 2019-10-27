@@ -61,7 +61,7 @@ while true; do
             template="true"
             shift
             ;;
-	-n | --netvm)
+        -n | --netvm)
             netvm="$2"
             shift 2
             ;;
@@ -187,11 +187,11 @@ for (( counter = 1; counter <= count; counter++ )); do
     if [ "$count" -gt 1 ]; then
         qube="$name-$counter"
 
-	# If qube with that name already exists, keep incrementing the number until one that does not exist is found
-	i=0
-	while qvm-check "$qube" &> /dev/null; do
+        # If qube with that name already exists, keep incrementing the number until one that does not exist is found
+        i=0
+        while qvm-check "$qube" &> /dev/null; do
             ((i++))
-	    qube="$name-$i"
+            qube="$name-$i"
         done
     else
         qube="$name"
@@ -207,7 +207,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-features "$qube" video-model cirrus
     qvm-volume extend "$qube":root 30g
     qvm-prefs "$qube" netvm ""
-    
+
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
     until qvm-start --cdrom "$resources_qube:$resources_dir/windows-media/$autounattend_iso" "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
@@ -284,7 +284,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         # Just added environment variable to use Windows compression so 7-Zip is not a mandatory install
         # shellcheck disable=SC2016
         qvm-run -q "$qube" '@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "$env:chocolateyUseWindowsCompression = '\''true'\''; iex ((New-Object System.Net.WebClient).DownloadString('\''https://chocolatey.org/install.ps1'\''))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"'
-	# Install packages
+        # Install packages
         qvm-run -p "$qube" "choco install -y ${packages//,/ }"
     fi
 
