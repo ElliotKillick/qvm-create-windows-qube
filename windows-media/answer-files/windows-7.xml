@@ -89,7 +89,7 @@
             </OOBE>
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd /c D:\Run.bat</CommandLine>
+                    <CommandLine>cmd /c D:\run.bat</CommandLine>
                     <Order>1</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
