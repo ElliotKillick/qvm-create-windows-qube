@@ -29,10 +29,12 @@ fi
 iso="$1"
 answer_file="$2"
 
-if [ ! -f "$iso" ]; then
+if ! [ -f "$iso" ]; then
     echo -e "${RED}[!]${NC} ISO file $iso not found" >&2
     exit 1
-elif [ ! -f "$answer_file" ]; then
+fi
+
+if ! [ -f "$answer_file" ]; then
     echo -e "${RED}[!]${NC} Answer file $answer_file not found" >&2
     exit 1
 fi
