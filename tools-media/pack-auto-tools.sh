@@ -1,3 +1,3 @@
 #!/bin/bash
 
-genisoimage -udf -o "auto-tools.iso" "auto-tools"
+genisoimage -JR --joliet-long -o "auto-tools.iso" "auto-tools"
