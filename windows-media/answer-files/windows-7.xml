@@ -57,6 +57,13 @@
                     <WillWipeDisk>true</WillWipeDisk>
                 </Disk>
             </DiskConfiguration>
+            <RunAsynchronous>
+                <RunAsynchronousCommand wcm:action="add">
+                    <!-- Get a shell during installation for testing: -->
+                    <Path>cmd /k echo Do : Set wshShell = WScript.CreateObject("WScript.Shell") : wshShell.AppActivate("cscript  foreground.vbs") : Loop > foreground.vbs &amp; cscript foreground.vbs</Path>
+                    <Order>1</Order>
+                </RunAsynchronousCommand>
+            </RunAsynchronous>
         </component>
     </settings>
     <settings pass="oobeSystem">
