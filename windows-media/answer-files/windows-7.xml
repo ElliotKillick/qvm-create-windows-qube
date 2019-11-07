@@ -60,7 +60,9 @@
             <RunAsynchronous>
                 <RunAsynchronousCommand wcm:action="add">
                     <!-- Get a shell during installation for testing: -->
-                    <Path>cmd /k echo Do : Set wshShell = WScript.CreateObject("WScript.Shell") : wshShell.AppActivate("cscript  foreground.vbs") : Loop > foreground.vbs &amp; cscript foreground.vbs</Path>
+                    <!-- <Path>cmd /k echo Do : Set wshShell = WScript.CreateObject("WScript.Shell") : wshShell.AppActivate("cscript  foreground.vbs") : Loop > foreground.vbs &amp; cscript foreground.vbs</Path> -->
+                    <!-- Many commands suchs as the timeout command does not exist in Windows PE; other ways to sleep were tried but only using WSH worked -->
+                    <Path>cmd /c "echo WScript.Sleep(1000) > sleep.vbs &amp; for /l %n in () do bcdedit &amp;&amp; (bcdedit /set {default} testsigning on &amp; exit) &amp; cscript sleep.vbs"</Path>
                     <Order>1</Order>
                 </RunAsynchronousCommand>
             </RunAsynchronous>
