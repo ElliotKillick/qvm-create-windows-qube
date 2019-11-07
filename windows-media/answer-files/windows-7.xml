@@ -16,7 +16,7 @@
                     <InstallFrom>
                         <MetaData wcm:action="add">
                             <Key>/IMAGE/NAME</Key>
-                            <Value>Windows 7 PROFESSIONAL</Value>
+                            <Value/>
                         </MetaData>
                     </InstallFrom>
                     <InstallTo>
@@ -28,7 +28,7 @@
             </ImageInstall>
             <UserData>
                 <ProductKey>
-                    <Key>HYF8J-CVRMY-CM74G-RPHKF-PW487</Key>
+                    <Key>D4F6K-QK3RD-TMVMJ-BBMRX-3MBMV</Key>
                     <WillShowUI>OnError</WillShowUI>
                 </ProductKey>
                 <AcceptEula>true</AcceptEula>
@@ -87,13 +87,14 @@
                 <NetworkLocation>Home</NetworkLocation>
                 <ProtectYourPC>3</ProtectYourPC>
             </OOBE>
-            <FirstLogonCommands>
-                <SynchronousCommand wcm:action="add">
+            <LogonCommands>
+                <AsynchronousCommand wcm:action="add">
                     <CommandLine>cmd /c D:\run.bat</CommandLine>
+                    <Description>Start QWT installation</Description>
                     <Order>1</Order>
                     <RequiresUserInput>true</RequiresUserInput>
-                </SynchronousCommand>
-            </FirstLogonCommands>
+                </AsynchronousCommand>
+            </LogonCommands>
         </component>
     </settings>
     <settings pass="specialize">
