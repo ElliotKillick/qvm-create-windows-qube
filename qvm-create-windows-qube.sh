@@ -43,7 +43,7 @@ eval set -- "$opts"
 
 # Set defaults
 count="1"
-iso="Win7_Pro_SP1_English_x64.iso"
+iso="7601.24214.180801-1700.win7sp1_ldr_escrow_CLIENT_ULTIMATE_x64FRE_en-us.iso"
 answer_file="windows-7.xml"
 
 # Put options into variables
@@ -227,32 +227,22 @@ for (( counter = 1; counter <= count; counter++ )); do
     # Waiting for second part of Windows installation process to finish...
     wait_for_shutdown "true"
 
-    echo -e "${BLUE}[i]${NC} Setting up Auto Tools..." >&2
-    # Pack latest QWT into Auto Tools
-    qvm-run -p "$resources_qube" "cat > '$resources_dir/tools-media/qubes-windows-tools.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
-    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './unpack-qwt-media.sh'"
+    echo -e "${BLUE}[i]${NC} Preparing Qubes Windows Tools for automatic installation..." >&2
+    # Pack latest QWT into auto-qwt
+    qvm-run -p "$resources_qube" "cat > '$resources_dir/tools-media/qwt-installer.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
+    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './unpack-qwt-installer-media.sh'"
 
-    # Create Auto Tools media
-    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './pack-auto-tools.sh'"
+    # Create auto-qwt media
+    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './pack-auto-qwt.sh'"
 
-    echo -e "${BLUE}[i]${NC} Starting Windows with Auto Tools..." >&2
-    qvm-prefs "$qube" memory 1536
+    echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
     qvm-prefs "$qube" netvm "$netvm"
-    until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-tools.iso" "$qube"; do
+    until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-qwt.iso" "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
         sleep 10
     done
 
-    # Waiting for updates to install...
-    wait_for_shutdown "true"
-
-    echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
-    until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-tools.iso" "$qube"; do
-        echo -e "${RED}[!]${NC} $qube failed to start! Retrying in 10 seconds..." >&2
-        sleep 10
-    done
-
-    # Waiting for Qubes Windows Tools to shutdown computer automatically after install...
+    # Waiting for automatic shutdown after Qubes Windows Tools install...
     wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
@@ -264,6 +254,11 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # At this point, qvm-run is working
+
+    # Wait for app menu to synchronize (Automatically done once Qubes detects QWT)
+    while pgrep -fx "/usr/bin/python3 /usr/bin/qvm-sync-appmenus $qube" &> /dev/null; do
+        sleep 1
+    done
 
     if [ "$seamless" == "true" ]; then
         qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Invisible Things Lab\Qubes Tools\qga" /v SeamlessMode /t REG_DWORD /d 1 /f'
@@ -286,16 +281,17 @@ for (( counter = 1; counter <= count; counter++ )); do
         qvm-run -q "$qube" '@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "$env:chocolateyUseWindowsCompression = '\''true'\''; iex ((New-Object System.Net.WebClient).DownloadString('\''https://chocolatey.org/install.ps1'\''))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"'
         # Install packages
         qvm-run -p "$qube" "choco install -y ${packages//,/ }"
-    fi
 
-    # This is run automatically by QWT, however, the qube shuts down too early before it has created the app menu
-    # So to make sure it is fully created, we run it again and wait for it to finish
-    # When packages are specified, doing this adds those new apps to the app menu
-    qvm-sync-appmenus "$qube" &> /dev/null
+        # Add new apps to app menu
+        qvm-sync-appmenus "$qube" &> /dev/null
+    fi
 
     # Shutdown and wait until complete before finishing or starting next installation
     qvm-shutdown "$qube"
     wait_for_shutdown "false"
+
+    # Give reasonable amount of memory for actual use
+    qvm-prefs "$qube" memory 1536
 done
 
 echo -e "${GREEN}[+]${NC} Completed successfully!"
