@@ -85,7 +85,7 @@ cp "$answer_file" "$temp_dir/Autounattend.xml"
 echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
 dd if="$iso" of="$temp_dir/boot.img" bs=2048 count=8 skip=734 status=progress # count and skip provided by isoinfo (Must use Debian version; Fedora version didn't provide the same level of debug ouput for me)
 final_iso_name="$(basename "$iso" | sed 's/\.[^.]*$//')-autounattend.iso"
-genisoimage -b boot.img -no-emul-boot -c BOOT.CAT -iso-level 2 -udf -J -l -D -N -joliet-long -relaxed-filenames -R -allow-limited-size -o "$final_iso_name" "$temp_dir" # -R is just to stop genisoimage from complaining that you shouldn't use Joilet without Rock Ridge and -allow-limited-size is for the install.wim which is a huge binary file that can package pre-installed updates among other things that may be too big (past 4GB) which would cause problems if this option wasn't enabled
+genisoimage -b boot.img -no-emul-boot -c BOOT.CAT -iso-level 2 -udf -J -l -D -N -joliet-long -relaxed-filenames -R -allow-limited-size -quiet -o "$final_iso_name" "$temp_dir" # -R is just to stop genisoimage from complaining that you shouldn't use Joilet without Rock Ridge and -allow-limited-size is for the install.wim which is a huge binary file that can package pre-installed updates among other things that may be too big (past 4GB) which would cause problems if this option wasn't enabled
 
 cleanup
 
