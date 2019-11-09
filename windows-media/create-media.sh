@@ -56,7 +56,7 @@ cleanup() {
 
     if [ "$exit_code" != 0 ]; then
         if [ "$final_iso_name" ]; then
-            echo -e "${BLUE}[i]${NC} Deleting incomplete outputted ISO..." >&2
+            echo -e "${BLUE}[i]${NC} Deleting incompletely outputted ISO..." >&2
             rm "$final_iso_name"
         fi
 
