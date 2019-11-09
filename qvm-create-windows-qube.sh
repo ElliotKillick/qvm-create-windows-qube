@@ -279,7 +279,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     # Shutdown and wait until complete before finishing or starting next installation
-    qvm-shutdown "$qube"
+    qvm-run -q "$qube" "shutdown /s /t 0"
     wait_for_shutdown "false"
 
     # Give reasonable amount of memory for actual use
