@@ -11,7 +11,7 @@ done
 iso_mntpoint="${iso_mntpoint#Mounted * at }"
 iso_mntpoint="${iso_mntpoint%.}"
 
-# Unpack installer into auto-tools
+# Unpack installer into auto-qwt
 cp -r "$iso_mntpoint/." "auto-qwt/installer"
 
 udisksctl unmount -b "$iso_device"
