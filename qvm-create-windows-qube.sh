@@ -132,22 +132,25 @@ resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
 # Validate packages
 if [ "$packages" ]; then
-    if [ "$netvm" ]; then
-        if [ "$netvm" != "sys-whonix" ] && [ "$(qvm-prefs "$resources_qube" netvm)" != "sys-whonix" ]; then
-            IFS="," read -ra package_arr <<< "$packages"
-            for package in "${package_arr[@]}"; do
-                if ! qvm-run -q "$resources_qube" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')\" == 404 ]; then exit 1; fi"; then
-                    echo -e "${RED}[!]${NC} Package not found: $package" >&2
-                    exit 1
-                fi
-            done
-        else
-            echo -e "${RED}[!]${NC} Cannot install Chocolatey packages because they use Cloudflare to indiscriminately block requests from curl/PowerShell over Tor. Websites may defend this practice by saying that the majority of Tor requests are malicious. However, this is a faulty comparision because just like with email or generally any other part of the internet these bad requests are made by a few bad apples that take more than their fair share of resources. To make a change, please visit https://chocolatey.org/contact and submit a blocked IP report refrencing Tor and this project." >&2
-            exit 1
-        fi
-    else
+    if ! [ "$netvm" ]; then
         echo -e "${RED}[!]${NC} A NetVM must be configured to use packages" >&2
         exit 1
+    fi
+
+    if [ "$netvm" == "sys-whonix" ] || [ "$(qvm-prefs "$resources_qube" netvm)" == "sys-whonix" ]; then
+        echo -e "${RED}[!]${NC} Cannot install Chocolatey packages because they use Cloudflare to indiscriminately block requests from curl/PowerShell over Tor. Websites may defend this practice by saying that the majority of Tor requests are malicious. However, this is a faulty comparision because just like with email or generally any other part of the internet these bad requests are made by a few bad apples that take more than their fair share of resources. To make a change, please visit https://chocolatey.org/contact and submit a blocked IP report refrencing Tor and this project." >&2
+        exit 1
+    fi
+
+    # If resources_qube has a NetVM (is not air gapped) then check if packages exist
+    if [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
+        IFS="," read -ra package_arr <<< "$packages"
+        for package in "${package_arr[@]}"; do
+            if qvm-run -q "$resources_qube" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')\" != 404 ]; then exit 1; fi"; then
+                echo -e "${RED}[!]${NC} Package not found: $package" >&2
+                exit 1
+            fi
+        done
     fi
 fi
 
