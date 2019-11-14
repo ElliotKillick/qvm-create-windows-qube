@@ -94,6 +94,12 @@ if [ $# != 1 ]; then
 fi
 name="$1"
 
+# Validate this is Dom0
+if [ "$(hostname)" != "dom0" ]; then
+    echo -e "${RED}[!]${NC} This script must be run in Dom0" >&2
+    exit 1
+fi
+
 # Validate name
 if qvm-check "$name" &> /dev/null; then
     echo -e "${RED}[!]${NC} Qube already exists: $name" >&2
