@@ -12,7 +12,7 @@ if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
     NC='\033[0m'
 fi
 
-usage() { echo -e "Usage: ${0} iso answer_file"; }
+usage() { echo "Usage: ${0} iso answer_file"; }
 
 for arg in "$@"; do
     if [ "$arg" == "-h" ] ||  [ "$arg" == "--help" ]; then
