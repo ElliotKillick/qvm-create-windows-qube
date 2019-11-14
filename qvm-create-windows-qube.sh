@@ -204,7 +204,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" kernel ""
     qvm-prefs "$qube" qrexec_timeout 300 # Windows startup can take longer, especially if a disk scan is performed
     qvm-features "$qube" video-model cirrus
-    qvm-volume extend "$qube":root 30g
+    qvm-volume extend "$qube:root" 30g
     qvm-prefs "$qube" netvm ""
 
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
