@@ -25,14 +25,15 @@ usage() {
     echo "  -t, --template Make this qube a TemplateVM instead of a StandaloneVM"
     echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
     echo "  -s, --seamless Enable seamless mode persistently across restarts"
+    echo "  -o, --optimize Optimize Windows by disabling unnecessary features for a virtual machine"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)"
 }
 
 # Option strings
-short="hc:tn:sp:i:a:"
-long="help,count:,template,netvm:,seamless,packages:,iso:,answer-file:"
+short="hc:tn:sop:i:a:"
+long="help,count:,template,netvm:,seamless,optimize,packages:,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -66,6 +67,10 @@ while true; do
             ;;
         -s | --seamless)
             seamless="true"
+            shift
+            ;;
+        -o | --optimize)
+            optimize="true"
             shift
             ;;
         -p | --packages)
@@ -277,6 +282,11 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     if [ "$seamless" == "true" ]; then
         qvm-run -q "$qube" "cd $post_incoming_dir && seamless.bat"
+    fi
+
+    if [ "$optimize" == "true" ]; then
+        echo -e "${BLUE}[i]${NC} Optimizing Windows..." >&2
+        qvm-run -q "$qube" "cd $post_incoming_dir && optimize.bat"
     fi
 
     if [ "$packages" ]; then
