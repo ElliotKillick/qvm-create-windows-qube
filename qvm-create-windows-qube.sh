@@ -265,27 +265,34 @@ for (( counter = 1; counter <= count; counter++ )); do
         sleep 1
     done
 
+    # Post QWT scripts
+
+    # Prepend allowing policy and copy post scripts to Windows
+    policy="$resources_qube $qube allow"
+    policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
+    sed -i "1i$policy" "$policy_file"
+    qvm-run -q "$resources_qube" "cd '$resources_dir' && qvm-copy-to-vm $qube post"
+
+    post_incoming_dir="%USERPROFILE%\\Documents\\QubesIncoming\\$resources_qube\\post"
+
     if [ "$seamless" == "true" ]; then
-        qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Invisible Things Lab\Qubes Tools\qga" /v SeamlessMode /t REG_DWORD /d 1 /f'
+        qvm-run -q "$qube" "cd $post_incoming_dir && seamless.bat"
     fi
 
-    # Nobody likes random reboots
-    qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /ve /f'
-    qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /ve /f'
-    qvm-run -q "$qube" 'reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f'
-
     if [ "$packages" ]; then
-        echo -e "${BLUE}[i]${NC} Installing Chocolatey and packages..." >&2
-        # Install Chocolatey (Command provided by: https://chocolatey.org/install)
-        # Just added environment variable to use Windows compression so 7-Zip is not a mandatory install
-        # shellcheck disable=SC2016
-        qvm-run -q "$qube" '@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "$env:chocolateyUseWindowsCompression = '\''true'\''; iex ((New-Object System.Net.WebClient).DownloadString('\''https://chocolatey.org/install.ps1'\''))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"'
-        # Install packages
-        qvm-run -p "$qube" "choco install -y ${packages//,/ }"
+        echo -e "${BLUE}[i]${NC} Installing packages..." >&2
+        qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -File packages.ps1 $packages <nul"
 
         # Add new apps to app menu
         qvm-sync-appmenus "$qube" &> /dev/null
     fi
+
+    echo -e "${BLUE}[i]${NC} Running user-defined custom commands..." >&2
+    qvm-run -p "$qube" "cd $post_incoming_dir && run.bat"
+
+    # Clean up post scripts and remove policy
+    qvm-run -q "$qube" "rmdir /s /q %USERPROFILE%\\Documents\\QubesIncoming"
+    sed -i "/^$policy$/d" "$policy_file"
 
     # Shutdown and wait until complete before finishing or starting next installation
     qvm-run -q "$qube" "shutdown /s /t 0"
