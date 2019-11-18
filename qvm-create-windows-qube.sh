@@ -302,7 +302,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" memory 1536
 
     if [ "$count" -gt 1 ]; then
-       echo -e "${GREEN}[+]${NC} Finished creation of $qube successfully!"
+        echo -e "${GREEN}[+]${NC} Finished creation of $qube successfully!"
     fi
 done
 
