@@ -76,7 +76,7 @@ echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
 sudo qubes-dom0-update -y --enablerepo=qubes-dom0-current-testing qubes-windows-tools
 
 echo -e "${BLUE}[i]${NC} Copying qvm-create-windows-qube.sh to Dom0..." >&2
-qvm-run -p "$resources_qube" "cat '$resources_dir/qvm-create-windows-qube.sh'" > qvm-create-windows-qube.sh
+qvm-run -p --filter-escape-chars --no-colour-output "$resources_qube" "cat '$resources_dir/qvm-create-windows-qube.sh'" > qvm-create-windows-qube.sh
 
 # Allow execution of script
 chmod +x qvm-create-windows-qube.sh
