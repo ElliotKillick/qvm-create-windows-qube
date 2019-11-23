@@ -1,3 +1,3 @@
 #!/bin/bash
 
-genisoimage -JR --joliet-long -o "auto-qwt.iso" "auto-qwt"
+genisoimage -JR -o "auto-qwt.iso" "auto-qwt"
