@@ -26,14 +26,15 @@ usage() {
     echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
     echo "  -s, --seamless Enable seamless mode persistently across restarts"
     echo "  -o, --optimize Optimize Windows by disabling unnecessary features for a virtual machine"
+    echo "  -y, --anti-spy Disable and block Windows telemetry"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)"
 }
 
 # Option strings
-short="hc:tn:sop:i:a:"
-long="help,count:,template,netvm:,seamless,optimize,packages:,iso:,answer-file:"
+short="hc:tn:soyp:i:a:"
+long="help,count:,template,netvm:,seamless,optimize,anti-spy,packages:,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -71,6 +72,10 @@ while true; do
             ;;
         -o | --optimize)
             optimize="true"
+            shift
+            ;;
+        -y | --anti-spy)
+            anti_spy="true"
             shift
             ;;
         -p | --packages)
@@ -287,6 +292,11 @@ for (( counter = 1; counter <= count; counter++ )); do
     if [ "$optimize" == "true" ]; then
         echo -e "${BLUE}[i]${NC} Optimizing Windows..." >&2
         qvm-run -q "$qube" "cd $post_incoming_dir && optimize.bat"
+    fi
+
+    if [ "$anti_spy" == "true" ]; then
+        echo -e "${BLUE}[i]${NC} Disabling and blocking telemetry..." >&2
+        qvm-run -q "$qube" "cd $post_incoming_dir && anti-spy.bat"
     fi
 
     if [ "$packages" ]; then
