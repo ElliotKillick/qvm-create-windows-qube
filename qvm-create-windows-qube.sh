@@ -277,7 +277,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Post QWT scripts
 
-    # Prepend allowing policy and copy post scripts to Windows
+    # Prepend allowing policy to qubes.Filecopy and copy post scripts from resources qube to Windows
     policy="$resources_qube $qube allow"
     policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
     sed -i "1i$policy" "$policy_file"
