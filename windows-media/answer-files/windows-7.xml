@@ -94,7 +94,7 @@
                 </Password>
             </AutoLogon>
             <OOBE>
-                <NetworkLocation>Home</NetworkLocation>
+                <NetworkLocation>Other</NetworkLocation>
                 <ProtectYourPC>3</ProtectYourPC>
             </OOBE>
             <LogonCommands>
