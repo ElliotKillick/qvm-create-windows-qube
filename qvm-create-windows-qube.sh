@@ -316,7 +316,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-run -p "$qube" "cd $post_incoming_dir && run.bat"
 
     # Clean up post scripts and remove policy
-    qvm-run -q "$qube" "rmdir /s /q %USERPROFILE%\\Documents\\QubesIncoming"
+    qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.."
     sed -i "/^$policy$/d" "$policy_file"
 
     # Shutdown and wait until complete before finishing or starting next installation
