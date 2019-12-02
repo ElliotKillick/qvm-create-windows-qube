@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=qvm-start --quiet %VMNAME%
+Icon=%XDGICON%
+Terminal=false
+Name=%VMNAME%: Start
+GenericName=%VMNAME%: Start
+StartupNotify=false
+Categories=System;X-Qubes-VM;
