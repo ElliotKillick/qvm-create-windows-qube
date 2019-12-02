@@ -10,9 +10,9 @@ NC='\033[0m'
 usage() {
     echo "Usage: ${0} [NetVM]"
     echo ""
-    echo "Setup windows-mgmt, install Qubes Windows Tools and finally copy the qvm-create-windows-qube.sh to Dom0"
+    echo "Setup resources qube, download Windows, install Qubes Windows Tools and finally copy qvm-create-windows-qube.sh to Dom0"
     echo ""
-    echo "The optional NetVM paramater is the NetVM for use in downloading the project and Windows ISO (default: sys-firewall if no global default is set)"
+    echo "The optional NetVM paramater is the NetVM for use in downloading the project and Windows media (default: sys-firewall if no global default is set)"
 }
 
 for arg in "$@"; do
@@ -50,7 +50,7 @@ qvm-create --class AppVM --template "$(qubes-prefs default_template)" --label bl
 echo -e "${BLUE}[i]${NC} Increasing storage capacity of $resources_qube..." >&2
 qvm-volume extend "$resources_qube:private" 20480M
 
-# Temporarily allow networking
+# Temporarily enable networking
 if [ "$netvm" ]; then
     echo -e "${BLUE}[i]${NC} Temporarily enabling networking of $resources_qube with $netvm..." >&2
     qvm-prefs "$resources_qube" netvm "$netvm"
