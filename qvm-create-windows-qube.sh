@@ -26,9 +26,9 @@ usage() {
     echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
     echo "  -s, --seamless Enable seamless mode persistently across restarts"
     echo "  -o, --optimize Optimize Windows by disabling unnecessary features for a virtual machine"
-    echo "  -y, --anti-spy Disable and block Windows telemetry"
+    echo "  -y, --anti-spy Non-invasively disable and block Windows telemetry"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
-    echo "  -i, --iso <file> Windows ISO to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
+    echo "  -i, --iso <file> Windows media to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)"
 }
 
