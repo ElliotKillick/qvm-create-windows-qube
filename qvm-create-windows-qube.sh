@@ -300,7 +300,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     if [ "$packages" ]; then
         echo -e "${BLUE}[i]${NC} Installing packages... (Ignore TLS warning; TLS 1.2 is in use)" >&2
-        qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -File packages.ps1 $packages <nul"
+        qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 $packages <nul"
 
         # Add new apps to app menu
         qvm-sync-appmenus "$qube" &> /dev/null
