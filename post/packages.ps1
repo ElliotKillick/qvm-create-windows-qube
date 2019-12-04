@@ -16,7 +16,4 @@ Param (
 # https://chocolatey.org/install
 iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
-foreach ($package in $Packages)
-{
-    choco install -y $package
-}
+choco install -y $Packages
