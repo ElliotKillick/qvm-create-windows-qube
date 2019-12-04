@@ -284,6 +284,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     post_incoming_dir="%USERPROFILE%\\Documents\\QubesIncoming\\$resources_qube\\post"
 
     if [ "$seamless" == "true" ]; then
+        echo -e "${BLUE}[i]${NC} Enabling seamless mode persistently..." >&2
         qvm-run -q "$qube" "cd $post_incoming_dir && seamless.bat"
     fi
 
