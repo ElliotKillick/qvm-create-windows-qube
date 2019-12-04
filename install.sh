@@ -64,7 +64,7 @@ else
 fi
 
 echo -e "${BLUE}[i]${NC} Cloning qvm-create-windows-qube Github repository..." >&2
-qvm-run -p "$resources_qube" "cd /home/user/Documents && git clone https://github.com/elliotkillick/qvm-create-windows-qube"
+qvm-run -p "$resources_qube" "cd ${resources_dir%/*} && git clone https://github.com/elliotkillick/qvm-create-windows-qube"
 
 echo -e "${BLUE}[i]${NC} Downloading Windows..." >&2
 qvm-run -p "$resources_qube" "cd '$resources_dir' && ./download-windows.sh"
