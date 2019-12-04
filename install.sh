@@ -51,16 +51,16 @@ echo -e "${BLUE}[i]${NC} Increasing storage capacity of $resources_qube..." >&2
 qvm-volume extend "$resources_qube:private" 20480MiB
 
 # Temporarily enable networking
-if [ "$netvm" ]; then
-    echo -e "${BLUE}[i]${NC} Temporarily enabling networking of $resources_qube with $netvm..." >&2
-    qvm-prefs "$resources_qube" netvm "$netvm"
-else
-    # If no global NetVM has already been set then use sys-firewall
-    if ! [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
-        fallback_netvm="sys-firewall"
-        echo -e "${BLUE}[i]${NC} Temporarily enabling networking of $resources_qube with $fallback_netvm..." >&2
-        qvm-prefs "$resources_qube" netvm "$fallback_netvm"
+# If no global default NetVM has already been set (upon creation of qube)
+if ! [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
+    if [ "$netvm" ]; then
+        resources_qube_netvm="$netvm"
+    else
+        resources_qube_netvm="sys-firewall"
     fi
+
+    echo -e "${BLUE}[i]${NC} Temporarily enabling networking of $resources_qube with $resources_qube_netvm..." >&2
+    qvm-prefs "$resources_qube" netvm "$resources_qube_netvm"
 fi
 
 echo -e "${BLUE}[i]${NC} Cloning qvm-create-windows-qube Github repository..." >&2
