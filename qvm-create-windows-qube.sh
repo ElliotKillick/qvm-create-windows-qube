@@ -182,13 +182,6 @@ if ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/answer-files
     exit 1
 fi
 
-# Install dependencies
-echo -e "${BLUE}[i]${NC} Installing package dependencies on $resources_qube..." >&2
-until qvm-run -q "$resources_qube" "cd '$resources_dir' && './install-dependencies.sh'"; do
-    echo -e "${RED}[!]${NC} Failed to install dependencies! Retrying in 10 seconds..." >&2
-    sleep 10
-done
-
 # Put answer file into Windows media
 echo -e "${BLUE}[i]${NC} Preparing Windows media for automatic installation..." >&2
 autounattend_iso="${iso%.*}-autounattend.iso"

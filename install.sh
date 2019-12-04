@@ -10,7 +10,7 @@ NC='\033[0m'
 usage() {
     echo "Usage: ${0} [NetVM]"
     echo ""
-    echo "Setup resources qube, download Windows, install Qubes Windows Tools and finally copy qvm-create-windows-qube.sh to Dom0"
+    echo "Setup resources qube, download Windows, install package dependencies in template, install Qubes Windows Tools and finally copy qvm-create-windows-qube.sh to Dom0"
     echo ""
     echo "The optional NetVM paramater is the NetVM for use in downloading the project and Windows media (default: sys-firewall if no global default is set)"
 }
@@ -43,9 +43,10 @@ fi
 
 resources_qube="windows-mgmt"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
+template="$(qubes-prefs default_template)"
 
 echo -e "${BLUE}[i]${NC} Creating $resources_qube..." >&2
-qvm-create --class AppVM --template "$(qubes-prefs default_template)" --label black "$resources_qube"
+qvm-create --class AppVM --template "$template" --label black "$resources_qube"
 
 echo -e "${BLUE}[i]${NC} Increasing storage capacity of $resources_qube..." >&2
 qvm-volume extend "$resources_qube:private" 20480MiB
@@ -71,6 +72,15 @@ qvm-run -p "$resources_qube" "cd '$resources_dir' && ./download-windows.sh"
 
 echo -e "${BLUE}[i]${NC} Air gapping $resources_qube..." >&2
 qvm-prefs "$resources_qube" netvm ""
+
+echo -e "${BLUE}[i]${NC} Installing package dependencies in $template..." >&2
+packages="genisoimage"
+qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $packages; else sudo apt-get -y install $packages; fi"
+
+echo -e "${BLUE}[i]${NC} Shutting down $resources_qube and $template so the root filesystem can sync up..." >&2
+# qvm-run always returns 1 probably due to not getting a response in time before the qube shuts down; as a result force always return 0 to not trigger the ERR trap
+qvm-run -q "$resources_qube" "sudo shutdown now" || true
+qvm-run -q "$template" "sudo shutdown now" || true
 
 echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
 sudo qubes-dom0-update -y --enablerepo=qubes-dom0-current-testing qubes-windows-tools
