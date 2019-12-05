@@ -154,7 +154,7 @@ if [ "$packages" ]; then
     fi
 
     if [ "$netvm" == "sys-whonix" ] || [ "$(qvm-prefs "$resources_qube" netvm)" == "sys-whonix" ]; then
-        echo -e "${RED}[!]${NC} Cannot install Chocolatey packages because they use Cloudflare to indiscriminately block requests from curl/PowerShell over Tor. Websites may defend this practice by saying that the majority of Tor requests are malicious. However, this is a faulty comparision because just like with email or generally any other part of the internet these bad requests are made by a few bad apples that take more than their fair share of resources. To make a change, please visit https://chocolatey.org/contact and submit a blocked IP report refrencing Tor and this project." >&2
+        echo -e "${RED}[!]${NC} Due to Chocolatey blocking Tor, packages cannot be used with NetVM: $netvm" >&2
         exit 1
     fi
 
