@@ -25,7 +25,7 @@ usage() {
     echo "  -t, --template Make this qube a TemplateVM instead of a StandaloneVM"
     echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
     echo "  -s, --seamless Enable seamless mode persistently across restarts"
-    echo "  -o, --optimize Optimize Windows by disabling unnecessary features for a virtual machine"
+    echo "  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube"
     echo "  -y, --anti-spy Non-invasively disable and block Windows telemetry"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -i, --iso <file> Windows media to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
@@ -158,7 +158,7 @@ if [ "$packages" ]; then
         exit 1
     fi
 
-    # If resources_qube has a NetVM (is not air gapped) then check if packages exist
+    # If resources qube has a NetVM (is not air gapped) then check if packages exist
     if [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
         IFS="," read -ra package_arr <<< "$packages"
         for package in "${package_arr[@]}"; do
