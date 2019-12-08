@@ -67,6 +67,10 @@ fi
 echo -e "${BLUE}[i]${NC} Cloning qvm-create-windows-qube Github repository..." >&2
 qvm-run -p "$resources_qube" "cd ${resources_dir%/*} && git clone https://github.com/elliotkillick/qvm-create-windows-qube"
 
+echo -e "${BLUE}[i]${NC} Please check for a good GPG signature (Verify it out-of-band if necessary)..." >&2
+qvm-run -q "$resources_qube" "gpg --keyserver keys.openpgp.org --recv-keys 018FB9DE6DFA13FB18FB5552F9B90D44F83DD5F2"
+qvm-run -p "$resources_qube" "cd '$resources_dir' && git verify-commit HEAD"
+
 echo -e "${BLUE}[i]${NC} Downloading Windows..." >&2
 qvm-run -p "$resources_qube" "cd '$resources_dir' && ./download-windows.sh"
 
