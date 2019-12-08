@@ -87,7 +87,7 @@ qvm-run -q "$resources_qube" "sudo shutdown now" || true
 qvm-run -q "$template" "sudo shutdown now" || true
 
 echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
-sudo qubes-dom0-update -y --enablerepo=qubes-dom0-current-testing qubes-windows-tools
+sudo qubes-dom0-update -y qubes-windows-tools
 
 echo -e "${BLUE}[i]${NC} Copying qvm-create-windows-qube.sh to Dom0..." >&2
 qvm-run -p --filter-escape-chars --no-colour-output "$resources_qube" "cat '$resources_dir/qvm-create-windows-qube.sh'" > qvm-create-windows-qube.sh
