@@ -64,7 +64,7 @@ if ! [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
     qvm-prefs "$resources_qube" netvm "$resources_qube_netvm"
 fi
 
-echo -e "${BLUE}[i]${NC} Cloning qvm-create-windows-qube Github repository..." >&2
+echo -e "${BLUE}[i]${NC} Cloning qvm-create-windows-qube GitHub repository..." >&2
 qvm-run -p "$resources_qube" "cd ${resources_dir%/*} && git clone git@github.com:elliotkillick/qvm-create-windows-qube"
 
 echo -e "${BLUE}[i]${NC} Please check for a good PGP signature (Verify it out-of-band if necessary)..." >&2
