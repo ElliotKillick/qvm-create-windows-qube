@@ -60,7 +60,13 @@ Note: This project is the product of an independent effort that is not offically
 - [x] auto-qwt takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
 - [ ] Support Windows 8.1-10 (Note: QWT doesn't fully support Windows 10 yet)
 - [ ] Support Windows Server 2008 R2 to Windows Server 2019
-- [x] Provision Chocolatey (#2)
+- [x] Provision Chocolatey
 - [x] Add an option to slim down Windows as documented in: https://www.qubes-os.org/doc/windows-template-customization/
 - [x] Make windows-mgmt air gapped
+- [ ] Consider installing INF drivers in OfflineServicing pass
+    - While the current way of installing them certainly works (just the QWT installer executable) it would be more proper to use this pass as this is what it's for
+    - Can get around Windows 7 planned obsolescence in an offical non-hacky way (See allow-device-software.vbs)
+    - Can use /ForceUnsigned option in DISM to allow Qubes GUI unsigned driver
+    - For this we would use [wimlib](https://wimlib.net)
+    - We would definitely still have to run an installation executable to setup things like the private disk
 - [ ] Put this todo list into GitHub issues
