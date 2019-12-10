@@ -111,9 +111,11 @@ if [ "$(hostname)" != "dom0" ]; then
 fi
 
 # Validate name
-if qvm-check "$name" &> /dev/null; then
-    echo -e "${RED}[!]${NC} Qube already exists: $name" >&2
-    exit 1
+if [ "$count" == 1 ]; then
+    if qvm-check "$name" &> /dev/null; then
+        echo -e "${RED}[!]${NC} Qube already exists: $name" >&2
+        exit 1
+    fi
 fi
 
 # Validate count
