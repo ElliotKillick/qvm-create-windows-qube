@@ -281,6 +281,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     policy="$resources_qube $qube allow"
     policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
     sed -i "1i$policy" "$policy_file"
+    echo -e "${BLUE}[i]${NC} Doing cross-qube file copy... (Temporary debugging message)" >&2
     qvm-run -q "$resources_qube" "cd '$resources_dir' && qvm-copy-to-vm $qube post"
 
     post_incoming_dir="%USERPROFILE%\\Documents\\QubesIncoming\\$resources_qube\\post"
