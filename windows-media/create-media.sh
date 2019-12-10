@@ -79,7 +79,7 @@ echo -e "${BLUE}[i]${NC} Copying ISO loop device contents to temporary folder...
 temp_dir="$(mktemp -dp .)" # tmpfs on /tmp may be too small
 cp -r "$iso_mountpoint/." "$temp_dir"
 
-echo -e "${BLUE}[i]${NC} Copying over answer file to Autounattend.xml in temporary folder..." >&2
+echo -e "${BLUE}[i]${NC} Copying answer file to Autounattend.xml in temporary folder..." >&2
 cp "$answer_file" "$temp_dir/Autounattend.xml"
 
 echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
