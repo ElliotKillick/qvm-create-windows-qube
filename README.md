@@ -4,7 +4,7 @@ qvm-create-windows-qube is a tool for quickly and conveniently installing fresh 
 
 ## Installation
 
-1. Download the [installation script](https://raw.githubusercontent.com/elliotkillick/qvm-create-windows-qube/master/install.sh) by right-clicking then selecting "Save as..."
+1. Download the [installation script](https://raw.githubusercontent.com/elliotkillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save as..."
 2. Copy `install.sh` into Dom0 by running the following command in Dom0: `qvm-run -p --filter-escape-chars --no-color-output <qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
 3. Review the code of `install.sh` to ensure its integrity
 4. Run `chmod +x install.sh && ./install.sh`
@@ -34,7 +34,7 @@ Note: If the Qubes GUI driver is unwanted, either due to stability or peformance
 
 ## Security
 
-The resources qube, windows-mgmt by default, is air gapped. To mitigate the fallout of another shellshock-like Bash vulnerability, the Dom0 script communicates to the windows-mgmt qube in a one-way fashion. Downloading of the Windows ISOs are made secure by encforcing TLS 1.3/TLS 1.2 HTTPS with HTTP public key pinning (HPKP) and by verifying the SHA-256 of the files after download. Packages such as Firefox are offered out of the box so the infamously insecure Internet Explorer never has to be used.
+The resources qube, windows-mgmt by default, is air gapped. To mitigate the fallout of another shellshock-like Bash vulnerability, the Dom0 script communicates to the windows-mgmt qube in a one-way fashion. Downloading of the Windows ISOs are made secure by encforcing TLS 1.2 HTTPS with HTTP public key pinning (HPKP) and by verifying the SHA-256 of the files after download. Packages such as Firefox are offered out of the box so the infamously insecure Internet Explorer never has to be used.
 
 Important: If RDP is to be enabled on the Windows qube (not default) then make sure it is fully up-to-date because the latest Windows 7 ISO Microsoft offers is unfortunately still vulnerable to BlueKeep and related DejaBlue vulnerabilites
 
@@ -42,7 +42,7 @@ Important: If RDP is to be enabled on the Windows qube (not default) then make s
 
 Privacy benefits by disabling unwanted Microsoft telemetry such as the Customer Experience Improvement Program (CEIP), Windows Error Reporting (WER) and Diagnostics Tracking service (DiagTrack), blocking Microsoft IPs used exclusively for telemetry, standardizing common Whonix recommeneded defaults such as "user" for the username and "host" for the hostname, and by resetting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Numbers (VSNs) and more.
 
-Note, there are still ways to fingerprint you through the hypervisor (not specific to Windows): [lscpu](https://github.com/QubesOS/qubes-issues/issues/1142), [timezone](https://github.com/QubesOS/qubes-issues/issues/4429) (Can be mitigated by configuring UTC time in the BIOS/UEFI), screen resolution and depth, generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface), bugs in the hypervisor as well as the [x86 architecture](https://blog.invisiblethings.org/papers/2015/x86_harmful.pdf). Also, note that many of these pieces of information don't represent very many bits of uniquely identifiable information and just like Tor, as the [userbase of Qubes OS](https://www.qubes-os.org/statistics) grows, these datapoints become increasingly less significant.
+Note, there are still ways to fingerprint you through the hypervisor (not specific to Windows): [lscpu](https://github.com/QubesOS/qubes-issues/issues/1142), [timezone](https://github.com/QubesOS/qubes-issues/issues/4429) (Can be mitigated by configuring UTC time in the BIOS/UEFI), screen resolution and depth, generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface), bugs in the hypervisor, the [x86 architecture](https://blog.invisiblethings.org/papers/2015/x86_harmful.pdf) as well as many others. Also, note that many of these pieces of information don't represent very many bits of uniquely identifiable information and just like Tor, as the [userbase of Qubes OS](https://www.qubes-os.org/statistics) grows, these datapoints become increasingly less significant.
 
 ## Contributing
 
@@ -52,11 +52,10 @@ Note: This project is the product of an independent effort that is not offically
 
 ## Todo
 
-- [ ] Use libguestfs for a more efficient way of putting answer files into ISOs: https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso/ (guestfish, dnf info libguestfs-tools or apt show libguestfs-tools)
-    - While trying to install this package on Fedora there are many conflicts with older versions of the same packages Qubes tools relies on
-    - If --allowerasing option is enabled dnf prompts to remove those Qubes packages
-    - Qubes seems to be the third party repository: https://unix.stackexchange.com/questions/442064/package-x-requires-y-but-none-of-the-providers-can-be-installed
-    - Installation on Debian works
+- [ ] Find method of inserting answer file directly into ISO9660 format (Format Windows uses)
+    - This is difficult because ISO9660 is a write-once format
+    - This is a blocking issue for support for other versions of Windows
+    - Otherwise, just gain the ability reliably unpack/insert answer file/repack for any given ISO9660
 - [x] auto-qwt takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
 - [ ] Support Windows 8.1-10 (Note: QWT doesn't fully support Windows 10 yet)
 - [ ] Support Windows Server 2008 R2 to Windows Server 2019
