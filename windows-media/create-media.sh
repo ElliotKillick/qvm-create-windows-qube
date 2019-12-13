@@ -88,14 +88,14 @@ cp "$answer_file" "$temp_dir/Autounattend.xml"
 
 echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
 # https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso
+# https://theunderbase.blogspot.com/2013/03/editing-bootable-dvds-as-iso-images.html
 
 # count and skip provided by isoinfo
-dd if="$iso" of="$temp_dir/boot.img" bs=2048 count=8 skip=734 status=progress
+dd if="$iso" of="$temp_dir/boot.bin" bs=2048 count=8 skip=734
 
 final_iso="${iso/isos/out}"
-# -R is just to stop genisoimage from warning that Joilet should not be used without Rock Ridge
 # -allow-limited-size allows for bigger files such as the install.wim which is the Windows image
-genisoimage -b boot.img -no-emul-boot -c BOOT.CAT -iso-level 2 -udf -J -l -D -N -joliet-long -relaxed-filenames -R -allow-limited-size -quiet -o "$final_iso" "$temp_dir"
+genisoimage -udf -b boot.bin -no-emul-boot -allow-limited-size -quiet -o "$final_iso" "$temp_dir"
 
 cleanup
 
