@@ -90,8 +90,10 @@ echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
 # https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso
 # https://theunderbase.blogspot.com/2013/03/editing-bootable-dvds-as-iso-images.html
 
-# count and skip provided by isoinfo
-dd if="$iso" of="$temp_dir/boot.bin" bs=2048 count=8 skip=734
+# isoinfo gives us all the info needed to create a new ISO
+# The skip (Bootoff) variable sometimes varies between different Windows media so we must get it each time
+skip="$(isoinfo -d -i "$iso" | awk '{$1=$1;print}' | grep '^Bootoff' | awk '{ print $3 }')"
+dd if="$iso" of="$temp_dir/boot.bin" bs=2048 count=8 skip="$skip"
 
 final_iso="${iso/isos/out}"
 # -allow-limited-size allows for bigger files such as the install.wim which is the Windows image
