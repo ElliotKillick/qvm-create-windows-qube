@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Get ISO: https://www.heidoc.net/joomla/technology-science/microsoft/67-microsoft-windows-and-office-iso-download-tool
-# Generate answer file: https://www.windowsafg.com (Must use key provided from https://www.windowsafg.com/keys.html or your own, otherwise you will get a error during installation, the keys there are the default keys because for legal reasons even unregistered versions need keys. For example, when you press "skip" on the section to enter a product key in a manual installation one of the default keys from that link are actually used. The key used can be seen with NirSoft ProduKey)
 # Answer file templates: https://github.com/boxcutter/windows/tree/master/floppy
 
 # Test for 4-bit color (16 colors)
@@ -12,7 +10,9 @@ if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
     NC='\033[0m'
 fi
 
-usage() { echo "Usage: ${0} iso answer_file"; }
+usage() {
+    echo "Usage: ${0} iso answer_file"
+}
 
 for arg in "$@"; do
     if [ "$arg" == "-h" ] ||  [ "$arg" == "--help" ]; then
@@ -48,16 +48,16 @@ cleanup() {
         udisksctl loop-delete -b "$iso_device"
     fi
 
-    if [ "$temp_dir" ]; then
+    if [ -d "$temp_dir" ]; then
         echo -e "${BLUE}[i]${NC} Deleting temporary folder..." >&2
-        chmod -R +w "$temp_dir" # Permissions are originally read-only because ISO is a read-only format
+        chmod -R +w "$temp_dir" # Permissions are originally read-only because ISO 9660 is a read-only format
         rm -r "$temp_dir"
     fi
 
     if [ "$exit_code" != 0 ]; then
-        if [ "$final_iso_name" ]; then
-            echo -e "${BLUE}[i]${NC} Deleting incompletely outputted ISO..." >&2
-            rm "$final_iso_name"
+        if [ -f "$final_iso" ]; then
+            echo -e "${BLUE}[i]${NC} Deleting incomplete ISO output..." >&2
+            rm "$final_iso"
         fi
 
         exit "$exit_code"
@@ -67,29 +67,36 @@ cleanup() {
 trap cleanup ERR INT
 
 echo -e "${BLUE}[i]${NC} Creating read-only loop device from ISO..." >&2
-iso_device="$(udisksctl loop-setup -f "$iso" | awk '{ print $NF }' | sed 's/.$//')"
-
-sleep 1
+iso_device="$(udisksctl loop-setup -f "$iso")"
+iso_device="${iso_device#Mapped file * as }"
+iso_device="${iso_device%.}"
 
 echo -e "${BLUE}[i]${NC} Mounting loop device..." >&2
-udisksctl mount -b "$iso_device"
-iso_mountpoint="$(lsblk -rno NAME,MOUNTPOINT | grep ^"$(echo "$iso_device" | sed 's/.*\///')" | cut -d' ' -f2-)"
+# Fix race condition where disk tries to mount before finishing setup
+until iso_mntpoint="$(udisksctl mount -b "$iso_device")"; do
+    sleep 1
+done
+iso_mntpoint="${iso_mntpoint#Mounted * at }"
+iso_mntpoint="${iso_mntpoint%.}"
 
 echo -e "${BLUE}[i]${NC} Copying ISO loop device contents to temporary folder..." >&2
-temp_dir="$(mktemp -dp .)" # tmpfs on /tmp may be too small
-cp -r "$iso_mountpoint/." "$temp_dir"
+temp_dir="$(mktemp -dp out)" # tmpfs on /tmp may be too small
+cp -r "$iso_mntpoint/." "$temp_dir"
 
 echo -e "${BLUE}[i]${NC} Copying answer file to Autounattend.xml in temporary folder..." >&2
 cp "$answer_file" "$temp_dir/Autounattend.xml"
 
 echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
 # https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso
-# count and skip provided by isoinfo (Must use Debian version; Fedora version didn't provide the same level of debug output for me)
+
+# count and skip provided by isoinfo
 dd if="$iso" of="$temp_dir/boot.img" bs=2048 count=8 skip=734 status=progress
-final_iso_name="$(basename "$iso" | sed 's/\.[^.]*$//')-autounattend.iso"
-# -R is just to stop genisoimage from complaining that you shouldn't use Joilet without Rock Ridge and -allow-limited-size is for the install.wim which is a huge binary file that can package pre-installed updates among other things that may be too big (past 4GB) which would cause problems if this option wasn't enabled
-genisoimage -b boot.img -no-emul-boot -c BOOT.CAT -iso-level 2 -udf -J -l -D -N -joliet-long -relaxed-filenames -R -allow-limited-size -quiet -o "$final_iso_name" "$temp_dir"
+
+final_iso="${iso/isos/out}"
+# -R is just to stop genisoimage from warning that Joilet should not be used without Rock Ridge
+# -allow-limited-size allows for bigger files such as the install.wim which is the Windows image
+genisoimage -b boot.img -no-emul-boot -c BOOT.CAT -iso-level 2 -udf -J -l -D -N -joliet-long -relaxed-filenames -R -allow-limited-size -quiet -o "$final_iso" "$temp_dir"
 
 cleanup
 
-echo -e "${GREEN}[+]${NC} Created automatic Windows installation media $final_iso_name successfully!"
+echo -e "${GREEN}[+]${NC} Created automatic Windows installation media for $(basename "$final_iso") successfully!"

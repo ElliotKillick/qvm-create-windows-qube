@@ -186,8 +186,7 @@ fi
 
 # Put answer file into Windows media
 echo -e "${BLUE}[i]${NC} Preparing Windows media for automatic installation..." >&2
-autounattend_iso="${iso%.*}-autounattend.iso"
-if ! qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media' && if ! [ -f $autounattend_iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
+if ! qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media' && if ! [ -f out/$iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
     echo -e "${RED}[!]${NC} Failed to create media! Possibly out of disk space? Exiting..." >&2
     exit 1
 fi
@@ -219,7 +218,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" netvm ""
 
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
-    until qvm-start --cdrom "$resources_qube:$resources_dir/windows-media/$autounattend_iso" "$qube"; do
+    until qvm-start --cdrom "$resources_qube:$resources_dir/windows-media/out/$iso" "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
         sleep 10
     done
