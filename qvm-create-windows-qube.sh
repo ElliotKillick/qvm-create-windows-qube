@@ -187,7 +187,7 @@ fi
 # Put answer file into Windows media
 echo -e "${BLUE}[i]${NC} Preparing Windows media for automatic installation..." >&2
 if ! qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media' && if ! [ -f out/$iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
-    echo -e "${RED}[!]${NC} Failed to create media! Possibly out of disk space? Exiting..." >&2
+    echo -e "${RED}[!]${NC} Failed to create media! Out of disk space? Exiting..." >&2
     exit 1
 fi
 
