@@ -52,10 +52,8 @@ Note: This project is the product of an independent effort that is not offically
 
 ## Todo
 
-- [ ] Find method of inserting answer file directly into ISO9660 format (Format Windows uses)
-    - This is difficult because ISO9660 is a write-once format
-    - This is a blocking issue for support for other versions of Windows
-    - Otherwise, just gain the ability reliably unpack/insert answer file/repack for any given ISO9660
+- [x] Gain the ability reliably unpack/insert answer file/repack for any given ISO 9660 (Windows ISO format)
+    - Blocking issue for supporting other versions of Windows
 - [x] auto-qwt takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
 - [ ] Support Windows 8.1-10 (Note: QWT doesn't fully support Windows 10 yet)
 - [ ] Support Windows Server 2008 R2 to Windows Server 2019
@@ -67,5 +65,8 @@ Note: This project is the product of an independent effort that is not offically
     - Can get around Windows 7 planned obsolescence in an offical non-hacky way (See allow-device-software.vbs)
     - Can use /ForceUnsigned option in DISM to allow Qubes GUI unsigned driver
     - For this we would use [wimlib](https://wimlib.net)
-    - We would definitely still have to run an installation executable to setup things like the private disk
+    - We would definitely still have to run the QWT installation executable to setup things like the private disk
+- [ ] Possibly switch from udisksctl for reading/mounting ISOs because it is written in its man page that it should not be used in scripts
+    - guestfs?
+    - Consider other alternatives
 - [ ] Put this todo list into GitHub issues
