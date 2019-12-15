@@ -75,7 +75,7 @@
                             <Value/>
                         </Password>
                         <Description/>
-                        <DisplayName>user</DisplayName>
+                        <DisplayName/>
                         <Group>Administrators</Group>
                         <Name>user</Name>
                     </LocalAccount>
