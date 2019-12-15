@@ -76,7 +76,6 @@
                     <LocalAccount wcm:action="add">
                         <Password>
                             <Value/>
-                            <PlainText>true</PlainText>
                         </Password>
                         <Description/>
                         <DisplayName>user</DisplayName>
@@ -90,7 +89,6 @@
                 <Username>user</Username>
                 <Password>
                     <Value/>
-                    <PlainText>true</PlainText>
                 </Password>
             </AutoLogon>
             <OOBE>
