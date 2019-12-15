@@ -26,13 +26,15 @@
                 </OSImage>
             </ImageInstall>
             <UserData>
+                <AcceptEula>true</AcceptEula>
                 <ProductKey>
                     <Key>D4F6K-QK3RD-TMVMJ-BBMRX-3MBMV</Key>
                 </ProductKey>
-                <AcceptEula>true</AcceptEula>
             </UserData>
             <DiskConfiguration>
                 <Disk wcm:action="add">
+                    <DiskID>0</DiskID>
+                    <WillWipeDisk>true</WillWipeDisk>
                     <CreatePartitions>
                         <CreatePartition wcm:action="add">
                             <Order>1</Order>
@@ -50,8 +52,6 @@
                             <PartitionID>1</PartitionID>
                         </ModifyPartition>
                     </ModifyPartitions>
-                    <DiskID>0</DiskID>
-                    <WillWipeDisk>true</WillWipeDisk>
                 </Disk>
             </DiskConfiguration>
             <RunAsynchronous>
@@ -82,11 +82,11 @@
                 </LocalAccounts>
             </UserAccounts>
             <AutoLogon>
-                <Enabled>true</Enabled>
-                <Username>user</Username>
                 <Password>
                     <Value/>
                 </Password>
+                <Enabled>true</Enabled>
+                <Username>user</Username>
             </AutoLogon>
             <OOBE>
                 <NetworkLocation>Other</NetworkLocation>
