@@ -38,20 +38,10 @@
                     <CreatePartitions>
                         <CreatePartition wcm:action="add">
                             <Order>1</Order>
-                            <Size>10000</Size>
                             <Type>Primary</Type>
+                            <Extend>true</Extend>
                         </CreatePartition>
                     </CreatePartitions>
-                    <ModifyPartitions>
-                        <ModifyPartition wcm:action="add">
-                            <Active>true</Active>
-                            <Extend>true</Extend>
-                            <Format>NTFS</Format>
-                            <Letter>C</Letter>
-                            <Order>1</Order>
-                            <PartitionID>1</PartitionID>
-                        </ModifyPartition>
-                    </ModifyPartitions>
                 </Disk>
             </DiskConfiguration>
             <RunAsynchronous>
