@@ -2,6 +2,11 @@
 
 # Answer file templates: https://github.com/boxcutter/windows/tree/master/floppy
 
+# Validate answer file with Windows AIK/ADK
+
+# Get Product Key: https://github.com/mrpeardotnet/WinProdKeyFinder/releases
+# Install desired edition (Home, Ultimate, Pro, etc.) of any given Windows media manually then proceed to run WinProdKeyFinder to get the key and use it in the answer file (Specifying a key in there is mandatory)
+
 # Test for 4-bit color (16 colors)
 if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
     RED='\032[0;31m'
