@@ -9,7 +9,7 @@
 
 # Test for 4-bit color (16 colors)
 if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
-    RED='\032[0;31m'
+    RED='\033[0;31m'
     BLUE='\033[0;34m'
     GREEN='\033[0;32m'
     NC='\033[0m'
