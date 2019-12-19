@@ -71,8 +71,8 @@ echo -e "${BLUE}[i]${NC} Please check for a good PGP signature (Verify it out-of
 qvm-run -q "$resources_qube" "gpg --keyserver keys.openpgp.org --recv-keys 018FB9DE6DFA13FB18FB5552F9B90D44F83DD5F2"
 qvm-run -p "$resources_qube" "cd '$resources_dir' && git verify-commit HEAD"
 
-echo -e "${BLUE}[i]${NC} Downloading Windows..." >&2
-qvm-run -p "$resources_qube" "cd '$resources_dir' && ./download-windows.sh"
+echo -e "${BLUE}[i]${NC} Downloading Windows 7 (More can be downloaded later by using download-windows.sh)..." >&2
+qvm-run -p "$resources_qube" "cd '$resources_dir' && ./download-windows.sh windows-7"
 
 echo -e "${BLUE}[i]${NC} Air gapping $resources_qube..." >&2
 qvm-prefs "$resources_qube" netvm ""
