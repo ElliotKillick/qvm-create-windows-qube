@@ -48,7 +48,7 @@ cleanup() {
     exit_code="$?"
 
     if [ "$iso_device" ]; then
-        echo -e "${BLUE}[i]${NC} Unmounting and deleting original ISO loop device..." >&2
+        echo -e "${BLUE}[i]${NC} Unmounting and deleting loop device..." >&2
         udisksctl unmount -b "$iso_device"
         udisksctl loop-delete -b "$iso_device"
     fi
@@ -71,7 +71,7 @@ cleanup() {
 
 trap cleanup ERR INT
 
-echo -e "${BLUE}[i]${NC} Creating read-only loop device from ISO..." >&2
+echo -e "${BLUE}[i]${NC} Creating loop device from ISO..." >&2
 iso_device="$(udisksctl loop-setup -f "$iso")"
 iso_device="${iso_device#Mapped file * as }"
 iso_device="${iso_device%.}"
@@ -84,7 +84,7 @@ done
 iso_mntpoint="${iso_mntpoint#Mounted * at }"
 iso_mntpoint="${iso_mntpoint%.}"
 
-echo -e "${BLUE}[i]${NC} Copying ISO loop device contents to temporary folder..." >&2
+echo -e "${BLUE}[i]${NC} Copying loop device contents to temporary folder..." >&2
 temp_dir="$(mktemp -dp out)" # tmpfs on /tmp may be too small
 cp -r "$iso_mntpoint/." "$temp_dir"
 
@@ -96,7 +96,7 @@ echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
 # https://theunderbase.blogspot.com/2013/03/editing-bootable-dvds-as-iso-images.html
 
 # isoinfo gives us all the info needed to create a new ISO
-# The skip (Bootoff) variable sometimes varies between different Windows media so we must get it each time
+# The skip (Bootoff) can vary between different Windows media so we must get it each time
 skip="$(isoinfo -d -i "$iso" | awk '{$1=$1;print}' | grep '^Bootoff' | awk '{ print $3 }')"
 dd if="$iso" of="$temp_dir/boot.bin" bs=2048 count=8 skip="$skip"
 
