@@ -209,7 +209,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     echo -e "${BLUE}[i]${NC} Starting creation of $qube"
     qvm-create --class "$class" --label red "$qube"
     qvm-prefs "$qube" virt_mode hvm
-    qvm-prefs "$qube" memory 512
+    qvm-prefs "$qube" memory 1024
     qvm-prefs "$qube" maxmem 0 # Disables currently unstable Qubes memory manager (Also grays the option out in qubes-vm-settings)
     qvm-prefs "$qube" kernel ""
     qvm-prefs "$qube" qrexec_timeout 300 # Windows startup can take longer, especially if a disk scan is performed
@@ -320,7 +320,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     wait_for_shutdown "false"
 
     # Give reasonable amount of memory for actual use
-    qvm-prefs "$qube" memory 1536
+    qvm-prefs "$qube" memory 2048
 
     if [ "$count" -gt 1 ]; then
         echo -e "${GREEN}[+]${NC} Finished creation of $qube successfully!"
