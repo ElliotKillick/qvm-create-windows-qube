@@ -23,12 +23,12 @@ usage() {
     echo "  -h, --help"
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
     echo "  -t, --template Make this qube a TemplateVM instead of a StandaloneVM"
-    echo "  -n, --netvm <qube> NetVM for Windows to use (default: sys-firewall)"
+    echo "  -n, --netvm <qube> NetVM for Windows to use"
     echo "  -s, --seamless Enable seamless mode persistently across restarts"
     echo "  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube"
     echo "  -y, --anti-spy Non-invasively disable and block Windows telemetry"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
-    echo "  -i, --iso <file> Windows media to automatically install and setup (default: Win7_Pro_SP1_English_x64.iso)"
+    echo "  -i, --iso <file> Windows media to automatically install and setup (default: windows-7.iso"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)"
 }
 
@@ -44,7 +44,7 @@ eval set -- "$opts"
 
 # Set defaults
 count="1"
-iso="7601.24214.180801-1700.win7sp1_ldr_escrow_CLIENT_ULTIMATE_x64FRE_en-us.iso"
+iso="windows-7.iso"
 answer_file="windows-7.xml"
 
 # Put options into variables
