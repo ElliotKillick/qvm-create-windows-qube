@@ -49,7 +49,7 @@
                     <!-- Get a shell during installation for testing: -->
                     <!--<Path>cmd /k echo Do : Set wshShell = WScript.CreateObject("WScript.Shell") : wshShell.AppActivate("cscript  foreground.vbs") : Loop > foreground.vbs &amp; cscript foreground.vbs</Path>-->
                     <!-- Many commands suchs as the timeout command do not exist in Windows PE; other ways to sleep were tried but only using WSH worked -->
-                    <Path>cmd /c title Enable Test Signing&amp; echo WScript.Sleep(1000)> sleep.vbs &amp; for /l %n in () do for %i in (C:\Boot\BCD) do if %~zi gtr 0 (bcdedit /set {default} testsigning on &amp;&amp; exit) else cscript /nologo sleep.vbs</Path>
+                    <Path>cmd /q /c title Enable Test Signing&amp; echo WScript.Sleep(1000)> sleep.vbs &amp; for /l %n in () do for %i in (C:\Boot\BCD) do if %~zi gtr 0 (bcdedit /set {default} testsigning on &amp;&amp; exit) else cscript /nologo sleep.vbs</Path>
                     <Description>Enables test signing during "Completing installation" stage when the BCD is written to the disk. Enabling it now allows us to skip an extra boot cycle later on due to this setting requiring a restart.</Description>
                     <Order>1</Order>
                 </RunAsynchronousCommand>
