@@ -255,7 +255,10 @@ for (( counter = 1; counter <= count; counter++ )); do
     wait_for_shutdown "true"
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
-    qvm-start "$qube"
+    until qvm-start "$qube"; do
+        echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
+        sleep 10
+    done
 
     # Wait until QWT installation is advertised to Dom0
     until [ "$(qvm-features "$qube" os)" == "Windows" ]; do
