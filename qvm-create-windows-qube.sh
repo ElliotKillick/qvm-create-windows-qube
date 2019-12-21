@@ -6,13 +6,11 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 wait_for_shutdown() {
-    local is_boot="$1"
-
     # There is a small delay upon booting a qube before qvm-check will detect it as running
-    if [ "$is_boot" == "true" ]; then
-        sleep 5
-    fi
-
+    # To account for this as well as scenarios where the qube is already running and is shutting down we need both loops
+    until qvm-check --running "$qube" &> /dev/null; do
+        sleep 1
+    done
     while qvm-check --running "$qube" &> /dev/null; do
         sleep 1
     done
@@ -224,7 +222,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for first part of Windows installation process to finish...
-    wait_for_shutdown "true"
+    wait_for_shutdown
 
     echo -e "${BLUE}[i]${NC} Commencing second part of Windows installation process..." >&2
     qvm-features --unset "$qube" video-model
@@ -234,7 +232,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for second part of Windows installation process to finish...
-    wait_for_shutdown "true"
+    wait_for_shutdown
 
     echo -e "${BLUE}[i]${NC} Preparing Qubes Windows Tools for automatic installation..." >&2
     # Pack latest QWT into auto-qwt
@@ -252,7 +250,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for automatic shutdown after Qubes Windows Tools install...
-    wait_for_shutdown "true"
+    wait_for_shutdown
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
     until qvm-start "$qube"; do
@@ -320,7 +318,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Shutdown and wait until complete before finishing or starting next installation
     qvm-run -q "$qube" "shutdown /s /t 0"
-    wait_for_shutdown "false"
+    wait_for_shutdown
 
     # Give reasonable amount of memory for actual use
     qvm-prefs "$qube" memory 2048
