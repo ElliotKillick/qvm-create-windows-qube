@@ -11,7 +11,7 @@ for %%f in ("WindowsGadgetPlatform" "TabletPCOC" "MSRDC-Infrastructure" "Printin
 echo Disabling services...
 rem Some of the services listed on the above documentation are already disabled and as a result not included here (Some such as the "Disk Defragmenter" or "defragsvc" service are set to disabled (in this case from manual) by QWT upon installation)
 rem Result of diabling "Themes" seems to be the same as adjusting visual effects below (However, with it disabled now someone would also have to manually enable the Themes service to get themes back)
-for %%s in ("BFE" "SSDPSRV" "wscsvc" "lmhosts" "VSS" "MpsSvc") do (
+for %%s in ("BFE" "SSDPSRV" "lmhosts" "VSS" "MpsSvc") do (
     sc config %%s start= disabled
 )
 
