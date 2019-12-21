@@ -1,7 +1,7 @@
 @echo off
 title %~f0
 
-rem As suggested on: https://www.qubes-os.org/doc/windows-template-customization/
+rem Based on: https://www.qubes-os.org/doc/windows-template-customization
 
 echo Disabling features...
 for %%f in ("WindowsGadgetPlatform" "TabletPCOC" "MSRDC-Infrastructure" "Printing-XPSServices-Features" "Xps-Foundation-Xps-Viewer") do (
@@ -19,7 +19,6 @@ echo Enabling never check for updates...
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /v AUOptions /t REG_DWORD /d 1 /f
 
 echo Enabling never automatically reboot for updates...
-rem Not suggested in above documentation
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /ve /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /ve /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f
@@ -51,5 +50,5 @@ for %%t in ("%task_dir%\Application Experience\AitAgent" "%task_dir%\Autochk\Pro
 rem QWT installer has already enabled the "Power" service and configured settings as suggested
 echo Disabling hibernation...
 rem powercfg -h off fails when Qubes GUI driver is installed because of legacy driver "VgaSave"
-rem We instead edit the registry key directly as a workaround causing %SystemDrive%\hiberfil.sys to be deleted on next reboot
+rem We instead edit the registry key directly as a workaround causing %SystemDrive%\hiberfil.sys to be deleted on next boot
 powercfg -h off || reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v HibernateEnabled /t REG_DWORD /d 0 /f
