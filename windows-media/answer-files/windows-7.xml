@@ -51,7 +51,7 @@
                     <!-- Many commands suchs as the timeout command do not exist in Windows PE; other ways to sleep were tried but only using WSH worked -->
                     <!-- Runs at "Completing installation"/"Finishing up" stage when BCD is written to disk -->
                     <!-- This setting requires a restart so we do it now to skip a boot cycle later -->
-                    <Path>cmd /q /c title Enable Test Signing&amp; echo WScript.Sleep(1000)> sleep.vbs &amp; for /l %n in () do for %i in (C:\Boot\BCD) do if %~zi gtr 0 (bcdedit /set {default} testsigning on &amp;&amp; exit) else cscript /nologo sleep.vbs</Path>
+                    <Path>cmd /q /c title Enable Test Signing&amp; mode 50,1 &amp; echo WScript.Sleep(1000)> sleep.vbs &amp; for /l %n in () do for %i in (C:\Boot\BCD) do if %~zi gtr 0 (bcdedit /set {default} testsigning on &amp;&amp; exit) else cscript /nologo sleep.vbs</Path>
                     <Description>Enables test signing for unsigned Qubes GUI driver</Description>
                     <Order>1</Order>
                 </RunAsynchronousCommand>
