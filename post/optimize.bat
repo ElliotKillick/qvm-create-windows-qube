@@ -11,7 +11,7 @@ for %%f in ("WindowsGadgetPlatform" "TabletPCOC" "MSRDC-Infrastructure" "Printin
 echo Disabling services...
 rem Some of the services listed on the above documentation are already disabled and as a result not included here (Some such as the "Disk Defragmenter" or "defragsvc" service are set to disabled (in this case from manual) by QWT upon installation)
 rem Result of diabling "Themes" seems to be the same as adjusting visual effects below (However, with it disabled now someone would also have to manually enable the Themes service to get themes back)
-for %%s in ("BFE" "SSDPSRV" "lmhosts" "VSS" "MpsSvc") do (
+for %%s in ("SSDPSRV" "lmhosts" "VSS") do (
     sc config %%s start= disabled
 )
 
@@ -40,6 +40,9 @@ reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SPP\Clients" /f
 
 echo Disabling remote assistance...
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v fAllowToGetHelp /t REG_DWORD /d 0 /f
+
+echo Allowing all inbound and outbound traffic through firewall...
+netsh advfirewall set allprofiles firewallpolicy allowinbound,allowoutbound
 
 echo Disabling tasks in Task Scheduler...
 set task_dir=\Microsoft\Windows
