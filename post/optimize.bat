@@ -28,6 +28,9 @@ rem echo Adjusting visual effects for best performance...
 rem Severely reduces the appearance of Windows, however, does noticeably increase performance
 rem reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f
 
+echo Disabling Action Center tray icon and notifications...
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v HideSCAHealth /t REG_DWORD /d 1 /f
+
 echo Deleting shadow copies...
 rem Some have already been created during installation of Windows, drivers, etc.
 vssadmin delete shadows /all /quiet
