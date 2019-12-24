@@ -30,6 +30,15 @@ rem reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffec
 echo Disabling Action Center tray icon and notifications...
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v HideSCAHealth /t REG_DWORD /d 1 /f
 
+echo Disabling Windows Defender...
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f || (
+    rem Fails due to Tamper Protection which is enabled by default in latest versions of Windows 10
+    rem To bypass it and disable Windows Defender anyway we remove all permissions from the WinDefend service registry key (The ownership changing is not necessary, it's just so the change can be easily reverted without getting SYSTEM)
+    rem This change is not detected by sfc /scannow, however, may be reset by a Windows update
+    rem To restore permissions, open permission info on the key below and change the owner to "SYSTEM" then click "Enable Inheritance"
+    powershell -Command "$path = 'HKLM:\SYSTEM\CurrentControlSet\Services\WinDefend\'; $acl = Get-Acl -Path $path; $acl.SetOwner((New-Object System.Security.Principal.NTAccount('Builtin', 'Administrators'))); $acl.SetAccessRuleProtection($true, $false); Set-Acl -Path $path -AclObject $acl"
+)
+
 echo Deleting shadow copies...
 rem Some have already been created during installation of Windows, drivers, etc.
 vssadmin delete shadows /all /quiet
