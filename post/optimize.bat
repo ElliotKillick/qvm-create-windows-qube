@@ -30,6 +30,9 @@ rem reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffec
 echo Disabling Action Center tray icon and notifications...
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v HideSCAHealth /t REG_DWORD /d 1 /f
 
+echo Disabling Windows security and maintenance notifications...
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance" /v Enabled /t REG_DWORD /d 0 /f
+
 echo Disabling Windows Defender...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f || (
     rem Fails due to Tamper Protection which is enabled by default in latest versions of Windows 10
