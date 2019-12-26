@@ -2,9 +2,9 @@
 
 # Answer file templates: https://github.com/boxcutter/windows/tree/master/floppy
 
-# Validate answer file with Windows AIK/ADK
+# Optional: Validate answer file with Windows AIK/ADK (Must add cpi:offlineImage tag to answer file referencing the CLG or WIM file embedded in the ISO)
 
-# Get Product Key: https://github.com/mrpeardotnet/WinProdKeyFinder/releases
+# Get product key: https://github.com/mrpeardotnet/WinProdKeyFinder/releases
 # Install desired edition (Home, Ultimate, Pro, etc.) of any given Windows media manually then proceed to run WinProdKeyFinder to get the key and use it in the answer file (Specifying a key is required)
 
 # Test for 4-bit color (16 colors)
