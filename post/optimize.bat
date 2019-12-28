@@ -67,7 +67,7 @@ netsh advfirewall set allprofiles firewallpolicy allowinbound,allowoutbound
 
 echo Disabling tasks in Task Scheduler...
 set task_dir=\Microsoft\Windows
-for %%t in ("%task_dir%\Application Experience\AitAgent" "%task_dir%\Autochk\Proxy" "%task_dir%\Customer Experience Improvement Program\Consolidator" "%task_dir%\Customer Experience Improvement Program\KernelCeipTask" "%task_dir%\Customer Experience Improvement Program\UsbCeip" "%task_dir%\Defrag\ScheduledDefrag" "%task_dir%\Defrag\ScheduledDefrag" "%task_dir%\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" "%task_dir%\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver" "%task_dir%\Maintenance\WinSAT" "%task_dir%\SystemRestore\SR" "%task_dir%\WindowsBackup\ConfigNotification") do (
+for %%t in ("%task_dir%\Defrag\ScheduledDefrag" "%task_dir%\Defrag\ScheduledDefrag" "%task_dir%\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver" "%task_dir%\Maintenance\WinSAT" "%task_dir%\SystemRestore\SR" "%task_dir%\WindowsBackup\ConfigNotification") do (
     schtasks /change /tn %%t /disable
 )
 
