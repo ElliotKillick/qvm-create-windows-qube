@@ -78,8 +78,9 @@ echo -e "${BLUE}[i]${NC} Air gapping $resources_qube..." >&2
 qvm-prefs "$resources_qube" netvm ""
 
 echo -e "${BLUE}[i]${NC} Installing package dependencies in $template..." >&2
-packages="genisoimage"
-qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $packages; else sudo apt-get -y install $packages; fi"
+fedora_packages="genisoimage geteltorito"
+debian_packages="genisoimage"
+qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
 
 echo -e "${BLUE}[i]${NC} Shutting down $resources_qube and $template so the root filesystems can sync up..." >&2
 # qvm-run always returns 1 probably due to not getting a response in time before the qube shuts down; as a result force always return 0 to not trigger the ERR trap
