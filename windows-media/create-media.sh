@@ -5,7 +5,8 @@
 # Optional: Validate answer file with Windows AIK/ADK (Must add cpi:offlineImage tag to answer file referencing the CLG or WIM file embedded in the ISO)
 
 # Get product key: https://github.com/mrpeardotnet/WinProdKeyFinder/releases
-# Install desired edition (Home, Ultimate, Pro, etc.) of any given Windows media manually then proceed to run WinProdKeyFinder to get the key and use it in the answer file (Specifying a key is required)
+# Install desired edition (Home, Ultimate, Pro, etc.) of any given Windows media manually then proceed to run WinProdKeyFinder to get the key and use it in the answer file
+# Specifying a key is not required when the Windows edition is "Enterprise Evaluation" or any edition of Windows Server
 
 # Test for 4-bit color (16 colors)
 if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
