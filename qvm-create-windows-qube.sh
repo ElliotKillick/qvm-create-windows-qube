@@ -44,8 +44,8 @@ eval set -- "$opts"
 
 # Set defaults
 count="1"
-iso="windows-7.iso"
-answer_file="windows-7.xml"
+iso="win7x64-ultimate.iso"
+answer_file="win7x64-ultimate.xml"
 
 # Put options into variables
 while true; do
