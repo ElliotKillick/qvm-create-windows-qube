@@ -69,7 +69,7 @@ qvm-run -p "$resources_qube" "cd ${resources_dir%/*} && git clone https://github
 
 echo -e "${BLUE}[i]${NC} Please check for a good PGP signature (Verify it out-of-band if necessary)..." >&2
 qvm-run -q "$resources_qube" "gpg --keyserver keys.openpgp.org --recv-keys 018FB9DE6DFA13FB18FB5552F9B90D44F83DD5F2"
-qvm-run -p "$resources_qube" "cd '$resources_dir' && git verify-commit HEAD"
+qvm-run -p "$resources_qube" "cd '$resources_dir' && git verify-commit \$(git rev-list --max-parents=0 HEAD)"
 
 echo -e "${BLUE}[i]${NC} Downloading Windows 7 (More can be downloaded later by using download-windows.sh)..." >&2
 qvm-run -p "$resources_qube" "cd '$resources_dir' && ./download-windows.sh windows-7"
