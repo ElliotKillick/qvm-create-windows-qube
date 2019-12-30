@@ -83,9 +83,7 @@ debian_packages="genisoimage"
 qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
 
 echo -e "${BLUE}[i]${NC} Shutting down $resources_qube and $template so the root filesystems can sync up..." >&2
-# qvm-run always returns 1 probably due to not getting a response in time before the qube shuts down; as a result force always return 0 to not trigger the ERR trap
-qvm-run -q "$resources_qube" "sudo shutdown now" || true
-qvm-run -q "$template" "sudo shutdown now" || true
+qvm-shutdown --wait "$resources_qube" "$template"
 
 echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
 sudo qubes-dom0-update -y qubes-windows-tools
