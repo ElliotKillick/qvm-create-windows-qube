@@ -5,6 +5,8 @@ BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
+trap 'exit' ERR
+
 wait_for_shutdown() {
     # There is a small delay upon booting a qube before qvm-check will detect it as running
     # To account for this as well as scenarios where the qube is already running and is shutting down we need both loops
