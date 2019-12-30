@@ -28,8 +28,8 @@ usage() {
     echo "  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube"
     echo "  -y, --anti-spy Non-invasively disable and block Windows telemetry"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
-    echo "  -i, --iso <file> Windows media to automatically install and setup (default: windows-7.iso"
-    echo "  -a, --answer-file <xml file> Settings for Windows installation (default: windows-7.xml)"
+    echo "  -i, --iso <file> Windows media to automatically install and setup (default: $iso)"
+    echo "  -a, --answer-file <xml file> Settings for Windows installation (default: $answer_file)"
 }
 
 # Option strings
