@@ -22,7 +22,7 @@ usage() {
     echo "  windows-server-2016"
     echo "  windows-server-2019"
     echo ""
-    echo "Important: The direct ISO downloads listed here are not necessarily subject to being updated and it is therefore recommended that the site referenced above each curl command in the script is checked to make sure a newer version isn't available"
+    echo "Important: The direct ISO downloads listed here are not necessarily subject to being updated and it is therefore recommended that the site referenced above each curl command is checked to see if a newer version is available"
 }
 
 for arg in "$@"; do
