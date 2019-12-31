@@ -14,6 +14,15 @@
 '   * Install drivers in offlineServicing unattend pass (setup.exe has a /installCert option for Win7+ that looks promising)
 '   * Temporarily hijack/overwrite pnpui.dll that rundll32.exe uses to make prompt and make function always return true (yes to the button being pressed). However, this seems even more hacky.
 '   * Some other unknown quirk or undocumented feature
+'   * Looks like if we can extract the INF files from QWT (or otherwise) then we can simply install the drivers silently as seen below
+'       * rundll32 AdvPack.dll,LaunchINFSection my.inf,,3
+'       * https://stackoverflow.com/questions/24510472/install-driver-silent
+'       * Advpack.dll is for processing INF files
+'       * More links:
+'       * https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/platform-apis/gg441316(v%3Dvs.85)
+'       * http://www.mdgx.com/INF_web/launch.htm
+'   * Drivers stored in: C:\Program Files\Invisible Things Lab\Qubes Tools\drivers
+'       * Maybe we can install them from there once the drivers are extracted by QWT before it processes the INF files itself
 
 Set wshShell = WScript.CreateObject("WScript.Shell")
 
