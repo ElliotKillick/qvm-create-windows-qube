@@ -48,7 +48,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpywar
     rem To bypass it and disable Windows Defender anyway we remove all permissions from the WinDefend service registry key (The ownership changing is not necessary, it's just so the change can be easily reverted without getting SYSTEM)
     rem This change is not detected by sfc /scannow, however, may be reset by a Windows update
     rem To restore permissions, open permission info on the key below and change the owner to "SYSTEM" then click "Enable Inheritance"
-    powershell -Command "$path = 'HKLM:\SYSTEM\CurrentControlSet\Services\WinDefend\'; $acl = Get-Acl -Path $path; $acl.SetOwner((New-Object System.Security.Principal.NTAccount('Builtin', 'Administrators'))); $acl.SetAccessRuleProtection($true, $false); Set-Acl -Path $path -AclObject $acl"
+    powershell -Command "$path = 'HKLM:\SYSTEM\CurrentControlSet\Services\WinDefend'; $acl = Get-Acl -Path $path; $acl.SetOwner((New-Object System.Security.Principal.NTAccount('Builtin', 'Administrators'))); $acl.SetAccessRuleProtection($true, $false); Set-Acl -Path $path -AclObject $acl"
 )
 
 echo Deleting shadow copies...
