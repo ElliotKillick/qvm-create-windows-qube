@@ -10,8 +10,6 @@ qvm-create-windows-qube is a tool for quickly and conveniently installing fresh 
 4. Run `chmod +x install.sh && ./install.sh`
 5. Review the code of the resulting `qvm-create-windows-qube.sh`
 
-Please see QWT Known Issues below before proceeding.
-
 ## Usage
 
 ```
@@ -35,35 +33,39 @@ Note: If the Qubes GUI driver is unwanted, either due to stability or peformance
 ## QWT Known Issues
 
 HVMs, not QWT issue (Windows, sys-net, etc.):
-    - Until this [bug](https://github.com/QubesOS/qubes-issues/issues/4684) is fixed upstream you must fix app menu syncing for HVMs (Windows, sys-net, etc.) by putting the provided `qubes-start.desktop` into `/usr/share/qubes-appmenus` in Dom0
+    * Until this [bug](https://github.com/QubesOS/qubes-issues/issues/4684) is fixed upstream you must fix app menu syncing for HVMs (Windows, sys-net, etc.) by putting the provided `qubes-start.desktop` into `/usr/share/qubes-appmenus` in Dom0
+
 All OSs:
-    - Windows may crash on first boot after QWT is installed
-        - On Windows 7, the desktop may boot back up to having no wallpaper and missing libraries. Just delete that qube and start over
-        - Or it may crash during app menu creation shortly after first boot after desktop wallpaper/libraries is setup (qvm-sync-appmenus <qube_name> will fix)
-        - Or it might just hang on trying to copy the post scripts over to the crashed qube
-        - Fix: Just delete the qube and start over
-    - In general, sometimes Windows will crash during boot
-        - When trying to display screen with Qubes GUI driver it can crash during the "Welcome" loading screen that shows up or manipulating the window by resizing, mimimizing, etc. during boot (As seen when the -b/--background option existed; removed from this project because it was too unstable)
-        - Happened a couple times on Windows 10 (no GUI driver of course)
-    - Windows may crash on shutdown (xenbus.sys 0x0000dead BSOD)
-    - Add audio support: https://github.com/QubesOS/qubes-issues/issues/2624
+    * Windows may crash on first boot after QWT is installed
+        * On Windows 7, the desktop may boot back up to having no wallpaper and missing libraries. Just delete that qube and start over
+        * Or it may crash during app menu creation shortly after first boot after desktop wallpaper/libraries is setup (qvm-sync-appmenus <qube_name> will fix)
+        * Or it might just hang on trying to copy the post scripts over to the crashed qube
+        * Fix: Just delete the qube and start over
+    * In general, sometimes Windows will crash during boot
+        * When trying to display screen with Qubes GUI driver it can crash during the "Welcome" loading screen that shows up or manipulating the window by resizing, mimimizing, etc. during boot (As seen when the -b/--background option existed; removed from this project because it was too unstable)
+        * Happened a couple times on Windows 10 (no GUI driver of course)
+    * Windows may crash on shutdown (xenbus.sys 0x0000dead BSOD)
+    * Add audio support: https://github.com/QubesOS/qubes-issues/issues/2624
+
 All OSs except Windows 7:
-    - Run `qvm-features <windows_qube> gui 1` to make display show up after setup is complete
-    - When Qubes GUI driver is in use, may receive a message saying Windows is trying to spoof Dom0 GUI causing installation to pause. Fix by closing window.
-    - Prompt to install earlier version of .NET (However, qrexec services still seem to work): https://github.com/QubesOS/qubes-issues/issues/5091 (Waiting for this to make it into a QWT update, has been merged)
-    - No GUI driver
-        - This is the main priority currently for QWT: https://www.qubes-os.org/news/2016/01/27/windows-tools-open-source
-        - https://github.com/QubesOS/qubes-issues/issues/1861
-        - The resolution can still be increased to 1920x1080+ by increasing the display resolution in Windows
+    * Run `qvm-features <windows_qube> gui 1` to make display show up after setup is complete
+    * When Qubes GUI driver is in use, may receive a message saying Windows is trying to spoof Dom0 GUI causing installation to pause. Fix by closing window.
+    * Prompt to install earlier version of .NET (However, qrexec services still seem to work): https://github.com/QubesOS/qubes-issues/issues/5091 (Waiting for this to make it into a QWT update, has been merged)
+    * No GUI driver
+        * This is the main priority currently for QWT: https://www.qubes-os.org/news/2016/01/27/windows-tools-open-source
+        * https://github.com/QubesOS/qubes-issues/issues/1861
+        * The resolution can still be increased to 1920x1080+ by increasing the display resolution in Windows
+
 Windows 10/Windows Server 2019:
-    - Private disk creation fails: https://github.com/QubesOS/qubes-issues/issues/5090
-        - Temp fix: Close prepare-volume.exe window causing there to be no private disk (can't make a template VM) but besides that it will continue as normal
+    * Private disk creation fails: https://github.com/QubesOS/qubes-issues/issues/5090
+        * Temp fix: Close prepare-volume.exe window causing there to be no private disk (can't make a template VM) but besides that it will continue as normal
+
 Windows Server 2008 R2:
-    - Even the most basic QWT installation will fail and make the computer constantly boot into recovery mode
-        - This is probably the same issue that occured with the very out-of-date Windows 7 ISO that was previously used
-        - You must install the Servicing Stack and Convenience Rollup updates packages first as guided [here](https://www.howtogeek.com/255435/how-to-update-windows-7-all-at-once-with-microsofts-convenience-rollup)
-        - You can also use the scripts used before switching to the more up-to-date Windows 7 media by doing a git checkout on commit: `e0bb3a6719f092b6bc687854f8ededb1a96e3e5f`
-        - Alternatively, you can just install all updates with Windows Update and eventually that will also give you all the updates included in the aforementioned update packages (Will take a long time; some reboots)
+    * Even the most basic QWT installation will fail and make the computer constantly boot into recovery mode
+        * This is probably the same issue that occured with the very out-of-date Windows 7 ISO that was previously used
+        * You must install the Servicing Stack and Convenience Rollup updates packages first as guided [here](https://www.howtogeek.com/255435/how-to-update-windows-7-all-at-once-with-microsofts-convenience-rollup)
+        * You can also use the scripts used before switching to the more up-to-date Windows 7 media by doing a git checkout on commit: `e0bb3a6719f092b6bc687854f8ededb1a96e3e5f`
+        * Alternatively, you can just install all updates with Windows Update and eventually that will also give you all the updates included in the aforementioned update packages (Will take a long time; some reboots)
 
 See here:
 
