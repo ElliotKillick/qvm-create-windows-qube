@@ -50,6 +50,8 @@ However, there are still ways to fingerprint you through the hypervisor (not spe
 
 You can start by giving this project a star! PRs are also welcome! Take a look at the todo list below if you're looking for things that need improvement. Other improvements such as more elegant ways of completing a task, code cleanup and other fixes are also welcome.
 
+Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc) for those interested.
+
 Note: This project is the product of an independent effort that is not offically endorsed by Qubes OS
 
 ## QWT Known Issues
@@ -80,8 +82,6 @@ See here:
 https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-tools
 https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
 
-Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc) for those interested.
-
 ## Todo
 
 - [x] Gain the ability to reliably unpack/insert answer file/repack for any given ISO 9660 (Windows ISO format)
@@ -110,8 +110,8 @@ Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc) for those interes
     - Windows Server (any edition) and Windows 7/8/10 "Enterprise Evaluation" do not need this because in these products Windows automatically uses the evaluation product key if no key is specified
     - This would replace the tedious process of getting the trial product keys of any Windows media currently in use (Read: create-media.sh)
 - [ ] I recently disovered this is a Qubes [Google Summer of Code](https://www.qubes-os.org/gsoc) project; which is cool
-    - Add automated tests
-        - Currently using ShellCheck manually
+    - [x] Add automated tests
+        - Using Travis CI for automated ShellCheck
     - ACPI tables for fetching Windows the license embedded there
         - It mentions use of C, however, it seems like it may be possible to just use shell: https://osxdaily.com/2018/09/09/how-find-windows-product-key
     - Port to Python?
