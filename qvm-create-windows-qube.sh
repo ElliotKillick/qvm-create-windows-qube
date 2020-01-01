@@ -26,7 +26,7 @@ usage() {
     echo "  -n, --netvm <qube> NetVM for Windows to use"
     echo "  -s, --seamless Enable seamless mode persistently across restarts"
     echo "  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube"
-    echo "  -y, --anti-spy Non-invasively disable and block Windows telemetry"
+    echo "  -y, --anti-spy Disable Windows telemetry"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -i, --iso <file> Windows media to automatically install and setup (default: $iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: $answer_file)"
