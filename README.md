@@ -22,7 +22,7 @@ Usage: ./qvm-create-windows-qube.sh [options] <name>
   -n, --netvm <qube> NetVM for Windows to use
   -s, --seamless Enable seamless mode persistently across restarts
   -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube
-  -y, --anti-spy Non-invasively disable and block Windows telemetry
+  -y, --anti-spy Disable Windows telemetry
   -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
   -i, --iso <file> Windows media to automatically install and setup (default: win7x64-ultimate.iso)
   -a, --answer-file <xml file> Settings for Windows installation (default: win7x64-ultimate.xml)
