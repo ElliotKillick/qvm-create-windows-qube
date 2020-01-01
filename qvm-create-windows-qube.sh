@@ -199,7 +199,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         # If qube with that name already exists, keep incrementing the number until one that does not exist is found
         i=0
         while qvm-check "$qube" &> /dev/null; do
-            ((i++))
+            ((i++)) || true
             qube="$name-$i"
         done
     else
