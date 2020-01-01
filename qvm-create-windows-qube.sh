@@ -237,7 +237,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     wait_for_shutdown
 
     echo -e "${BLUE}[i]${NC} Preparing Qubes Windows Tools for automatic installation..." >&2
-    # Pack latest QWT into auto-qwt
+    # Unpack latest QWT into auto-qwt
     qvm-run -p "$resources_qube" "cat > '$resources_dir/tools-media/qwt-installer.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
     qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './unpack-qwt-installer-media.sh'"
 
