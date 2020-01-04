@@ -298,7 +298,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     if [ "$anti_spy" == "true" ]; then
-        echo -e "${BLUE}[i]${NC} Disabling and blocking telemetry..." >&2
+        echo -e "${BLUE}[i]${NC} Disabling Windows telemetry..." >&2
         qvm-run -q "$qube" "cd $post_incoming_dir && anti-spy.bat"
     fi
 
