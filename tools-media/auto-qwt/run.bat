@@ -8,7 +8,7 @@ set to_drive=E:
 
 if "%~d0" == "%from_drive%" (
     rem Changing the driver letter takes a while so we must disable the network prompt now before it is displayed
-    start /wait cmd /c "%from_drive%\no-network-prompt.bat"
+    start /wait cmd /c "%from_drive%\disable-network-prompt.bat"
 
     rem After changing the drive letter the batch file is on, the command processor will no longer be able to read from it and close
     rem Therefore, we must run run.bat again
