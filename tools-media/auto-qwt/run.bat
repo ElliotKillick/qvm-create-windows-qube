@@ -17,5 +17,6 @@ if "%~d0" == "%from_drive%" (
 cd /d %to_drive%
 
 start cscript "allow-device-software.vbs"
+start /wait cmd /c "trust-certificates.bat"
 start cmd /c "install-qwt.bat"
 start cmd /c "wait-for-shutdown.bat"
