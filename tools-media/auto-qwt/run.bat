@@ -16,7 +16,7 @@ if "%~d0" == "%from_drive%" (
 )
 cd /d %to_drive%
 
-start cscript "allow-drivers.vbs"
+start wscript "allow-drivers.vbs"
 start /wait cmd /c "trust-certificates.bat"
 start cmd /c "install-qwt.bat"
 start cmd /c "wait-for-shutdown.bat"
