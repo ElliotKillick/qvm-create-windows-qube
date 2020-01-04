@@ -50,7 +50,7 @@ However, there are still ways to fingerprint you through the hypervisor (not spe
 
 You can start by giving this project a star! PRs are also welcome! Take a look at the todo list below if you're looking for things that need improvement. Other improvements such as more elegant ways of completing a task, code cleanup and other fixes are also welcome.
 
-Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc) for those interested.
+Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc) for those interested. :)
 
 Note: This project is the product of an independent effort that is not offically endorsed by Qubes OS
 
@@ -92,23 +92,36 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
 - [x] Provision Chocolatey
 - [x] Add an option to slim down Windows as documented in: https://www.qubes-os.org/doc/windows-template-customization/
 - [x] Make windows-mgmt air gapped
-- [ ] Consider installing INF drivers in OfflineServicing pass
-    - While the current way of installing them certainly works (just the QWT installer executable) it would be more proper to use this pass as this is what it's for
-    - Can get around Windows 7 planned obsolescence in an offical non-hacky way (See allow-device-software.vbs)
-    - Can use /ForceUnsigned option in DISM to allow Qubes GUI unsigned driver
-    - We would need to parse the WIM archive format
-    - For this we would use [wimlib](https://wimlib.net)
-    - Seems to supports directly adding files without unpacking/repacking using [wimupdate](https://wimlib.net/man1/wimupdate.html)
-    - 7-Zip also supports packing/unpacking WIM format
-    - This opens a new attack surface for vulnerabilities in wimlib/7-Zip parsing which is in C (wimlib) and C++ (7-Zip); so maybe it's not worth it (However, assuming we verify the SHA-256 of the ISO then it should be okay as long as the user doesn't use their own)
-    - We would definitely still have to run the QWT installation executable to setup things like the private disk
+- [ ] ~~Consider installing INF drivers in OfflineServicing pass~~
+    - ~~While the current way of installing them certainly works (just the QWT installer executable) it would be more proper to use this pass as this is what it's for~~
+    - ~~Can get around Windows 7 planned obsolescence in an offical non-hacky way (See allow-device-software.vbs)~~
+    - ~~Can use /ForceUnsigned option in DISM to allow Qubes GUI unsigned driver~~
+    - ~~We would need to parse the WIM archive format~~
+    - ~~For this we would use [wimlib](https://wimlib.net)~~
+    - ~~Seems to supports directly adding files without unpacking/repacking using [wimupdate](https://wimlib.net/man1/wimupdate.html)~~
+    - ~~7-Zip also supports packing/unpacking WIM format~~
+    - ~~This opens a new attack surface for vulnerabilities in wimlib/7-Zip parsing which is in C (wimlib) and C++ (7-Zip); so maybe it's not worth it (However, assuming we verify the SHA-256 of the ISO then it should be okay as long as the user doesn't use their own)~~
+    - ~~We would definitely still have to run the QWT installation executable to setup things like the private disk~~
+    - Not doing this because
+        - It's not how VMWare does it
+        - It's unnecessary complexity and thus insecure
+        - WinPE is really only for installing boot critical drivers
+        - We may encounter bugs having drivers installed that early
+        - Would have to get driver files (INFs, SYS files) seperate from EXE installer
+        - Too much work, not worth it
+        - We have the Windows 7 automatic driver installation problem pretty much worked out now so this isn't necessary to fix it
 - [ ] Possibly switch from udisksctl for reading/mounting ISOs because it is written in its man page that it is not intended for scripts
-    - guestfs?
-    - losetup/mount (requires sudo, but it's what's used by the Qubes core team in their scripts)
+    - guestfs
+    - losetup/mount (requires sudo, but it's what's used by the Qubes Core Team in their scripts)
     - Consider other alternatives
-- [ ] Create tool for extracting the product keys of every edition (Home, Professional, Ultimate, etc.) of Windows from any given Windows media
-    - Windows Server (any edition) and Windows 7/8/10 "Enterprise Evaluation" do not need this because in these products Windows automatically uses the evaluation product key if no key is specified
-    - This would replace the tedious process of getting the trial product keys of any Windows media currently in use (Read: create-media.sh)
+- [ ] ~~Create tool for extracting the product keys of every edition (Home, Professional, Ultimate, etc.) of Windows from any given Windows media~~
+    - ~~Windows Server (any edition) and Windows 7/8/10 "Enterprise Evaluation" do not need this because in these products Windows automatically uses the evaluation product key if no key is specified~~
+    - ~~This would replace the tedious process of getting the trial product keys of any Windows media currently in use (Read: create-media.sh)~~
+    - Not doing this because
+        - We may have to open the WIM which is something we don't want to get into for reasons already specified
+        - Or perhaps the key is located in the catalog ([CLG file](https://whatis.techtarget.com/fileformat/CLG-Windows-Catalog-file)) for each Windows editon which would be okay but we would have to reverse engineer the format
+            - Actually, no, I'm almost certain it's in the WIM because the CLG file is just what you open in Windows AIK/ADK to see what components are available for the answer file
+            - Also, the product key is asked for on the last boot (after WindowsPE and OfflineServicing) when the Windows CLG (embedded in the Windows install media) are not even available to Windows any more so definitely would have to open the WIM
 - [ ] I recently disovered this is a Qubes [Google Summer of Code](https://www.qubes-os.org/gsoc) project; which is cool
     - [x] Add automated tests
         - Using Travis CI for automated ShellCheck
@@ -116,7 +129,8 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
         - It mentions use of C, however, it seems like it may be possible to just use shell: https://osxdaily.com/2018/09/09/how-find-windows-product-key
     - Port to Python?
         - This seems like it would only add unnecessary LOC to scripts like create-media.sh where the Python script would essentially just be calling losetup/udisksctl and genisoimage
-        - This would be suitable for qvm-create-windows-qube.sh though
+        - This would certainly be suitable for qvm-create-windows-qube.sh though
+            - This would allow us to interchange data between Dom0 and the VM without worring about another Shellshock
     - Not mentioned on GSoC listing; but would probably have to port install.sh to SaltStack
         - As others have mentioned, SaltStack is not beginner friendly so some help here would be appreciated
 - [ ] Put this todo list into GitHub issues
