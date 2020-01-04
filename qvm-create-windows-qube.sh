@@ -289,29 +289,29 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     if [ "$seamless" == "true" ]; then
         echo -e "${BLUE}[i]${NC} Enabling seamless mode persistently..." >&2
-        qvm-run -q "$qube" "cd $post_incoming_dir && seamless.bat"
+        qvm-run -q "$qube" "cd $post_incoming_dir && seamless.bat" || true
     fi
 
     if [ "$optimize" == "true" ]; then
         echo -e "${BLUE}[i]${NC} Optimizing Windows..." >&2
-        qvm-run -q "$qube" "cd $post_incoming_dir && optimize.bat"
+        qvm-run -q "$qube" "cd $post_incoming_dir && optimize.bat" || true
     fi
 
     if [ "$anti_spy" == "true" ]; then
         echo -e "${BLUE}[i]${NC} Disabling Windows telemetry..." >&2
-        qvm-run -q "$qube" "cd $post_incoming_dir && anti-spy.bat"
+        qvm-run -q "$qube" "cd $post_incoming_dir && anti-spy.bat" || true
     fi
 
     if [ "$packages" ]; then
         echo -e "${BLUE}[i]${NC} Installing packages... (Ignore TLS warning; TLS 1.2 is in use)" >&2
-        qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 $packages <nul"
+        qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 $packages <nul" || true
 
         # Add new apps to app menu
         qvm-sync-appmenus "$qube" &> /dev/null
     fi
 
     echo -e "${BLUE}[i]${NC} Running user-defined custom commands..." >&2
-    qvm-run -p "$qube" "cd $post_incoming_dir && run.bat"
+    qvm-run -p "$qube" "cd $post_incoming_dir && run.bat" || true
 
     # Clean up post scripts and remove policy
     qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.."
