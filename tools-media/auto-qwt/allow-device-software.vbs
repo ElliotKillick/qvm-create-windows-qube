@@ -51,7 +51,7 @@
 Set wshShell = WScript.CreateObject("WScript.Shell")
 
 Do
-    ' Sets focus to window with given window title
+    ' Set focus to window with given window title
     ret = wshShell.AppActivate("Windows Security")
 
     ' Press "i" (ALT key) to install device software if focus is successful
