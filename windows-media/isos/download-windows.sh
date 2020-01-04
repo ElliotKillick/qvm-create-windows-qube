@@ -85,7 +85,6 @@ scurl_2() {
 }
 
 echo -e "${BLUE}[i]${NC} Downloading Windows media from Microsoft servers..." >&2
-cd "windows-media/isos" || exit
 
 if [ "$win7x64_ultimate" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows 7..." >&2
