@@ -1,5 +1,5 @@
 @echo off
 title %~f0
 
-cd "installer"
+cd installer
 for /f "tokens=*" %%a in ('dir /b qubes-tools-*.exe') do %%a /passive
