@@ -19,6 +19,7 @@ usage() {
     echo "  win10x64"
     echo "  win81x64-enterprise-eval"
     echo "  win10x64-enterprise-eval"
+    echo "  win10x64-ltsc-eval"
     echo "  win2008r2"
     echo "  win2012r2-eval"
     echo "  win2016-eval"
@@ -55,6 +56,9 @@ for arg in "$@"; do
             ;;
         win10x64-enterprise-eval)
             win10x64_enterprise_eval="true"
+            ;;
+        win10x64-ltsc-eval)
+            win10x64_ltsc_eval="true"
             ;;
         win2008r2)
             win2008r2="true"
@@ -126,6 +130,12 @@ if [ "$win10x64_enterprise_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows 10 Enterprise Evaluation..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-win10x64-enterprise-eval-enterprise
     scurl_2 "https://software-download.microsoft.com/download/pr/18363.418.191007-0143.19h2_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso" -o "win10x64-enterprise-eval.iso"
+fi
+
+if [ "$win10x64_ltsc_eval" ] || [ "$all" ]; then
+    echo -e "${BLUE}[i]${NC} Downloading Windows 10 Enterprise LTSC Evaluation..." >&2
+    # https://www.microsoft.com/en-us/evalcenter/evaluate-win10x64-enterprise-eval-enterprise
+    scurl_2 "https://software-download.microsoft.com/download/sg/17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso" -o "win10x64-ltsc-eval.iso"
 fi
 
 if [ "$win2008r2" ] || [ "$all" ]; then
