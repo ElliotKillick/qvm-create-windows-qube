@@ -44,7 +44,7 @@ Important: If RDP is to be enabled on the Windows qube (not default) then make s
 
 Privacy benefits by disabling unwanted Microsoft telemetry such as the Customer Experience Improvement Program (CEIP), Windows Error Reporting (WER) and Diagnostics Tracking service (DiagTrack), standardizing common Whonix recommeneded defaults such as "user" for the username and "host" for the hostname, and by resetting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Numbers (VSNs) and more.
 
-However, there are still ways to fingerprint you through the hypervisor (not specific to Windows): [lscpu](https://github.com/QubesOS/qubes-issues/issues/1142), [timezone](https://github.com/QubesOS/qubes-issues/issues/4429) (Can be mitigated by configuring UTC time in the BIOS/UEFI), screen resolution and depth, generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface), as well as much more obscure things. Note that many of these pieces of information don't represent very many bits of uniquely identifiable information and just like Tor, as the [userbase of Qubes OS](https://www.qubes-os.org/statistics) grows, these datapoints become increasingly less significant.
+However, there are still ways to fingerprint you through the hypervisor (not specific to Windows): [lscpu](https://github.com/QubesOS/qubes-issues/issues/1142), [timezone](https://github.com/QubesOS/qubes-issues/issues/4429) (Can be mitigated by configuring UTC time in the BIOS/UEFI), screen resolution and depth, generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface), as well as much more obscure things.
 
 ## Contributing
 
@@ -89,6 +89,7 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
 - [x] auto-qwt takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
 - [x] Support Windows 8.1-10 (Note: QWT doesn't fully offically any OS other than Windows 7 yet, however, everything is functional except the GUI driver)
 - [x] Support Windows Server 2008 R2 to Windows Server 2019
+- [x] Support Windows 10 Enterprise LSTC (Long Term Support Channel, provides security updates for 10 years, very stable and less bloat than stock Windows 10)
 - [x] Provision Chocolatey
 - [x] Add an option to slim down Windows as documented in: https://www.qubes-os.org/doc/windows-template-customization/
 - [x] Make windows-mgmt air gapped
@@ -107,4 +108,11 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
             - This would allow us to interchange data between Dom0 and the VM without worring about another Shellshock
     - Not mentioned on GSoC listing; but would probably have to port install.sh to SaltStack
         - As others have mentioned, SaltStack is not beginner friendly so some help here would be appreciated
+- [ ] Use wiminfo command to identify what version and editions of Windows an ISO contains
+    - Works just like DISM on Windows
+    - As simple as 1. Mount ISO 2. wiminfo install.wim (Parses XML into neat list)
 - [ ] Put this todo list into GitHub issues
+
+## End Goal
+
+Have feature similar (or superior) to VMWare's Windows "Easy Install" feature on Qubes: https://www.youtube.com/watch?v=1OpDXlttmE0
