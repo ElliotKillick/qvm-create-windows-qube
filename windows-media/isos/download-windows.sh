@@ -121,20 +121,20 @@ fi
 
 if [ "$win81x64_enterprise_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows 8.1 Enterprise Evaluation..." >&2
-    # Use to be here but got taken down: https://www.microsoft.com/en-us/evalcenter/evaluate-win81x64-enterprise-eval-enterprise
+    # Use to be here but got taken down: https://www.microsoft.com/en-us/evalcenter/evaluate-windows-8-1-enterprise
     # https://gist.github.com/eyecatchup/11527136b23039a0066f
     scurl_1 "https://download.microsoft.com/download/B/9/9/B999286E-0A47-406D-8B3D-5B5AD7373A4A/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_ENTERPRISE_EVAL_EN-US-IR3_CENA_X64FREE_EN-US_DV9.ISO" -o "win81x64-enterprise-eval.iso"
 fi
 
 if [ "$win10x64_enterprise_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows 10 Enterprise Evaluation..." >&2
-    # https://www.microsoft.com/en-us/evalcenter/evaluate-win10x64-enterprise-eval-enterprise
+    # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-10-enterprise
     scurl_2 "https://software-download.microsoft.com/download/pr/18363.418.191007-0143.19h2_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso" -o "win10x64-enterprise-eval.iso"
 fi
 
 if [ "$win10x64_ltsc_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows 10 Enterprise LTSC Evaluation..." >&2
-    # https://www.microsoft.com/en-us/evalcenter/evaluate-win10x64-enterprise-eval-enterprise
+    # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-10-enterprise
     scurl_2 "https://software-download.microsoft.com/download/sg/17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso" -o "win10x64-ltsc-eval.iso"
 fi
 
@@ -146,19 +146,19 @@ fi
 
 if [ "$win2012r2_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows Server 2012 R2..." >&2
-    # https://www.microsoft.com/en-us/evalcenter/evaluate-win2012r2-eval
+    # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2012-r2
     scurl_1 "https://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO" -o "win2012r2-eval.iso"
 fi
 
 if [ "$win2016_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows Server 2016..." >&2
-    # https://www.microsoft.com/en-us/evalcenter/evaluate-win2016-eval
+    # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2016
     scurl_2 "https://software-download.microsoft.com/download/pr/win2016_eval_Datacenter_EVAL_en-us_14393_refresh.ISO" -o "win2016-eval.iso"
 fi
 
 if [ "$win2019_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows Server 2019..." >&2
-    # https://www.microsoft.com/en-us/evalcenter/evaluate-win2019-eval
+    # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2019
     scurl_2 "https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso" -o "win2019-eval.iso"
 fi
 
