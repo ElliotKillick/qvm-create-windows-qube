@@ -100,18 +100,15 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
 - [ ] I recently disovered this is a Qubes [Google Summer of Code](https://www.qubes-os.org/gsoc) project; which is cool
     - [x] Add automated tests
         - Using Travis CI for automated ShellCheck
-    - ACPI tables for fetching Windows the license embedded there
+    - [ ] ACPI tables for fetching Windows the license embedded there
         - It mentions use of C, however, it seems like it may be possible to just use shell: https://osxdaily.com/2018/09/09/how-find-windows-product-key
-    - Port to Python?
+    - [ ] Port to Python
         - This seems like it would only add unnecessary LOC to scripts like create-media.sh where the Python script would essentially just be calling losetup/udisksctl and genisoimage
         - This would certainly be suitable for qvm-create-windows-qube.sh though
             - This would allow us to interchange data between Dom0 and the VM without worring about another Shellshock
-    - Not mentioned on GSoC listing; but would probably have to port install.sh to SaltStack
-        - As others have mentioned, SaltStack is not beginner friendly so some help here would be appreciated
 - [ ] Use wiminfo command to identify what version and editions of Windows an ISO contains
     - Works just like DISM on Windows
     - As simple as 1. Mount ISO 2. wiminfo install.wim (Parses XML into neat list)
-- [ ] Put this todo list into GitHub issues
 
 ## End Goal
 
