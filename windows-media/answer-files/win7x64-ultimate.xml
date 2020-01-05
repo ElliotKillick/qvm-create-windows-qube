@@ -27,9 +27,6 @@
             </ImageInstall>
             <UserData>
                 <AcceptEula>true</AcceptEula>
-                <ProductKey>
-                    <Key>D4F6K-QK3RD-TMVMJ-BBMRX-3MBMV</Key>
-                </ProductKey>
             </UserData>
             <DiskConfiguration>
                 <Disk wcm:action="add">
@@ -113,6 +110,7 @@
             <OOBE>
                 <NetworkLocation>Other</NetworkLocation>
                 <ProtectYourPC>3</ProtectYourPC>
+                <SkipMachineOOBE>true</SkipMachineOOBE>
             </OOBE>
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
