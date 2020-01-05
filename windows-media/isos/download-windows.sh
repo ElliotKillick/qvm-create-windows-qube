@@ -15,6 +15,8 @@ usage() {
     echo ""
     echo "Specify \"all\" or one or more of the following Windows media:"
     echo "  win7x64-ultimate"
+    echo "  win81x64"
+    echo "  win10x64"
     echo "  win81x64-enterprise-eval"
     echo "  win10x64-enterprise-eval"
     echo "  win2008r2"
@@ -42,6 +44,12 @@ for arg in "$@"; do
         win7x64-ultimate)
             win7x64_ultimate="true"
             ;;
+        win81x64)
+            win81x64="true"
+            ;;
+        win10x64)
+            win10x64="true"
+            ;;
         win81x64-enterprise-eval)
             win81x64_enterprise_eval="true"
             ;;
@@ -66,7 +74,7 @@ for arg in "$@"; do
     esac
 done
 
-if ! { [ "$win7x64_ultimate" ] || [ "$win81x64_enterprise_eval" ] || [ "$win10x64_enterprise_eval" ] || [ "$win2008r2" ] || [ "$win2012r2_eval" ] || [ "$win2016_eval" ] || [ "$win2019_eval" ] || [ "$all" ]; }; then
+if ! { [ "$win7x64_ultimate" ] || [ "$win81x64" ] || [ "$win10x64" ] || [ "$win81x64_enterprise_eval" ] || [ "$win10x64_enterprise_eval" ] || [ "$win2008r2" ] || [ "$win2012r2_eval" ] || [ "$win2016_eval" ] || [ "$win2019_eval" ] || [ "$all" ]; }; then
     echo -e "${RED}[!]${NC} Invalid Windows media specified" >&2
     exit 1
 fi
@@ -92,23 +100,31 @@ if [ "$win7x64_ultimate" ] || [ "$all" ]; then
     scurl_1 "https://download.microsoft.com/download/5/1/9/5195A765-3A41-4A72-87D8-200D897CBE21/7601.24214.180801-1700.win7sp1_ldr_escrow_CLIENT_ULTIMATE_x64FRE_en-us.iso" -o "win7x64-ultimate.iso"
 fi
 
-if [ "$win81x64_enterprise_eval" ] || [ "$all" ]; then
+if [ "$win81x64" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows 8.1..." >&2
     # Doesn't work because Microsoft gives links that are only valid for 24 hours (https://serverfault.com/questions/952196/how-do-i-download-a-win10x64-enterprise-eval-iso-file-from-microsoft-via-the-command-line)
     # https://www.microsoft.com/en-us/software-download/windows8ISO
-    #scurl_2 "https://software-download.microsoft.com/pr/Win8.1_English_x64.iso" -o "win81x64.iso"
+    # Returns 403 forbidden: scurl_2 "https://software-download.microsoft.com/pr/Win8.1_English_x64.iso" -o "win81x64.iso
+    echo -e "${RED}[!]${NC} Microsoft does not allow automatic downloading of this Windows media; please download it manually here: https://www.microsoft.com/en-us/software-download/windows8ISO (Don't forget to verify it afterwards)" >&2
+fi
 
+if [ "$win10x64" ] || [ "$all" ]; then
+    echo -e "${BLUE}[i]${NC} Downloading Windows 10..." >&2
+    # Doesn't work for same reason as Windows 8
+    # https://www.microsoft.com/en-us/software-download/windows10ISO
+    # Returns 403 forbidden: scurl_2 "https://software-download.microsoft.com/sg/Win10_1909_English_x64.iso" -o "win10x64.iso"
+    echo -e "${RED}[!]${NC} Microsoft does not allow automatic downloading of this Windows media; please download it manually here: https://www.microsoft.com/en-us/software-download/windows10ISO (Don't forget to verify it afterwards)" >&2
+fi
+
+if [ "$win81x64_enterprise_eval" ] || [ "$all" ]; then
+    echo -e "${BLUE}[i]${NC} Downloading Windows 8.1 Enterprise Evaluation..." >&2
     # Use to be here but got taken down: https://www.microsoft.com/en-us/evalcenter/evaluate-win81x64-enterprise-eval-enterprise
     # https://gist.github.com/eyecatchup/11527136b23039a0066f
     scurl_1 "https://download.microsoft.com/download/B/9/9/B999286E-0A47-406D-8B3D-5B5AD7373A4A/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_ENTERPRISE_EVAL_EN-US-IR3_CENA_X64FREE_EN-US_DV9.ISO" -o "win81x64-enterprise-eval.iso"
 fi
 
 if [ "$win10x64_enterprise_eval" ] || [ "$all" ]; then
-    echo -e "${BLUE}[i]${NC} Downloading Windows 10..." >&2
-    # Doesn't work for same reason as Windows 8
-    # https://www.microsoft.com/en-us/software-download/windows10ISO
-    #scurl_2 "https://software-download.microsoft.com/sg/Win10_1909_English_x64.iso" -o "win10x64.iso"
-
+    echo -e "${BLUE}[i]${NC} Downloading Windows 10 Enterprise Evaluation..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-win10x64-enterprise-eval-enterprise
     scurl_2 "https://software-download.microsoft.com/download/pr/18363.418.191007-0143.19h2_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso" -o "win10x64-enterprise-eval.iso"
 fi
