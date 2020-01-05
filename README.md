@@ -57,7 +57,7 @@ Note: This project is the product of an independent effort that is not offically
 ## QWT Known Issues
 
 HVMs, not QWT issue (Windows, sys-net, etc.):
-- Until this [bug](https://github.com/QubesOS/qubes-issues/issues/4684) is fixed upstream you must fix app menu syncing for HVMs (Windows, sys-net, etc.) by putting the provided `qubes-start.desktop` into `/usr/share/qubes-appmenus` in Dom0
+- Until this [bug](https://github.com/QubesOS/qubes-issues/issues/4684) is fixed upstream you must fix app menu syncing for HVMs (Windows, sys-net, etc.) by putting the provided `qubes-start.desktop` into `/usr/share/qubes-appmenus` in Dom0 if none is present
 
 All OSs:
 - Windows may crash on first boot after QWT is installed
@@ -68,13 +68,14 @@ All OSs:
 
 All OSs except Windows 7:
 - Run `qvm-features <windows_qube> gui 1` to make display show up after setup is complete
-- When Qubes GUI driver is in use, may receive a message saying Windows is trying to spoof Dom0 GUI causing installation to pause. Fix by closing window
-- Prompt to install earlier version of .NET (However, qrexec services still seem to work): https://github.com/QubesOS/qubes-issues/issues/5091 (Waiting for this to make it into a QWT update, has been merged)
+- When Qubes GUI driver is in use, may receive a message saying Windows is trying to spoof Dom0 GUI causing installation to pause
+    - Fix by clicking "Ignore" on prompt
+- [Prompt to install earlier version of .NET](https://github.com/QubesOS/qubes-issues/issues/5091) (However, qrexec services still seem to work. Waiting for this to make it into a QWT update, has been merged)
 - No GUI driver yet
     - The resolution can still be increased to 1920x1080 or higher by increasing the display resolution in Windows
 
 Windows 10/Windows Server 2019:
-- Private disk creation fails: https://github.com/QubesOS/qubes-issues/issues/5090 (Waiting for this to make it into a QWT update, has been merged)
+- [Private disk creation fails](https://github.com/QubesOS/qubes-issues/issues/5090) (Waiting for this to make it into a QWT update, has been merged)
     - Temp fix: Close prepare-volume.exe window causing there to be no private disk (can't make a template VM) but besides that it will continue as normal
 
 See here:
