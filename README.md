@@ -48,9 +48,9 @@ However, there are still ways to fingerprint you through the hypervisor (not spe
 
 ## Contributing
 
-You can start by giving this project a star! PRs are also welcome! Take a look at the todo list below if you're looking for things that need improvement. Other improvements such as more elegant ways of completing a task, code cleanup and other fixes are also welcome.
+You can start by giving this project a star! PRs are also welcome! Take a look at the todo list below if you're looking for things that need improvement. Other improvements such as more elegant ways of completing a task, code cleanup and other fixes are also welcome. :)
 
-Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc) for those interested. :)
+Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc) for those interested.
 
 Note: This project is the product of an independent effort that is not offically endorsed by Qubes OS
 
@@ -91,7 +91,7 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
 - [x] Support Windows Server 2008 R2 to Windows Server 2019
 - [x] Support Windows 10 Enterprise LSTC (Long Term Support Channel, provides security updates for 10 years, very stable and less bloat than stock Windows 10)
 - [x] Provision Chocolatey
-- [x] Add an option to slim down Windows as documented in: https://www.qubes-os.org/doc/windows-template-customization/
+- [x] Add an option to slim down Windows as documented for Qubes [here](https://www.qubes-os.org/doc/windows-template-customization/)
 - [x] Make windows-mgmt air gapped
 - [ ] Possibly switch from udisksctl for reading/mounting ISOs because it is written in its man page that it is not intended for scripts
     - guestfs
@@ -101,7 +101,7 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
     - [x] Add automated tests
         - Using Travis CI for automated ShellCheck
     - [ ] ACPI tables for fetching Windows the license embedded there
-        - It mentions use of C, however, it seems like it may be possible to just use shell: https://osxdaily.com/2018/09/09/how-find-windows-product-key
+        - It mentions use of C, however, it seems like it may be possible to [just use shell](https://osxdaily.com/2018/09/09/how-find-windows-product-key)
     - [ ] Port to Python
         - This seems like it would only add unnecessary LOC to scripts like create-media.sh where the Python script would essentially just be calling losetup/udisksctl and genisoimage
         - This would certainly be suitable for qvm-create-windows-qube.sh though
@@ -112,4 +112,4 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
 
 ## End Goal
 
-Have feature similar (or superior) to VMWare's Windows "Easy Install" feature on Qubes: https://www.youtube.com/watch?v=1OpDXlttmE0
+Have feature similar (or superior) to [VMWare's Windows "Easy Install"](https://www.youtube.com/watch?v=1OpDXlttmE0) feature on Qubes.
