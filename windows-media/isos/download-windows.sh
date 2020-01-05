@@ -71,13 +71,12 @@ for arg in "$@"; do
         all)
             all="true"
             ;;
+        *)
+            echo -e "${RED}[!]${NC} Invalid Windows media specified: $arg" >&2
+            exit 1
+            ;;
     esac
 done
-
-if ! { [ "$win7x64_ultimate" ] || [ "$win81x64" ] || [ "$win10x64" ] || [ "$win81x64_enterprise_eval" ] || [ "$win10x64_enterprise_eval" ] || [ "$win2008r2" ] || [ "$win2012r2_eval" ] || [ "$win2016_eval" ] || [ "$win2019_eval" ] || [ "$all" ]; }; then
-    echo -e "${RED}[!]${NC} Invalid Windows media specified" >&2
-    exit 1
-fi
 
 trap 'exit' ERR
 
