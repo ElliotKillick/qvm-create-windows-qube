@@ -8,6 +8,8 @@
 # Install desired edition (Home, Ultimate, Pro, etc.) of any given Windows media manually then proceed to run WinProdKeyFinder to get the key and use it in the answer file
 # Specifying a key is not required when the Windows edition is "Enterprise Evaluation" or any edition of Windows Server
 
+# Update: Found a way to avoid hardcoding the product key for any version/edition of Windows which is great because it makes the answer files more adaptable to working with any given Windows media
+
 # Test for 4-bit color (16 colors)
 if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
     RED='\033[0;31m'
