@@ -109,8 +109,11 @@ https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
             - This would allow us to interchange data between Dom0 and the VM without worring about another Shellshock
 - [ ] Use wiminfo command to identify what version and editions of Windows an ISO contains
     - Works just like DISM on Windows
-    - As simple as 1. Mount ISO 2. wiminfo install.wim (Parses XML into neat list)
+    - As simple as 1. Mount ISO 2. wiminfo install.wim (Parses embedded XML into neat list)
+- [ ] Headless mode
 
 ## End Goal
 
 Have feature similar (or superior) to [VMWare's Windows "Easy Install"](https://www.youtube.com/watch?v=1OpDXlttmE0) feature on Qubes.
+
+VirtualBox also has [something similar](https://blogs.oracle.com/scoter/oracle-vm-virtualbox-52:-unattended-guest-os-install).
