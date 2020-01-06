@@ -5,10 +5,11 @@
 # Optional: Validate answer file with Windows AIK/ADK (Must add cpi:offlineImage tag to answer file referencing the CLG or WIM file embedded in the ISO)
 
 # Get product key: https://github.com/mrpeardotnet/WinProdKeyFinder/releases
-# Install desired edition (Home, Ultimate, Pro, etc.) of any given Windows media manually then proceed to run WinProdKeyFinder to get the key and use it in the answer file
-# Specifying a key is not required when the Windows edition is "Enterprise Evaluation" or any edition of Windows Server
+# Install desired edition (Home, Ultimate, Pro, etc.) of any given Windows media manually then proceed to run WinProdKeyFinder to get the trial key and use it in the answer file
+# Specifying a key is not required for "Evaluation" Windows media
 
 # Update: Found a way to avoid hardcoding the product key for any version/edition of Windows which is great because it makes the answer files more adaptable to working with any given Windows media
+# Also, we don't have to do the tedious work of installing the Windows media manually then running that tool to get the trail product key
 
 # Test for 4-bit color (16 colors)
 if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
