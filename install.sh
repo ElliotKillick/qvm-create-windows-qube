@@ -71,18 +71,18 @@ echo -e "${BLUE}[i]${NC} Please check for a good PGP signature (Verify it out-of
 qvm-run -q "$resources_qube" "gpg --keyserver keys.openpgp.org --recv-keys 018FB9DE6DFA13FB18FB5552F9B90D44F83DD5F2"
 qvm-run -p "$resources_qube" "cd '$resources_dir' && git verify-commit \$(git rev-list --max-parents=0 HEAD)"
 
-echo -e "${BLUE}[i]${NC} Downloading Windows 7 (More can be downloaded later by using download-windows.sh)..." >&2
+echo -e "${BLUE}[i]${NC} Downloading Windows 7 (Other versions of Windows can be downloaded later by using download-windows.sh)..." >&2
 qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && ./download-windows.sh win7x64-ultimate"
 
 echo -e "${BLUE}[i]${NC} Air gapping $resources_qube..." >&2
 qvm-prefs "$resources_qube" netvm ""
 
-echo -e "${BLUE}[i]${NC} Installing package dependencies in $template..." >&2
+echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
 fedora_packages="genisoimage geteltorito"
 debian_packages="genisoimage"
 qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
 
-echo -e "${BLUE}[i]${NC} Shutting down $resources_qube and $template so the root filesystems can sync up..." >&2
+echo -e "${BLUE}[i]${NC} Shutting down $resources_qube and $template so the root filesystems sync up..." >&2
 qvm-shutdown --wait "$resources_qube" "$template"
 
 echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
