@@ -24,7 +24,7 @@ usage() {
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
     echo "  -t, --template Make this qube a TemplateVM instead of a StandaloneVM"
     echo "  -n, --netvm <qube> NetVM for Windows to use"
-    echo "  -s, --seamless Enable seamless mode persistently across restarts"
+    echo "  -s, --seamless Enable seamless mode persistently across reboots"
     echo "  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube"
     echo "  -y, --anti-spy Disable Windows telemetry"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
