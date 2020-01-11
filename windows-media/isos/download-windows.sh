@@ -25,7 +25,7 @@ usage() {
     echo "  win2016-eval"
     echo "  win2019-eval"
     echo ""
-    echo "Important: The direct ISO downloads listed here are not necessarily subject to being updated and it is therefore recommended that the site referenced above each curl command is checked to see if a newer version is available"
+    echo "Important: The direct ISO downloads listed here are not necessarily subject to being updated and it is therefore recommended that the source referenced above each curl command is checked to see if a newer version is available"
 }
 
 for arg in "$@"; do
