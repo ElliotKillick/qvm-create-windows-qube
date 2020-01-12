@@ -18,7 +18,7 @@ Usage: ./qvm-create-windows-qube.sh [options] <name>
   -c, --count <number> Number of Windows qubes with given basename desired
   -t, --template Make this qube a TemplateVM instead of a StandaloneVM
   -n, --netvm <qube> NetVM for Windows to use
-  -s, --seamless Enable seamless mode persistently across restarts
+  -s, --seamless Enable seamless mode persistently across reboots
   -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube
   -y, --anti-spy Disable Windows telemetry
   -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
