@@ -9,7 +9,7 @@
 # Specifying a key is not required for "Evaluation" Windows media
 
 # Update: Found a way to avoid hardcoding the product key for any version/edition of Windows which is great because it makes the answer files more adaptable to working with any given Windows media
-# Also, we don't have to do the tedious work of installing the Windows media manually then running that tool to get the trail product key
+# Also, we don't have to do the tedious work of installing the Windows media manually then running that tool to get the trial product key
 
 # Test for 4-bit color (16 colors)
 if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
