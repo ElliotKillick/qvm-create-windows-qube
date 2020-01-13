@@ -44,7 +44,7 @@ Important: If RDP is to be enabled on the Windows qube (not default) then make s
 
 Privacy benefits by disabling unwanted Microsoft telemetry such as the Customer Experience Improvement Program (CEIP), Windows Error Reporting (WER) and Diagnostics Tracking service (DiagTrack), standardizing common Whonix recommeneded defaults such as "user" for the username and "host" for the hostname, and by resetting unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Numbers (VSNs) and more.
 
-However, there are still ways to fingerprint you through the hypervisor (not specific to Windows): [lscpu](https://github.com/QubesOS/qubes-issues/issues/1142), [timezone](https://github.com/QubesOS/qubes-issues/issues/4429) (Can be mitigated by configuring UTC time in the BIOS/UEFI), screen resolution and depth, generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface), as well as much more obscure things.
+However, there are still ways to fingerprint you through the hypervisor (not specific to Windows): [lscpu](https://github.com/QubesOS/qubes-issues/issues/1142), [Xen clocksource](https://phabricator.whonix.org/T389) (Can be partially mitigated by configuring UTC time in the BIOS/UEFI), screen resolution and depth, generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface), as well as much more obscure things.
 
 ## Contributing
 
