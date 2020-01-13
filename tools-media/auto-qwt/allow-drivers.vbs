@@ -38,7 +38,7 @@
 ' Solution:
 '     - Found the correct KB (KB2921916) available for download at: http://thehotfixshare.net/board/index.php?autocom=downloads&showfile=18882
 '     - Requires restart
-'     - Could be installed in WindowsPE pass "Installing Updates..."
+'     - Could be installed in WindowsPE pass "Installing updates..."
 '     - Trying to find if the MSU can be found not indexed on an offical Microsoft download server
 '     - Not available on: https://catalog.update.microsoft.com
 '     - Hotfix use to be available but Microsoft no longer does hotfixes for any OS: http://hotfixv4.microsoft.com/Windows%207/Windows%20Server2008%20R2%20SP1/sp2/Fix485407/7600/free/471834_intl_x64_zip.exe
