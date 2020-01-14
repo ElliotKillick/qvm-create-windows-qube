@@ -74,6 +74,9 @@ qvm-run -p "$resources_qube" "cd '$resources_dir' && git verify-commit \$(git re
 echo -e "${BLUE}[i]${NC} Downloading Windows 7 (Other versions of Windows can be downloaded later by using download-windows.sh)..." >&2
 qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && ./download-windows.sh win7x64-ultimate"
 
+echo -e "${BLUE}[i]${NC} Shutting down $resources_qube..." >&2
+qvm-shutdown --wait "$resources_qube"
+
 echo -e "${BLUE}[i]${NC} Air gapping $resources_qube..." >&2
 qvm-prefs "$resources_qube" netvm ""
 
