@@ -10,7 +10,7 @@ NC='\033[0m'
 usage() {
     echo "Usage: ${0} [NetVM]"
     echo ""
-    echo "Setup resources qube, download Windows, install package dependencies in template, install Qubes Windows Tools and finally copy qvm-create-windows-qube.sh to Dom0"
+    echo "Create resources qube, install package dependencies in template, clone project repo, download Windows, install Qubes Windows Tools and finally copy qvm-create-windows-qube.sh to Dom0"
     echo ""
     echo "The optional NetVM paramater is the NetVM for use in downloading the project and Windows media (default: sys-firewall if no global default is set)"
 }
@@ -64,6 +64,14 @@ if ! [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
     qvm-prefs "$resources_qube" netvm "$resources_qube_netvm"
 fi
 
+echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
+fedora_packages="genisoimage geteltorito"
+debian_packages="genisoimage curl"
+qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
+
+echo -e "${BLUE}[i]${NC} Shutting down $template..." >&2
+qvm-shutdown --wait "$template"
+
 echo -e "${BLUE}[i]${NC} Cloning qvm-create-windows-qube GitHub repository..." >&2
 qvm-run -p "$resources_qube" "cd ${resources_dir%/*} && git clone https://github.com/elliotkillick/qvm-create-windows-qube"
 
@@ -79,14 +87,6 @@ qvm-shutdown --wait "$resources_qube"
 
 echo -e "${BLUE}[i]${NC} Air gapping $resources_qube..." >&2
 qvm-prefs "$resources_qube" netvm ""
-
-echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
-fedora_packages="genisoimage geteltorito"
-debian_packages="genisoimage"
-qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
-
-echo -e "${BLUE}[i]${NC} Shutting down $template..." >&2
-qvm-shutdown --wait "$template"
 
 echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
 sudo qubes-dom0-update -y qubes-windows-tools
