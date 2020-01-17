@@ -33,6 +33,7 @@ Note: If the Qubes GUI driver is unwanted, either due to stability or peformance
 ### Examples
 
 Windows 7: `./qvm-create-windows-qube.sh -n sys-firewall -soyp firefox,notepadplusplus,office365business win7-work`
+
 Windows 10 (After downloading with `download-windows.sh`): `./qvm-create-windows-qube.sh -n sys-firewall -oyp firefox,notepadplusplus,office365business -i win10x64-pro.iso -a win10x64-pro.xml win10-work`
 
 ## Security
