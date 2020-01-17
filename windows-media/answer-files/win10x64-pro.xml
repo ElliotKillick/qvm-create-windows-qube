@@ -106,6 +106,7 @@
             <OOBE>
                 <NetworkLocation>Other</NetworkLocation>
                 <ProtectYourPC>3</ProtectYourPC>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
             </OOBE>
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
