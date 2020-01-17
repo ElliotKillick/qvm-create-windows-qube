@@ -85,8 +85,8 @@ fedora_packages="genisoimage geteltorito"
 debian_packages="genisoimage"
 qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
 
-echo -e "${BLUE}[i]${NC} Shutting down $resources_qube and $template so the root filesystems sync up..." >&2
-qvm-shutdown --wait "$resources_qube" "$template"
+echo -e "${BLUE}[i]${NC} Shutting down $template..." >&2
+qvm-shutdown --wait "$template"
 
 echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
 sudo qubes-dom0-update -y qubes-windows-tools
