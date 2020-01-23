@@ -314,12 +314,18 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-run -p "$qube" "cd $post_incoming_dir && run.bat" || true
 
     # Clean up post scripts and remove policy
-    qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.."
+    qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.." || true
     sed -i "/^$policy$/d" "$policy_file"
 
     # Shutdown and wait until complete before finishing or starting next installation
-    qvm-run -q "$qube" "shutdown /s /t 0"
-    wait_for_shutdown
+    if qvm-run -q "$qube" "shutdown /s /t 0"; then
+        # This is a more graceful method of shutdown
+        wait_for_shutdown
+    else
+        echo -e "${RED}[!]${NC} Qubes Windows Tools has stopped working! This is probably the result of installing a conflicting package. Shutting down..."
+        # Example of conflicting package: vcredist140 (during install of vcredist140-x64)
+        qvm-shutdown --wait "$qube"
+    fi
 
     # Give reasonable amount of memory for actual use
     qvm-prefs "$qube" memory 2048
