@@ -59,7 +59,7 @@ cleanup() {
 
     if [ -d "$temp_dir" ]; then
         echo -e "${BLUE}[i]${NC} Deleting temporary folder..." >&2
-        chmod -R +w "$temp_dir" # Permissions are originally read-only because ISO 9660 is a read-only format
+        chmod -R +w "$temp_dir" # Read-only permissions were inherited because ISO 9660 is a read-only format
         rm -r "$temp_dir"
     fi
 
