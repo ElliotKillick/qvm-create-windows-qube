@@ -27,14 +27,15 @@ usage() {
     echo "  -s, --seamless Enable seamless mode persistently across reboots"
     echo "  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube"
     echo "  -y, --anti-spy Disable Windows telemetry"
+    echo "  -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -i, --iso <file> Windows media to automatically install and setup (default: $iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: $answer_file)"
 }
 
 # Option strings
-short="hc:tn:soyp:i:a:"
-long="help,count:,template,netvm:,seamless,optimize,anti-spy,packages:,iso:,answer-file:"
+short="hc:tn:soywp:i:a:"
+long="help,count:,template,netvm:,seamless,optimize,anti-spy,whonix,packages:,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -76,6 +77,10 @@ while true; do
             ;;
         -y | --anti-spy)
             anti_spy="true"
+            shift
+            ;;
+        -w | --whonix)
+            whonix="true"
             shift
             ;;
         -p | --packages)
@@ -300,6 +305,12 @@ for (( counter = 1; counter <= count; counter++ )); do
     if [ "$anti_spy" == "true" ]; then
         echo -e "${BLUE}[i]${NC} Disabling Windows telemetry..." >&2
         qvm-run -q "$qube" "cd $post_incoming_dir && anti-spy.bat" || true
+    fi
+
+    if [ "$whonix" == "true" ]; then
+        echo -e "${BLUE}[i]${NC} Applying Whonix recommended settings for a Windows-Whonix-Workstation..." >&2
+        qvm-tags "$qube" add anon-vm
+        qvm-run -q "$qube" "cd $post_incoming_dir && whonix.bat" || true
     fi
 
     if [ "$packages" ]; then
