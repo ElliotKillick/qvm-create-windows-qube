@@ -9,7 +9,7 @@ qvm-create-windows-qube is a tool for quickly and conveniently installing fresh 
 3. Review the code of `install.sh` to ensure its integrity (Safer with escape character filtering enabled above; qvm-run disables it by default when output is a file)
 4. Run `chmod +x install.sh && ./install.sh`
 5. Review the code of the resulting `qvm-create-windows-qube.sh`
-6. Please see "QWT Known Issues" below to complete installation. (In particular, the fix for broken appmenus *must* be applied)
+6. Please see "QWT Known Issues" below to complete installation (In particular, the fix for broken appmenus *must* be applied)
 
 ## Usage
 
