@@ -31,9 +31,11 @@ Usage: ./qvm-create-windows-qube.sh [options] <name>
 ### Examples
 
 Windows 7:
+
 `./qvm-create-windows-qube.sh -n sys-firewall -soyp firefox,notepadplusplus,office365business work-win7`
 
 Windows 10 (After downloading with `download-windows.sh`):
+
 `./qvm-create-windows-qube.sh -n sys-whonix -oyw -i win10x64-enterprise-eval.iso -a win10x64-enterprise-eval.xml anon-win10`
 
 ## Security
