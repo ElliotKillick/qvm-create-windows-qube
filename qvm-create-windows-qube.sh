@@ -250,7 +250,15 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './pack-auto-qwt.sh'"
 
     echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
-    qvm-prefs "$qube" netvm "$netvm"
+
+    # NetVM must be attached for QWT to setup the networking driver
+    # However, to keep Windows air gapped for the entire setup we drop all packets at the firewall so Windows cannot connect to the Internet yet
+    if [ "$netvm" ]; then
+        qvm-firewall "$qube" del accept
+        qvm-firewall "$qube" add drop
+        qvm-prefs "$qube" netvm "$netvm"
+    fi
+
     until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-qwt.iso" "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
         sleep 10
@@ -311,6 +319,14 @@ for (( counter = 1; counter <= count; counter++ )); do
         echo -e "${BLUE}[i]${NC} Applying Whonix recommended settings for a Windows-Whonix-Workstation..." >&2
         qvm-tags "$qube" add anon-vm
         qvm-run -q "$qube" "cd $post_incoming_dir && whonix.bat" || true
+    fi
+
+    # Let Windows connect to the Internet
+    # After anti-spy and whonix scripts but before packages
+    # Independent of whether or not packages are being installed, user-defined commands should have Internet access for consistency
+    if [ "$netvm" ]; then
+        qvm-firewall "$qube" del drop
+        qvm-firewall "$qube" add accept
     fi
 
     if [ "$packages" ]; then
