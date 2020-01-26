@@ -11,7 +11,7 @@ for %%f in ("WindowsGadgetPlatform" "TabletPCOC" "MSRDC-Infrastructure" "Printin
 echo Disabling services...
 rem Some of the services in the documentation are either already disabled by Windows or their functionality disabled in a cleaner way below
 rem Some such as the "Disk Defragmenter" or "defragsvc" service are set to disabled by QWT installer
-for %%s in ("SSDPSRV" "lmhosts" "VSS") do (
+for %%s in ("SSDPSRV" "lmhosts") do (
     sc config %%s start= disabled
 )
 
