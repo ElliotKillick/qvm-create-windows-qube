@@ -326,6 +326,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     # After anti-spy and whonix scripts but before packages
     # Independent of whether or not packages are being installed, user-defined commands should have Internet access for consistency
     if [ "$netvm" ]; then
+        echo -e "${BLUE}[i]${NC} Breaking air gap so Windows can connect to the Internet..." >&2
         qvm-firewall "$qube" del drop
         qvm-firewall "$qube" add accept
     fi
