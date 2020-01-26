@@ -160,13 +160,14 @@ if [ "$packages" ]; then
         exit 1
     fi
 
-    if [ "$netvm" == "sys-whonix" ] || [ "$(qvm-prefs "$resources_qube" netvm)" == "sys-whonix" ]; then
+    if qvm-tags "$netvm" list anon-gateway &> /dev/null; then
         echo -e "${RED}[!]${NC} Due to Chocolatey blocking Tor, packages cannot be used with NetVM: $netvm" >&2
         exit 1
     fi
 
-    # If resources qube has a NetVM (is not air gapped) then check if packages exist
-    if [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
+    # If resources qube has a NetVM (is not air gapped) that is not an anon-gateway (Tor is blocked) then check if packages exist
+    resources_netvm="$(qvm-prefs "$resources_qube" netvm)"
+    if [ "$resources_netvm" ] && ! qvm-tags "$resources_netvm" list anon-gateway &> /dev/null; then
         IFS="," read -ra package_arr <<< "$packages"
         for package in "${package_arr[@]}"; do
             if qvm-run -q "$resources_qube" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')\" != 404 ]; then exit 1; fi"; then
