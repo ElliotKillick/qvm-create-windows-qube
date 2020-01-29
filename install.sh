@@ -75,7 +75,7 @@ qvm-shutdown --wait "$template"
 echo -e "${BLUE}[i]${NC} Cloning qvm-create-windows-qube GitHub repository..." >&2
 qvm-run -p "$resources_qube" "cd ${resources_dir%/*} && git clone https://github.com/elliotkillick/qvm-create-windows-qube"
 
-echo -e "${BLUE}[i]${NC} Please check for a "Good signature" from GPG..." >&2
+echo -e "${BLUE}[i]${NC} Please check for a \"Good signature\" from GPG..." >&2
 qvm-run -q "$resources_qube" "gpg --keyserver keys.openpgp.org --recv-keys 018FB9DE6DFA13FB18FB5552F9B90D44F83DD5F2"
 qvm-run -p "$resources_qube" "cd '$resources_dir' && git verify-commit \$(git rev-list --max-parents=0 HEAD)"
 
