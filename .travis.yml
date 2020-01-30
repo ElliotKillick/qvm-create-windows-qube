@@ -1,4 +1,4 @@
 dist: bionic
 language: shell
 script:
-  - bash -c 'shopt -s globstar nullglob; shellcheck **/*.{sh,ksh,bash}'
+  - bash -c 'shopt -s globstar nullglob; shellcheck **/*.sh'
