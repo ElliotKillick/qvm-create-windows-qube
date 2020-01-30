@@ -122,4 +122,5 @@
             </FirstLogonCommands>
         </component>
     </settings>
+    <cpi:offlineImage cpi:source="" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>
