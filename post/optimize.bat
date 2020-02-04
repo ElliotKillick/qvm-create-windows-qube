@@ -25,7 +25,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoReb
 
 rem echo Adjusting visual effects for best performance...
 rem Severely reduces Windows 7 appearance but in Windows 10 it's acceptable
-rem Does noticeably increases performance
+rem Does noticeably increase performance
 rem reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f
 
 echo Disabling Action Center tray icon and notifications...
