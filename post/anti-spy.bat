@@ -3,7 +3,7 @@ title %~f0
 
 rem Answer file disables Customer Experience Improvement Program (CEIP) and Windows Error Reporting (WER)
 
-rem In Windows 10 answer files, ProtectYourPC flips switches in the Settings application to disable telemetry in Windows (It functions differently from previous Windows versions where it configured automatic updates)
+rem In Windows 10 answer files, ProtectYourPC changes settings in the Settings application to disable telemetry in Windows (It functions differently from previous Windows versions where it configured automatic updates)
 rem https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-shell-setup-oobe-protectyourpc
 
 rem Set telemetry level to "Security" which is the lowest possible
