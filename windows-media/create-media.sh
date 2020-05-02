@@ -20,7 +20,7 @@ if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
 fi
 
 usage() {
-    echo "Usage: ${0} iso answer_file"
+    echo "Usage: ${0} iso [answer_file]"
 }
 
 for arg in "$@"; do
@@ -30,7 +30,7 @@ for arg in "$@"; do
     fi
 done
 
-if [ "$#" != "2" ]; then
+if ! [ "$#" -le "2" ]; then
     usage >&2
     exit 1
 fi
@@ -43,7 +43,7 @@ if ! [ -f "$iso" ]; then
     exit 1
 fi
 
-if ! [ -f "$answer_file" ]; then
+if [ "$#" == 2 ] && [ ! -f "$answer_file" ]; then
     echo -e "${RED}[!]${NC} Answer file not found: $answer_file" >&2
     exit 1
 fi
@@ -88,12 +88,28 @@ done
 iso_mntpoint="${iso_mntpoint#Mounted * at }"
 iso_mntpoint="${iso_mntpoint%.}"
 
+wim="$iso_mntpoint/sources/install.wim"
+
+if ! [ "$answer_file" ]; then
+    echo -e "${BLUE}[i]${NC} Selecting Windows image..." >&2
+    wim="$iso_mntpoint/sources/install.wim"
+    image="$(./choose-image.sh "$wim" "$answer_file")"
+    answer_file="$(./select_answer_file.py -w "$wim")"
+
+    echo -e "${BLUE}[i]${NC} Automatically selected answer file $(basename "$answer_file")..." >&2
+fi
+
 echo -e "${BLUE}[i]${NC} Copying loop device contents to temporary folder..." >&2
 temp_dir="$(mktemp -dp out)" # tmpfs on /tmp may be too small
 cp -r "$iso_mntpoint/." "$temp_dir"
 
 echo -e "${BLUE}[i]${NC} Copying answer file to Autounattend.xml in temporary folder..." >&2
 cp "$answer_file" "$temp_dir/Autounattend.xml"
+
+if ! [ "$answer_file" ]; then
+    echo -e "${BLUE}[i]${NC} Modifying answer file to use user-defined image..." >&2
+    ./modify_answer_file_image.py -a "$temp_dir/Autounattend.xml" -i "$image"
+fi
 
 echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
 # https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso
