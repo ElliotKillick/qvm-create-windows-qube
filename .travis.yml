@@ -2,3 +2,4 @@ dist: bionic
 language: shell
 script:
   - bash -c 'shopt -s globstar nullglob; shellcheck **/*.sh'
+  - bash -c 'shopt -s globstar nullglob; pylint --exit-zero **/*.py'
