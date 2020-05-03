@@ -93,8 +93,8 @@ wim="$iso_mntpoint/sources/install.wim"
 if ! [ "$answer_file" ]; then
     echo -e "${BLUE}[i]${NC} Selecting Windows image..." >&2
     wim="$iso_mntpoint/sources/install.wim"
-    image="$(./choose-image.sh "$wim" "$answer_file")"
-    answer_file="$(./select_answer_file.py -w "$wim")"
+    image="$(./answer-file-selection/choose-image.sh "$wim" "$answer_file")"
+    answer_file="$(./answer-file-selection/select_answer_file.py -w "$wim")"
 
     echo -e "${BLUE}[i]${NC} Automatically selected answer file $(basename "$answer_file")..." >&2
 fi
