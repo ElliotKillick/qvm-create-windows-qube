@@ -65,8 +65,8 @@ if ! [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
 fi
 
 echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
-fedora_packages="genisoimage geteltorito"
-debian_packages="genisoimage curl"
+fedora_packages="genisoimage geteltorito wimlib"
+debian_packages="genisoimage curl wimtools"
 qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
 
 echo -e "${BLUE}[i]${NC} Shutting down $template..." >&2
