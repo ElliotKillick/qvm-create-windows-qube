@@ -85,7 +85,7 @@ done
 trap 'exit' ERR
 
 download_microsoft_com_key="sha256//2e0F/Ardt/GQmXeDy1wheisQhjSImsJtf1rIekoQE7E="
-software_download_microsoft_com_key="sha256//PPjoAKk+kCVr9VNPXJkyHXEKnIyd5t5NqpPL3zCvJOE="
+software_download_microsoft_com_key="sha256//XkxB3HpkW1URRks+KuhFNxVJTbtJeWIvl1KzpWrplcM="
 
 scurl_1() {
     curl --pinnedpubkey "$download_microsoft_com_key" --tlsv1.2 --proto =https "$@"
