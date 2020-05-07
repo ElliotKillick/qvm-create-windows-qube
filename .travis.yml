@@ -5,7 +5,6 @@ addons:
       update: true
       packages: pylint3
 script:
-  - bash -c 'pylint --help'
   - bash -c 'shopt -s globstar nullglob; shellcheck **/*.sh'
   - bash -c 'shopt -s globstar nullglob; pylint3 --errors-only -d import-error  **/*.py'
   - bash -c 'shopt -s globstar nullglob; pylint3 -d import-error **/*.py || true'
