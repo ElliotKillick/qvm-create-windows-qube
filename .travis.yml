@@ -1,9 +1,10 @@
 dist: bionic
-language: minimal
+language: shell
 addons:
     apt:
       update: true
       packages: pylint3
 script:
   - bash -c 'shopt -s globstar nullglob; shellcheck **/*.sh'
-  - bash -c 'shopt -s globstar nullglob; pylint3 --help'
+  - bash -c 'shopt -s globstar nullglob; pylint3 --errors-only **/*.py'
+  - bash -c 'shopt -s globstar nullglob; pylint3 **/*.py || true'
