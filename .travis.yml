@@ -1,5 +1,9 @@
 dist: bionic
-language: shell
+language: minimal
+addons:
+    apt:
+      update: true
+      packages: pylint3
 script:
   - bash -c 'shopt -s globstar nullglob; shellcheck **/*.sh'
-  - bash -c 'shopt -s globstar nullglob; pylint --exit-zero **/*.py'
+  - bash -c 'shopt -s globstar nullglob; pylint3 --exit-zero **/*.py'
