@@ -7,32 +7,17 @@ import os
 import sys
 from difflib import SequenceMatcher
 import lxml.etree
-import subprocess
 import Levenshtein
-
-# Beware XXE is enabled by default: https://bugs.launchpad.net/lxml/+bug/1742885
-safe_parser = lxml.etree.XMLParser(resolve_entities=False)
-
-def get_wim_image_names(wim):
-    wiminfo = subprocess.check_output(['wiminfo', '--xml', wim], encoding='utf-16-le')
-    wiminfo_tree = lxml.etree.fromstring(wiminfo, safe_parser)
-
-    wim_image_elements = wiminfo_tree.xpath('/WIM/IMAGE/NAME')
-
-    wim_image_names = []
-    for wim_image_element in wim_image_elements:
-        wim_image_names.append(wim_image_element.text)
-
-    return wim_image_names
+import constants
 
 def get_answer_file_image_names():
     answer_file_images = []
 
     for entry in os.scandir('../answer-files'):
-        tree = lxml.etree.parse(entry.path, safe_parser)
+        tree = lxml.etree.parse(entry.path, constants.SAFE_PARSER)
         answer_file_image = tree.xpath(('/u:unattend/u:settings/u:component/u:ImageInstall'
                                         '/u:OSImage/u:InstallFrom/u:MetaData/u:Value'),
-                                        namespaces={'u': 'urn:schemas-microsoft-com:unattend'})
+                                       namespaces={'u': 'urn:schemas-microsoft-com:unattend'})
         answer_file_images.append(answer_file_image[0].text)
 
     return answer_file_images
@@ -58,7 +43,7 @@ def main():
                         help='Windows image (WIM) file')
     args = parser.parse_args()
 
-    wim_images = get_wim_image_names(args.wim.name)
+    wim_images = constants.get_wim_image_names(args.wim.name)
 
     #for wim_image in wim_images:
     #    print(wim_image)

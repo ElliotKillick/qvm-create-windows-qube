@@ -3,26 +3,8 @@
 """Get and/or validate Windows edition image name or number"""
 
 import argparse
-import subprocess
 import sys
-import lxml.etree
-
-# Beware XXE is enabled by default: https://bugs.launchpad.net/lxml/+bug/1742885
-safe_parser = lxml.etree.XMLParser(resolve_entities=False)
-
-def get_wim_image_names(wim):
-    """Get a list of all the image names in a WIM"""
-
-    wiminfo = subprocess.check_output(['wiminfo', '--xml', wim], encoding='utf-16-le')
-    wiminfo_tree = lxml.etree.fromstring(wiminfo, safe_parser)
-
-    wim_image_elements = wiminfo_tree.xpath('/WIM/IMAGE/NAME')
-
-    wim_image_names = []
-    for wim_image_element in wim_image_elements:
-        wim_image_names.append(wim_image_element.text)
-
-    return wim_image_names
+import constants
 
 def print_numbered_list(items):
     """Print a numbered list of the given items"""
@@ -71,7 +53,7 @@ def main():
 
     print('[i] Detecting editions of Windows on media...', file=sys.stderr)
 
-    wim_images = get_wim_image_names(args.wim.name)
+    wim_images = constants.get_wim_image_names(args.wim.name)
 
     edition_image_name = None
 
