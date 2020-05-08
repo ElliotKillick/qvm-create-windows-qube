@@ -27,7 +27,7 @@ echo Disabling ICMP timestamps...
 netsh firewall set icmpsetting 13 disable
 
 rem I checked what happens on a suspend/resume:
-rem     - The clock keeps it's original skew
+rem     - The clock keeps its original skew
 rem     - The clock jumps forward to make up for the time it was suspended
 rem     - All seems good
 rem Things to consider (https://www.whonix.org/wiki/Network_Time_Synchronization#Summary):
