@@ -11,10 +11,6 @@ The project emphasizes correctness, security and treating Windows as an untruste
 3. Review the code of `install.sh` to ensure its integrity (Safer with escape character filtering enabled above; qvm-run disables it by default when output is a file)
 4. Run `chmod +x install.sh && ./install.sh`
 5. Review the code of the resulting `qvm-create-windows-qube.sh`
-6. Please see "QWT Known Issues" below to complete installation
-    - In particular, the fix for broken application menus *must* be applied or the installation will silently fail midway through
-    - Also, the fix for no Windows desktop showing up after successful completion of installation *must* be applied on Windows 8.1/10 and Windows Server 2012R2/2016/2019
-    - It's best to read the whole thing so there are no surprises
 
 ## Usage
 
@@ -116,10 +112,7 @@ This project is the product of an independent effort that is not officially endo
 
 ## QWT Known Issues
 
-I may get around to patching some of these upstream issues later if nobody else does. Some of them require building QWT for which I would have to become the maintainer for, but, as of right now, I simply lack the time.
-
-HVMs, not QWT issue (Windows, sys-net, etc.):
-- Until this [bug](https://github.com/QubesOS/qubes-issues/issues/4684) is fixed upstream you must fix app menu syncing for HVMs by putting the provided `qubes-start.desktop` into `/usr/share/qubes-appmenus` in Dom0 if none is present
+I may get around to patching some of these upstream issues later if nobody else does. Fixing these issues requires building QWT for which I would have to become the maintainer for, but, as of right now, I simply lack the time.
 
 All OSs:
 - If Qubes GUI driver is not installed you must run `qvm-features <windows_qube> gui 1` to make display show up after setup is complete (Any OS other than by default Windows 7/Windows Server 2008 R2 does not support Qubes GUI driver)
