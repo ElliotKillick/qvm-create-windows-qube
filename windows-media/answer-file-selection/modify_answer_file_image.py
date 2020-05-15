@@ -18,7 +18,7 @@ def main():
 
     old_value.text = args.value
 
-    write_xml_file(xml_tree, args.answer_file.name)
+    write_answer_file(xml_tree, args.answer_file.name)
 
 def parse_args():
     """Parse command-line arguments"""
@@ -52,11 +52,12 @@ def get_answer_file_value_at_xpath(xpath, xml_tree):
 
     return xml_tree.xpath(xpath, namespaces={'u': 'urn:schemas-microsoft-com:unattend'})[0]
 
-def write_xml_file(xml_tree, xml_file):
-    """Write XML tree to file"""
+def write_answer_file(xml_tree, answer_file_name):
+    """Write XML tree to answer file"""
 
-    # Try to create minimal diff between formatting of original XML document
-    xml_tree.write(xml_file, encoding='UTF-8', pretty_print=True,
+    # Try to create minimal diff between formatting of original answer file for consistency
+    # i.e. Output of Windows AIK/ADK
+    xml_tree.write(answer_file_name, encoding='UTF-8', pretty_print=True,
                    doctype='<?xml version="1.0" encoding="utf-8"?>')
 
 if __name__ == '__main__':
