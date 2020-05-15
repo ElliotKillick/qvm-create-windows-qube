@@ -13,8 +13,8 @@ import constants
 def get_answer_file_image_names():
     answer_file_images = []
 
-    for entry in os.scandir('../answer-files'):
-        tree = lxml.etree.parse(entry.path, constants.SAFE_PARSER)
+    for answer_file in os.scandir('../answer-files'):
+        tree = lxml.etree.parse(answer_file.path, constants.SAFE_PARSER)
         answer_file_image = tree.xpath(('/u:unattend/u:settings/u:component/u:ImageInstall'
                                         '/u:OSImage/u:InstallFrom/u:MetaData/u:Value'),
                                        namespaces={'u': 'urn:schemas-microsoft-com:unattend'})
