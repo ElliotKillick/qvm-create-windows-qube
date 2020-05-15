@@ -33,7 +33,7 @@ def parse_args():
     return parser.parse_args()
 
 def setting_to_xpath(setting):
-    """Convert setting name to xpath of its location"""
+    """Convert setting name to answer file xpath location"""
 
     setting_to_xpath_dict = {
         'image': ('/u:unattend/u:settings/u:component/u:ImageInstall'
