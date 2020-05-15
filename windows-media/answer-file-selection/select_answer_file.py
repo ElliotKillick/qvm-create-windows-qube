@@ -10,6 +10,14 @@ import lxml.etree
 import Levenshtein
 import constants
 
+def parse_args():
+    """Parse command-line arguments"""
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', '--wim', type=argparse.FileType('r'), required=True,
+                        help='Windows image (WIM) file')
+    return parser.parse_args()
+
 def get_answer_file_image_names():
     answer_file_images = []
 
@@ -38,10 +46,7 @@ def similar(str_a, str_b):
 def main():
     """Program entry point"""
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-w', '--wim', type=argparse.FileType('r'), required=True,
-                        help='Windows image (WIM) file')
-    args = parser.parse_args()
+    args = parse_args()
 
     wim_images = constants.get_wim_image_names(args.wim.name)
 

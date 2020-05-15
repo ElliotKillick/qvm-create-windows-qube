@@ -6,6 +6,14 @@ import argparse
 import sys
 import constants
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', '--wim', type=argparse.FileType('r'), required=True,
+                        help='Windows Imaging Format (WIM) file')
+    parser.add_argument('-i', '--image', type=str,
+                        help='Image name or number in WIM')
+    return parser.parse_args()
+
 def print_numbered_list(items):
     """Print a numbered list of the given items"""
 
@@ -44,12 +52,7 @@ def validate_image_num_name(image, wim_images):
 def main():
     """Program entry point"""
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-w', '--wim', type=argparse.FileType('r'), required=True,
-                        help='Windows Imaging Format (WIM) file')
-    parser.add_argument('-i', '--image', type=str,
-                        help='Image name or number in WIM')
-    args = parser.parse_args()
+    args = parse_args()
 
     print('[i] Detecting editions of Windows on media...', file=sys.stderr)
 

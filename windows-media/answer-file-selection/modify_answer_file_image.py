@@ -7,6 +7,18 @@ import sys
 import lxml.etree
 import constants
 
+def parse_args():
+    """Parse command-line arguments"""
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--setting', type=str, required=True,
+                        help='Setting to change in answer file: image, admin_password')
+    parser.add_argument('-v', '--value', type=str, required=True,
+                        help='New value of setting')
+    parser.add_argument('-a', '--answer-file', type=argparse.FileType('r'), required=True,
+                        help='Settings for Windows installation')
+    return parser.parse_args()
+
 def setting_to_xpath(setting):
     """Convert setting name to xpath of its location"""
 
@@ -37,14 +49,7 @@ def write_xml_file(xml_tree, xml_file):
 def main():
     """Program entry point"""
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--setting', type=str, required=True,
-                        help='Setting to change in answer file: image, admin_password')
-    parser.add_argument('-v', '--value', type=str, required=True,
-                        help='New value of setting')
-    parser.add_argument('-a', '--answer-file', type=argparse.FileType('r'), required=True,
-                        help='Settings for Windows installation')
-    args = parser.parse_args()
+    args = parse_args()
 
     xpath = setting_to_xpath(args.setting)
     xml_tree = lxml.etree.parse(args.answer_file.name, constants.SAFE_PARSER)
