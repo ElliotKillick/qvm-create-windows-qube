@@ -5,7 +5,7 @@
 import argparse
 import sys
 import lxml.etree
-import constants
+import common
 
 def parse_args():
     """Parse command-line arguments"""
@@ -52,7 +52,7 @@ def main():
     args = parse_args()
 
     xpath = setting_to_xpath(args.setting)
-    xml_tree = lxml.etree.parse(args.answer_file.name, constants.SAFE_PARSER)
+    xml_tree = lxml.etree.parse(args.answer_file.name, common.SAFE_PARSER)
     old_value = get_answer_file_value_at_xpath(xpath, xml_tree)
 
     old_value.text = args.value

@@ -8,7 +8,7 @@ import sys
 from difflib import SequenceMatcher
 import lxml.etree
 import Levenshtein
-import constants
+import common
 
 def parse_args():
     """Parse command-line arguments"""
@@ -22,7 +22,7 @@ def get_answer_file_image_names():
     answer_file_images = []
 
     for answer_file in os.scandir('../answer-files'):
-        tree = lxml.etree.parse(answer_file.path, constants.SAFE_PARSER)
+        tree = lxml.etree.parse(answer_file.path, common.SAFE_PARSER)
         answer_file_image = tree.xpath(('/u:unattend/u:settings/u:component/u:ImageInstall'
                                         '/u:OSImage/u:InstallFrom/u:MetaData/u:Value'),
                                        namespaces={'u': 'urn:schemas-microsoft-com:unattend'})
@@ -48,7 +48,7 @@ def main():
 
     args = parse_args()
 
-    wim_images = constants.get_wim_image_names(args.wim.name)
+    wim_images = common.get_wim_image_names(args.wim.name)
 
     #for wim_image in wim_images:
     #    print(wim_image)

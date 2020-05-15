@@ -4,7 +4,7 @@
 
 import argparse
 import sys
-import constants
+import common
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -56,7 +56,7 @@ def main():
 
     print('[i] Detecting editions of Windows on media...', file=sys.stderr)
 
-    wim_images = constants.get_wim_image_names(args.wim.name)
+    wim_images = common.get_wim_image_names(args.wim.name)
 
     edition_image_name = None
 

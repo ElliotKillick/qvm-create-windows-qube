@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-"""Constants used in answer-file-selection"""
+"""Common code used in answer-file-selection"""
 
 import subprocess
 import lxml.etree
