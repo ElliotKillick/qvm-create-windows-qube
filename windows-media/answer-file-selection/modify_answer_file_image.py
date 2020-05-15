@@ -7,6 +7,19 @@ import sys
 import lxml.etree
 import common
 
+def main():
+    """Program entry point"""
+
+    args = parse_args()
+
+    xpath = setting_to_xpath(args.setting)
+    xml_tree = lxml.etree.parse(args.answer_file.name, common.SAFE_PARSER)
+    old_value = get_answer_file_value_at_xpath(xpath, xml_tree)
+
+    old_value.text = args.value
+
+    write_xml_file(xml_tree, args.answer_file.name)
+
 def parse_args():
     """Parse command-line arguments"""
 
@@ -45,19 +58,6 @@ def write_xml_file(xml_tree, xml_file):
     # Try to create minimal diff between formatting of original XML document
     xml_tree.write(xml_file, encoding='UTF-8', pretty_print=True,
                    doctype='<?xml version="1.0" encoding="utf-8"?>')
-
-def main():
-    """Program entry point"""
-
-    args = parse_args()
-
-    xpath = setting_to_xpath(args.setting)
-    xml_tree = lxml.etree.parse(args.answer_file.name, common.SAFE_PARSER)
-    old_value = get_answer_file_value_at_xpath(xpath, xml_tree)
-
-    old_value.text = args.value
-
-    write_xml_file(xml_tree, args.answer_file.name)
 
 if __name__ == '__main__':
     main()

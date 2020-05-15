@@ -10,39 +10,6 @@ import lxml.etree
 import Levenshtein
 import common
 
-def parse_args():
-    """Parse command-line arguments"""
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-w', '--wim', type=argparse.FileType('r'), required=True,
-                        help='Windows image (WIM) file')
-    return parser.parse_args()
-
-def get_answer_file_image_names():
-    answer_file_images = []
-
-    for answer_file in os.scandir('../answer-files'):
-        tree = lxml.etree.parse(answer_file.path, common.SAFE_PARSER)
-        answer_file_image = tree.xpath(('/u:unattend/u:settings/u:component/u:ImageInstall'
-                                        '/u:OSImage/u:InstallFrom/u:MetaData/u:Value'),
-                                       namespaces={'u': 'urn:schemas-microsoft-com:unattend'})
-        answer_file_images.append(answer_file_image[0].text)
-
-    return answer_file_images
-
-# This is a classic classification problem we could potentially utilize machine learning to solve
-# However,
-# 1. This is probably overkill; and
-# 2. Bigger data would most likely be required to create a good classification model
-def similar(str_a, str_b):
-    """
-    Get float value of how similar two strings are
-
-    https://stackoverflow.com/questions/17388213/find-the-similarity-metric-between-two-strings
-    """
-
-    return SequenceMatcher(None, str_a, str_b).ratio()
-
 def main():
     """Program entry point"""
 
@@ -84,6 +51,39 @@ def main():
     answer_file = answer_files[best_match_indicies[0]]
 
     print(answer_file)
+
+def parse_args():
+    """Parse command-line arguments"""
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', '--wim', type=argparse.FileType('r'), required=True,
+                        help='Windows image (WIM) file')
+    return parser.parse_args()
+
+def get_answer_file_image_names():
+    answer_file_images = []
+
+    for answer_file in os.scandir('../answer-files'):
+        tree = lxml.etree.parse(answer_file.path, common.SAFE_PARSER)
+        answer_file_image = tree.xpath(('/u:unattend/u:settings/u:component/u:ImageInstall'
+                                        '/u:OSImage/u:InstallFrom/u:MetaData/u:Value'),
+                                       namespaces={'u': 'urn:schemas-microsoft-com:unattend'})
+        answer_file_images.append(answer_file_image[0].text)
+
+    return answer_file_images
+
+# This is a classic classification problem we could potentially utilize machine learning to solve
+# However,
+# 1. This is probably overkill; and
+# 2. Bigger data would most likely be required to create a good classification model
+def similar(str_a, str_b):
+    """
+    Get float value of how similar two strings are
+
+    https://stackoverflow.com/questions/17388213/find-the-similarity-metric-between-two-strings
+    """
+
+    return SequenceMatcher(None, str_a, str_b).ratio()
 
 if __name__ == '__main__':
     main()
