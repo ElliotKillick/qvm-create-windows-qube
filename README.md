@@ -1,8 +1,8 @@
 # qvm-create-windows-qube
 
-qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org) with [Xen PV drivers](https://xenproject.org/windows-pv-drivers/) and [Qubes Windows Tools (QWT)](https://xenproject.org/windows-pv-drivers/) automatically. It supports Windows 7/8.1/10 and Windows Server 2008R2/2012R2/2016/2019.
+qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org) with [Xen PV drivers](https://xenproject.org/windows-pv-drivers/) and [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) automatically. It supports Windows 7/8.1/10 and Windows Server 2008R2/2012R2/2016/2019.
 
-The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. It also features other goodies such as automatic installation of packages such as Firefox, Office 365, Notepad++ and Visual Studio using [Chocolatey](https://chocolatey.org/).
+The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. It also features other goodies such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using [Chocolatey](https://chocolatey.org/).
 
 ## Installation
 
