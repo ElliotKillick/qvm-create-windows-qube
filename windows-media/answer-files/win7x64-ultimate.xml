@@ -41,19 +41,6 @@
                     </CreatePartitions>
                 </Disk>
             </DiskConfiguration>
-            <RunAsynchronous>
-                <RunAsynchronousCommand wcm:action="add">
-                    <!-- Get a shell during installation for testing -->
-                    <!--<Path>cmd /k echo Do : Set wshShell = WScript.CreateObject("WScript.Shell") : wshShell.AppActivate("cscript  foreground.vbs") : Loop > foreground.vbs &amp; cscript foreground.vbs</Path>-->
-                    <!-- Many commands suchs as the timeout command do not exist in Windows PE; other ways to sleep were tried but only using WSH worked -->
-                    <!-- Runs at "Completing installation"/"Finishing up" stage when BCD is written to disk -->
-                    <!-- This setting requires a restart so we do it now to skip a boot cycle later -->
-                    <!-- Wait until size of BCD is greater than zero then enable test signing -->
-                    <Path>cmd /q /c title Enable Test Signing&amp; mode 50,1 &amp; echo WScript.Sleep(1000)&gt; sleep.vbs &amp; for /l %n in () do for %i in (C:\Boot\BCD) do if %~zi gtr 0 (bcdedit /set {default} testsigning on &amp;&amp; exit) else cscript /nologo sleep.vbs</Path>
-                    <Description>Enables test signing for unsigned Qubes GUI driver</Description>
-                    <Order>1</Order>
-                </RunAsynchronousCommand>
-            </RunAsynchronous>
         </component>
     </settings>
     <settings pass="offlineServicing">
@@ -83,6 +70,15 @@
             <DisableFirstRunWizard>true</DisableFirstRunWizard>
             <Home_Page>about:blank</Home_Page>
             <Help_Page>about:blank</Help_Page>
+        </component>
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                   <Path>bcdedit /set testsigning on</Path>
+                   <Description>Enable test signing for unsigned Qubes GUI driver</Description>
+                   <Order>1</Order>
+                </RunSynchronousCommand>
+             </RunSynchronous>
         </component>
     </settings>
     <settings pass="oobeSystem">
