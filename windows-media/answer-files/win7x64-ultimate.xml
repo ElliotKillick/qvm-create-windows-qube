@@ -110,7 +110,7 @@
             </OOBE>
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd /c D:\run.bat</CommandLine>
+                    <CommandLine>D:\run.bat</CommandLine>
                     <Description>Start QWT installation</Description>
                     <Order>1</Order>
                     <RequiresUserInput>true</RequiresUserInput>
