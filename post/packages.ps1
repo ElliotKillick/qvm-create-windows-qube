@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-Installs Chocolatey and specified packages
+Install Chocolatey and specified packages
 .PARAMETER Packages
-Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
+Comma-separated list of packages to install (see available packages at: https://chocolatey.org/packages)
 #>
 
 Param (
