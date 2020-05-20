@@ -2,7 +2,7 @@
 
 qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org) with [Xen PV drivers](https://xenproject.org/windows-pv-drivers/) and [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) automatically. It supports Windows 7/8.1/10 and Windows Server 2008R2/2012R2/2016/2019.
 
-The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. It also features other goodies such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using [Chocolatey](https://chocolatey.org/).
+The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. It also features other goodies such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using [Chocolatey](https://chocolatey.org).
 
 ## Installation
 
@@ -49,7 +49,7 @@ Windows Server 2019:
 
 ## Security
 
-qvm-create-windows-qube is "reasonably secure," as Qubes would have it.
+qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.org) would have it.
 
 - `windows-mgmt` is air gapped
 - The entirety of the Windows qube setup process happens is done air gapped
@@ -91,22 +91,22 @@ Everything mentioned [here](https://www.whonix.org/wiki/Other_Operating_Systems)
 
 ### Easy to Reset Fingerprint
 
-There are countless unique identifiers present in every Windows installation such as the MachineGUID, NTFS drive Volume Serial Numbers (VSNs), NTFS filesystem timestamps and more. With qvm-create-windows-qube, these unique identifiers can easily be reset by automatically reinstalling Windows.
+There are countless unique identifiers present in every Windows installation such as the MachineGUID, installation ID, NTFS drive Volume Serial Numbers (VSNs) and more. With qvm-create-windows-qube, these unique identifiers can easily be reset by automatically reinstalling Windows.
 
 ### Limitations
 
 Fingerprinting is possible through the hypervisor in the event of VM compromise, here are some practical examples (not specific to Windows):
 
-- [Xen clocksource](https://phabricator.whonix.org/T389)
+- [Xen clocksource](https://phabricator.whonix.org/T389/)
     - Can partially be mitigated by configuring UTC time in the BIOS/UEFI, local timezone can still be configured for XFCE Dom0 clock
 - [lscpu](https://github.com/QubesOS/qubes-issues/issues/1142)
-- Generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface) (e.g. screen dimensions)
+- Generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface/) (e.g. screen dimensions)
 
 ## Contributing
 
 You can start by giving this project a star! PRs are also welcome! Take a look at the todo list below if you're looking for things that need improvement. Other improvements such as more elegant ways of completing a task, code cleanup and other fixes are also welcome. :)
 
-Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc) for those interested.
+Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc/) for those interested.
 
 This project is the product of an independent effort that is not officially endorsed by Qubes OS.
 
@@ -153,11 +153,11 @@ See here:
     - guestfs
     - losetup/mount (requires sudo, but it's what's used by the Qubes Core Team in their scripts)
     - Consider other alternatives
-- [ ] I recently discovered this is a Qubes [Google Summer of Code](https://www.qubes-os.org/gsoc) project; which is cool
+- [ ] I recently discovered this is a Qubes [Google Summer of Code](https://www.qubes-os.org/gsoc/) project; which is cool
     - [x] Add automated tests
         - Using Travis CI for automated ShellCheck
     - [ ] ACPI tables for fetching Windows the license embedded there
-        - It mentions use of C, however, it seems like it may be possible to [just use shell](https://osxdaily.com/2018/09/09/how-find-windows-product-key)
+        - It mentions use of C, however, in [this](https://www.qubes-os.org/doc/windows-vm/#simple-windows-install) Qubes documentation it looks to be accessible simply using shell
     - [ ] Port to Python
         - This seems like it would only add unnecessary LOC to scripts like create-media.sh where the Python script would essentially just be calling udisksctl and genisoimage
         - This would certainly be suitable for `qvm-create-windows-qube.sh` though
@@ -165,11 +165,14 @@ See here:
 - [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the wiminfo command (Currently a WIP; see branch)
     - Works just like DISM on Windows
 - [x] Follow [this](https://www.whonix.org/wiki/Other_Operating_Systems) Whonix documentation to make Windows-Whonix-Workstation
-- [ ] Add functionality for `create-media.sh` to add MSUs (Microsoft Update standalone packages) to be installed during Windows PE pass ("Installing updates...") of Windows Setup for patching critical issues
+- [ ] Add functionality for `create-media.sh` to add MSUs (Microsoft Update standalone packages) to be installed during the Windows PE pass ("Installing updates...") of Windows setup
     - We could fix currently not working QWT installation for old Windows 7 SP1 and Windows Server 2008 R2 ISOs using [KB4474419](https://github.com/QubesOS/qubes-issues/issues/3585#issuecomment-521280301) to add SHA-256 support
     - Allows us to get rid of `allow-drivers.vbs` hack by fixing SHA-256 automatic driver installation bug
-    - Patch BlueKeep for Windows 7 out-of-the-box
-    - Windows Server 2008 R2 base ISO is also vulnerable to ETERNALBLUE and BlueKeep out-of-the-box
+        - The other option is to have Xen sign their drivers with SHA-1 as well, which other driver vendors seem to do, but is not ideal from a security standpoint
+    - Patch a couple Windows security bugs?
+        - Patch BlueKeep for Windows 7 out-of-the-box
+        - Windows Server 2008 R2 base ISO is also vulnerable to ETERNALBLUE and BlueKeep out-of-the-box
+        - Probably not worth getting into that, users should just update the VM upon making it
 - [ ] Headless mode
 
 ## End Goal
