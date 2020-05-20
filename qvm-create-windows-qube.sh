@@ -287,7 +287,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Wait for app menu to synchronize (Automatically done once Qubes detects QWT)
     command_pattern="/usr/bin/python3 /usr/bin/qvm-sync-appmenus $qube"
-    # Sync usually starts right away but due to a race condition we need both loops to must make sure we catch when the sync begins and wait until it ends
+    # Sync usually starts right away but due to a race condition we need both loops to make sure we catch when the sync begins and wait until it ends
     until pgrep -fx "$command_pattern" &> /dev/null; do
         sleep 1
     done
