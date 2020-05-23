@@ -45,7 +45,7 @@ Windows 10 LTSC:
 
 Windows Server 2019:
 
-`./qvm-create-windows-qube.sh -n sys-firewall -oy -i win2019-eval.iso -a win2019-datacenter-eval.xml dc-win2019`
+`./qvm-create-windows-qube.sh -n sys-firewall -oy -i win2019-eval.iso -a win2019-datacenter-eval.xml fs-win2019`
 
 ## Security
 
@@ -64,7 +64,7 @@ qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.
     - SHA-256 verification of the files after download
 - Packages such as Firefox are offered out of the box so the infamously insecure Internet Explorer never has to be used
 - Windows is treated as an untrusted guest operating system the entire way through
-- The impact of any theoretical vulnerabilities in handling of the Windows ISO is limited to `windows-mgmt`
+- The impact of any theoretical vulnerabilities in handling of the Windows ISO or answer file is limited to `windows-mgmt`
 
 Windows 7 and Windows Server 2008 R2 reached [End Of Life (EOL) on January 14, 2020](https://support.microsoft.com/en-us/help/4057281/windows-7-support-will-end-on-january-14-2020). Updates for these OSs are still available with Extended Security Updates (ESUs) if paid for. Office 365 for these OSs will continue getting security updates until [January 2023](https://support.office.com/en-us/article/windows-7-end-of-support-and-office-78f20fab-b57b-44d7-8368-06a8493f3cb9).
 
