@@ -26,7 +26,7 @@
 '    - PnpUnattend.exe also gives the prompt despite its name
 '
 ' Unattemped solutions:
-'     - Install drivers in offlineServicing unattend pass (setup.exe has a /installCert option for Windows 7+ that looks promising)
+'     - Install drivers in offlineServicing unattend pass (setup.exe has a /installCert option for Windows 7+ which looks promising)
 '     - Temporarily hijack/overwrite the pnpui.dll that rundll32.exe uses to make prompt so that the called function always "returns true" to the button being pressed
 '         - rundll32 calls InstallSecurityPromptRunDllW which internally calls another exported function InstallSecurityPrompt to create the prompt
 '         - OpenEvent/SetEvent WinAPI functions communicate back to the parent process drvinst.exe on whether or not the user said yes to the prompt
@@ -43,10 +43,11 @@
 '     - Found the correct KB (KB2921916) available for download at: http://thehotfixshare.net/board/index.php?autocom=downloads&showfile=18882
 '         - The KB number was in the original help URL and the "Update Available" link the entire time
 '     - Requires restart
-'     - Could be installed in WindowsPE pass "Installing updates..."
+'     - Could be installed in WindowsPE pass during "Installing updates..."
 '     - Trying to find if the MSU can be found not indexed on an offical Microsoft download server
 '     - Not available on: https://catalog.update.microsoft.com
-'     - Hotfix use to be available but Microsoft no longer does hotfixes for any OS: http://hotfixv4.microsoft.com/Windows%207/Windows%20Server2008%20R2%20SP1/sp2/Fix485407/7600/free/471834_intl_x64_zip.exe
+'     - Hotfix used to be available but Microsoft no longer does hotfixes for any OS: http://hotfixv4.microsoft.com/Windows%207/Windows%20Server2008%20R2%20SP1/sp2/Fix485407/7600/free/471834_intl_x64_zip.exe
+'         - They seem to have moved the hotfixes on to here, but still can't find the one we're looking for: https://www.catalog.update.microsoft.com/Search.aspx?q=hotfix+for+Windows+7
 '     - https://charismathics.zendesk.com/hc/en-us/articles/231993568-How-to-enable-SHA2-Support-on-Windows-7
 '         - KB3033929 is already installed
 '         - Correct KB is not part of standard updates, must be installed manually
@@ -59,10 +60,10 @@ Set wshShell = WScript.CreateObject("WScript.Shell")
 
 Do
     ' Set focus to window with given window title
-    ret = wshShell.AppActivate("Windows Security")
+    isFocused = wshShell.AppActivate("Windows Security")
 
     ' Press "i" (ALT key) to install device software if focus is successful
-    If ret = True Then
+    If isFocused = True Then
         wshShell.SendKeys "i"
     End If
 
