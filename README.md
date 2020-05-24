@@ -158,8 +158,11 @@ See here:
         - Using Travis CI for automated ShellCheck
     - [ ] ACPI tables for fetching Windows the license embedded there
         - It mentions use of C, however, in [this](https://www.qubes-os.org/doc/windows-vm/#simple-windows-install) Qubes documentation it looks to be accessible simply using shell
+        - Found more info on this, should be very simple by just placing the following jinja libvirt template extension in `/etc/qubes/templates/libvirt/xen/by-name`:
+            - https://github.com/QubesOS/qubes-issues/issues/5279#issuecomment-525947408
+            - Thanks to @jevank for the patch
     - [ ] Port to Python
-        - This seems like it would only add unnecessary LOC to scripts like create-media.sh where the Python script would essentially just be calling udisksctl and genisoimage
+        - This seems like it would be unnecessary for scripts like `create-media.sh` where the Python script would essentially just be calling udisksctl and genisoimage
         - This would certainly be suitable for `qvm-create-windows-qube.sh` though
             - This would allow us to interchange data between Dom0 and the VM without worrying about another Shellshock
 - [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the wiminfo command (Currently a WIP; see branch)
