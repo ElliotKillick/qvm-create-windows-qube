@@ -158,7 +158,7 @@ See here:
         - Using Travis CI for automated ShellCheck
     - [ ] ACPI tables for fetching Windows the license embedded there
         - It mentions use of C, however, in [this](https://www.qubes-os.org/doc/windows-vm/#simple-windows-install) Qubes documentation it looks to be accessible simply using shell
-        - Found more info on this, should be very simple by just placing the following jinja libvirt template extension in `/etc/qubes/templates/libvirt/xen/by-name`:
+        - Found more info on this, should be very simple by just placing the following jinja libvirt template extension in `/etc/qubes/templates/libvirt/xen/by-name/<windows_qube>`:
             - https://github.com/QubesOS/qubes-issues/issues/5279#issuecomment-525947408
             - Thanks to @jevank for the patch
     - [ ] Port to Python
