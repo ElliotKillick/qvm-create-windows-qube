@@ -66,7 +66,7 @@ qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.
 - Windows is treated as an untrusted guest operating system the entire way through
 - The impact of any theoretical vulnerabilities in handling of the Windows ISO or answer file is limited to `windows-mgmt`
 
-Windows 7 and Windows Server 2008 R2 reached [End Of Life (EOL) on January 14, 2020](https://support.microsoft.com/en-us/help/4057281/windows-7-support-will-end-on-january-14-2020). Updates for these OSs are still available with Extended Security Updates (ESUs) if paid for. Office 365 for these OSs will continue getting security updates until [January 2023](https://support.office.com/en-us/article/windows-7-end-of-support-and-office-78f20fab-b57b-44d7-8368-06a8493f3cb9).
+Windows 7 and Windows Server 2008 R2 reached End Of Life (EOL) on [January 14, 2020](https://support.microsoft.com/en-us/help/4057281/windows-7-support-will-end-on-january-14-2020). Updates for these OSs are still available with Extended Security Updates (ESUs) if paid for. Office 365 for these OSs will continue getting security updates until [January 2023](https://support.office.com/en-us/article/windows-7-end-of-support-and-office-78f20fab-b57b-44d7-8368-06a8493f3cb9).
 
 If RDP is to be enabled on a Windows 7 qube (not default) then make sure it is fully up-to-date because the latest Windows 7 ISO Microsoft offers is unfortunately still vulnerable to [BlueKeep](https://en.wikipedia.org/wiki/BlueKeep) and related DejaBlue vulnerabilities.
 
@@ -115,20 +115,16 @@ This project is the product of an independent effort that is not officially endo
 I may get around to patching some of these upstream issues later if nobody else does. Fixing these issues requires building QWT for which I would have to become the maintainer for, but, as of right now, I simply lack the time.
 
 All OSs:
-- If Qubes GUI driver is not installed you must run `qvm-features <windows_qube> gui 1` to make display show up after setup is complete (Any OS other than Windows 7/Windows Server 2008 R2 does not support Qubes GUI driver)
+- [No Windows display when Qubes GUI driver is not installed](https://github.com/QubesOS/qubes-issues/issues/5739)
+    - Any OS other than Windows 7/Windows Server 2008 R2 does not support Qubes GUI driver
+    - Temporary fix: Run `qvm-features <windows_qube> gui 1` to make the display show up after Windows qube creation is complete
 
 All OSs except Windows 7/Windows Server 2008 R2:
-- [Prompt to install earlier version of .NET](https://github.com/QubesOS/qubes-issues/issues/5091) (However, qrexec services still seem to work. Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer)
-- No GUI driver yet
-    - The resolution can still be increased to 1920x1080 or higher by increasing the display resolution in Windows
-
-Windows 7/Windows Server 2008R2:
-- When Qubes GUI driver is in use, you may receive a message saying Windows "attempted to perform an invalid or suspicious GUI request" causing installation to pause
-    - Fix by clicking "Ignore" on the prompt
+- [Prompt to install earlier version of .NET](https://github.com/QubesOS/qubes-issues/issues/5091) (However, this only appears to be a cosmetic issue because qrexec services still work. Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer)
 
 Windows 10/Windows Server 2019:
 - [Private disk creation fails](https://github.com/QubesOS/qubes-issues/issues/5090) (Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer)
-    - Temp fix: Close prepare-volume.exe window causing there to be no private disk (can't make a `TemplateVM`) but besides that it will continue as normal
+    - Temporary fix: Close `prepare-volume.exe` window causing there to be no private disk (can't make a `TemplateVM`) but besides that Windows qube creation will continue as normal
 
 See here:
 
