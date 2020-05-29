@@ -220,7 +220,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-create --class "$class" --label red "$qube"
     qvm-prefs "$qube" virt_mode hvm
     qvm-prefs "$qube" memory 1024
-    qvm-prefs "$qube" maxmem 0 # Disables currently unstable Qubes memory manager (Also grays the option out in qubes-vm-settings)
+    qvm-prefs "$qube" maxmem 0 # Disable currently unstable Qubes memory manager (Also gray the option out in qubes-vm-settings)
     qvm-prefs "$qube" kernel ""
     qvm-prefs "$qube" qrexec_timeout 300 # Windows startup can take longer, especially if a disk scan is performed
     qvm-features "$qube" video-model cirrus
@@ -256,7 +256,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
 
-    # NetVM must be attached for QWT to setup the networking driver
+    # NetVM must be attached for Xen PV network driver setup
     # However, to keep Windows air gapped for the entire setup we drop all packets at the firewall so Windows cannot connect to the Internet yet
     if [ "$netvm" ]; then
         qvm-firewall "$qube" del accept
