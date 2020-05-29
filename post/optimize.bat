@@ -15,9 +15,11 @@ for %%s in ("SSDPSRV" "lmhosts") do (
     sc config %%s start= disabled
 )
 
-echo Enabling never check for updates...
+rem Add registry keys for next two parts
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /ve /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /ve /f
+
+echo Enabling never check for updates...
 rem Works for all versions of Windows
 rem This method of doing it was taken from how Microsoft does it with the "sconfig" command in Windows Server
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpdate /t REG_DWORD /d 1 /f
@@ -46,16 +48,16 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\AppHost" /v EnableWebCon
 
 echo Disabling Windows Defender...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f || (
-    rem The Microsoft Security Response Center (MSRC) does not consider this to be a security vulnerability because it requires administrator privileges and "a malicious administrator can do much worse things"
-    rem I expected this, but, reported it anyway just to be sure
-    rem Additionally, it's perfectly reasonable for an enterprise administrator to want to disable Windows Defender across all their Windows machines automatically
-
     rem Fails due to Tamper Protection which is enabled by default on the latest versions of Windows 10 to stop malware from automatically disabling Windows Defender in order to bypass it
     rem To bypass Tamper Protection and disable Windows Defender anyway we remove all permissions from the WinDefend service registry key by disabling permission inheritance
     rem This simple method causes Windows Defender to fail to start on the next boot
     rem The ownership change is not necessary, it's just so a user can easily re-enable Windows Defender without getting SYSTEM privileges
     rem This change is not detected by sfc /scannow, however, may be reset by a Windows update
-    rem To re-enable Windows Defender, open the advanced permission settings on the regisry key below and click "Enable Inheritance" then change the owner to "SYSTEM"
+    rem To re-enable Windows Defender, open the advanced permission settings on the registry key below and click "Enable Inheritance" then change the owner to "SYSTEM"
+
+    rem The Microsoft Security Response Center (MSRC) does not consider this to be a security vulnerability because it requires administrator privileges and "a malicious administrator can do much worse things"
+    rem I expected this, but, reported it anyway just to be sure
+    rem Additionally, it's perfectly reasonable for an enterprise administrator to want to disable Windows Defender across all their Windows machines automatically
     powershell -Command "$path = 'HKLM:\SYSTEM\CurrentControlSet\Services\WinDefend'; $acl = Get-Acl -Path $path; $acl.SetOwner((New-Object System.Security.Principal.NTAccount('Builtin', 'Administrators'))); $acl.SetAccessRuleProtection($true, $false); Set-Acl -Path $path -AclObject $acl"
 )
 
