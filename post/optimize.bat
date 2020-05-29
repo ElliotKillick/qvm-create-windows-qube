@@ -16,11 +16,14 @@ for %%s in ("SSDPSRV" "lmhosts") do (
 )
 
 echo Enabling never check for updates...
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /v AUOptions /t REG_DWORD /d 1 /f
-
-echo Enabling never automatically reboot for updates...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /ve /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /ve /f
+rem Works for all versions of Windows
+rem This method of doing it was taken from how Microsoft does it with the "sconfig" command in Windows Server
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpdate /t REG_DWORD /d 1 /f
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v AUOptions /f
+
+echo Enabling never automatically reboot for updates with logged on users...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f
 
 rem echo Adjusting visual effects for best performance...
