@@ -24,7 +24,7 @@ usage() {
 }
 
 for arg in "$@"; do
-    if [ "$arg" == "-h" ] ||  [ "$arg" == "--help" ]; then
+    if [ "$arg" == "-h" ] || [ "$arg" == "--help" ]; then
         usage
         exit
     fi
