@@ -20,7 +20,7 @@ if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
 fi
 
 usage() {
-    echo "Usage: ${0} iso answer_file"
+    echo "Usage: $0 iso answer_file"
 }
 
 for arg in "$@"; do
