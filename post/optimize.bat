@@ -15,11 +15,9 @@ for %%s in ("SSDPSRV" "lmhosts") do (
     sc config %%s start= disabled
 )
 
-rem Add registry keys for next two parts
+echo Enabling never check for updates...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /ve /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /ve /f
-
-echo Enabling never check for updates...
 rem Works for all versions of Windows
 rem This method of doing it was taken from how Microsoft does it with the "sconfig" command in Windows Server
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpdate /t REG_DWORD /d 1 /f
