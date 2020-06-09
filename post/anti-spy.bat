@@ -1,7 +1,9 @@
 @echo off
 title %~f0
 
-rem Answer file disables Customer Experience Improvement Program (CEIP) and Windows Error Reporting (WER)
+rem Answer file disables Customer Experience Improvement Program (CEIP) and Windows Error Reporting (WER) but do it again in case custom answer file was used
+reg add "HKLM\SOFTWARE\Microsoft\SQMClient\Windows" /v CEIPEnable /t REG_DWORD /d 0 /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f
 
 rem In Windows 10 answer files, ProtectYourPC changes settings in the Settings application to disable telemetry in Windows
 rem This is opposed to its function in previous versions of Windows where it configured automatic updates
