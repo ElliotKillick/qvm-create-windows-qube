@@ -1,6 +1,6 @@
 # qvm-create-windows-qube
 
-qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org) with [Xen PV drivers](https://xenproject.org/windows-pv-drivers/) and [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) automatically. It supports Windows 7/8.1/10 and Windows Server 2008R2/2012R2/2016/2019.
+qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org) with [Xen PV drivers](https://xenproject.org/windows-pv-drivers/) and [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) automatically. It supports Windows 7, 8.1 and 10, and Windows Server 2008 R2, 2012 R2, 2016 and 2019.
 
 The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. It also features other goodies such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using [Chocolatey](https://chocolatey.org).
 
@@ -145,10 +145,6 @@ See here:
 - [x] Provision Chocolatey
 - [x] Add an option to slim down Windows as documented for Qubes [here](https://www.qubes-os.org/doc/windows-template-customization/)
 - [x] Make `windows-mgmt` air gapped
-- [ ] Possibly switch from udisksctl for reading/mounting ISOs because it is written in its man page that it is not intended for scripts
-    - guestfs
-    - losetup/mount (requires sudo, but it's what's used by the Qubes Core Team in their scripts)
-    - Consider other alternatives
 - [ ] I recently discovered this is a Qubes [Google Summer of Code](https://www.qubes-os.org/gsoc/) project; which is cool
     - [x] Add automated tests
         - Using Travis CI for automated ShellCheck
@@ -161,7 +157,7 @@ See here:
         - This seems like it would be unnecessary for scripts like `create-media.sh` where the Python script would essentially just be calling udisksctl and genisoimage
         - This would certainly be suitable for `qvm-create-windows-qube.sh` though
             - This would allow us to interchange data between Dom0 and the VM without worrying about another Shellshock
-- [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the wiminfo command (Currently a WIP; see branch)
+- [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the `wiminfo` command (Currently a WIP; see branch)
     - Works just like DISM on Windows
 - [x] Follow [this](https://www.whonix.org/wiki/Other_Operating_Systems) Whonix documentation to make Windows-Whonix-Workstation
 - [ ] Add functionality for `create-media.sh` to add MSUs (Microsoft Update standalone packages) to be installed during the Windows PE pass ("Installing updates...") of Windows setup
@@ -173,6 +169,7 @@ See here:
         - Windows Server 2008 R2 base ISO is also vulnerable to ETERNALBLUE and BlueKeep out-of-the-box
         - Probably not worth getting into that, users should just update the VM upon making it
 - [ ] Headless mode
+- [ ] Package this project so its delivery can be made more streamlined and secure through `qubes-dom0-update`
 
 ## End Goal
 
