@@ -75,6 +75,9 @@ cleanup() {
 
 trap cleanup ERR INT
 
+# shellcheck source=clean-timestamps.sh
+source clean-timestamps.sh
+
 echo -e "${BLUE}[i]${NC} Creating loop device from ISO..." >&2
 iso_device="$(udisksctl loop-setup -f "$iso")"
 iso_device="${iso_device#Mapped file * as }"
@@ -102,9 +105,13 @@ echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
 # Get boot image
 geteltorito -o "$temp_dir/boot.bin" "$iso"
 
+clean_file_timestamps_recursively "$temp_dir"
+
 final_iso="${iso/isos/out}"
 # -allow-limited-size allows for bigger files such as the install.wim which is the Windows image
-genisoimage -udf -b boot.bin -no-emul-boot -allow-limited-size -quiet -o "$final_iso" "$temp_dir"
+run_clean_time_command genisoimage -udf -b boot.bin -no-emul-boot -allow-limited-size -quiet -o "$final_iso" "$temp_dir"
+
+clean_file_timestamp "$final_iso"
 
 cleanup
 
