@@ -53,8 +53,8 @@ cleanup() {
 
     if [ "$iso_device" ]; then
         echo -e "${BLUE}[i]${NC} Unmounting and deleting loop device..." >&2
-        udisksctl unmount -b "$iso_device"
-        udisksctl loop-delete -b "$iso_device"
+        udisksctl unmount --block-device "$iso_device"
+        udisksctl loop-delete --block-device "$iso_device"
     fi
 
     if [ -d "$temp_dir" ]; then
@@ -79,20 +79,20 @@ trap cleanup ERR INT
 source clean-timestamps.sh
 
 echo -e "${BLUE}[i]${NC} Creating loop device from ISO..." >&2
-iso_device="$(udisksctl loop-setup -f "$iso")"
+iso_device="$(udisksctl loop-setup --file "$iso")"
 iso_device="${iso_device#Mapped file * as }"
 iso_device="${iso_device%.}"
 
 echo -e "${BLUE}[i]${NC} Mounting loop device..." >&2
 # Fix race condition where disk tries to mount before finishing setup
-until iso_mntpoint="$(udisksctl mount -b "$iso_device")"; do
+until iso_mntpoint="$(udisksctl mount --block-device "$iso_device")"; do
     sleep 1
 done
 iso_mntpoint="${iso_mntpoint#Mounted * at }"
 iso_mntpoint="${iso_mntpoint%.}"
 
 echo -e "${BLUE}[i]${NC} Copying loop device contents to temporary folder..." >&2
-temp_dir="$(mktemp -dp out)" # tmpfs on /tmp may be too small
+temp_dir="$(mktemp --directory --tmpdir=out)" # The default /tmp may be too small
 cp -r "$iso_mntpoint/." "$temp_dir"
 
 echo -e "${BLUE}[i]${NC} Copying answer file to Autounattend.xml in temporary folder..." >&2
@@ -108,7 +108,7 @@ geteltorito -o "$temp_dir/boot.bin" "$iso"
 clean_file_timestamps_recursively "$temp_dir"
 
 final_iso="${iso/isos/out}"
-# -allow-limited-size allows for bigger files such as the install.wim which is the Windows image
+# -allow-limited-size allows for larger files such as the install.wim which is the Windows image
 run_clean_time_command genisoimage -udf -b boot.bin -no-emul-boot -allow-limited-size -quiet -o "$final_iso" "$temp_dir"
 
 clean_file_timestamp "$final_iso"
