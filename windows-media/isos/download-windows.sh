@@ -88,11 +88,17 @@ download_microsoft_com_key="sha256//2e0F/Ardt/GQmXeDy1wheisQhjSImsJtf1rIekoQE7E=
 software_download_microsoft_com_key="sha256//XkxB3HpkW1URRks+KuhFNxVJTbtJeWIvl1KzpWrplcM="
 
 scurl_1() {
-    curl --pinnedpubkey "$download_microsoft_com_key" --tlsv1.2 --proto =https "$@"
+    until curl --pinnedpubkey "$download_microsoft_com_key" --tlsv1.2 --proto =https "$@"; do
+        echo -e "${RED}[!]${NC} Failed to download Windows! Retrying in 10 seconds..." >&2
+        sleep 10
+    done
 }
 
 scurl_2() {
-    curl --pinnedpubkey "$software_download_microsoft_com_key" --tlsv1.3 --proto =https "$@"
+    until curl --pinnedpubkey "$software_download_microsoft_com_key" --tlsv1.3 --proto =https "$@"; do
+        echo -e "${RED}[!]${NC} Failed to download Windows! Retrying in 10 seconds..." >&2
+        sleep 10
+    done
 }
 
 echo -e "${BLUE}[i]${NC} Downloading Windows media from Microsoft servers..." >&2
