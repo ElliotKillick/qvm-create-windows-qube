@@ -120,11 +120,14 @@ All OSs:
     - Temporary fix: Run `qvm-features <windows_qube> gui 1` to make the display show up after Windows qube creation is complete
 
 All OSs except Windows 7/Windows Server 2008 R2:
-- [Prompt to install earlier version of .NET](https://github.com/QubesOS/qubes-issues/issues/5091) (However, this only appears to be a cosmetic issue because qrexec services still work. Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer)
+- [Prompt to install earlier version of .NET](https://github.com/QubesOS/qubes-issues/issues/5091)
+    - This only appears to be a cosmetic issue because qrexec services still work
+    - Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer
 
 Windows 10/Windows Server 2019:
-- [Private disk creation fails](https://github.com/QubesOS/qubes-issues/issues/5090) (Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer)
+- [Private disk creation fails](https://github.com/QubesOS/qubes-issues/issues/5090)
     - Temporary fix: Close `prepare-volume.exe` window causing there to be no private disk (can't make a `TemplateVM`) but besides that Windows qube creation will continue as normal
+    - Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer
 
 See here:
 
@@ -158,7 +161,7 @@ See here:
         - This would certainly be suitable for `qvm-create-windows-qube.sh` though
             - This would allow us to interchange data between Dom0 and the VM without worrying about another Shellshock
 - [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the `wiminfo` command (Currently a WIP; see branch)
-    - Works just like DISM on Windows
+    - `wiminfo` works just like DISM on Windows
 - [x] Follow [this](https://www.whonix.org/wiki/Other_Operating_Systems) Whonix documentation to make Windows-Whonix-Workstation
 - [ ] Add functionality for `create-media.sh` to add MSUs (Microsoft Update standalone packages) to be installed during the Windows PE pass ("Installing updates...") of Windows setup
     - We could fix currently not working QWT installation for old Windows 7 SP1 and Windows Server 2008 R2 ISOs using [KB4474419](https://github.com/QubesOS/qubes-issues/issues/3585#issuecomment-521280301) to add SHA-256 support
