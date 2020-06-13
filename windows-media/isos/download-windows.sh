@@ -82,7 +82,7 @@ for arg in "$@"; do
     esac
 done
 
-trap 'exit' ERR
+trap exit ERR
 
 download_microsoft_com_key="sha256//2e0F/Ardt/GQmXeDy1wheisQhjSImsJtf1rIekoQE7E="
 software_download_microsoft_com_key="sha256//XkxB3HpkW1URRks+KuhFNxVJTbtJeWIvl1KzpWrplcM="
