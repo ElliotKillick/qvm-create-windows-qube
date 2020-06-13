@@ -1,6 +1,6 @@
 # qvm-create-windows-qube
 
-qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org) with [Xen PV drivers](https://xenproject.org/windows-pv-drivers/) and [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) automatically. It supports Windows 7, 8.1 and 10, and Windows Server 2008 R2, 2012 R2, 2016 and 2019.
+qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org) with [Xen PV drivers](https://xenproject.org/windows-pv-drivers/) and [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) automatically. It supports Windows 7, 8.1 and 10 as well as Windows Server 2008 R2, 2012 R2, 2016 and 2019.
 
 The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. It also features other goodies such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using [Chocolatey](https://chocolatey.org).
 
@@ -157,7 +157,7 @@ See here:
             - https://github.com/QubesOS/qubes-issues/issues/5279#issuecomment-525947408
             - Thanks to @jevank for the patch
     - [ ] Port to Python
-        - This seems like it would be unnecessary for scripts like `create-media.sh` where the Python script would essentially just be calling udisksctl and genisoimage
+        - This seems like it would be unnecessary for scripts like `create-media.sh` where the Python script would essentially just be calling out to external programs
         - This would certainly be suitable for `qvm-create-windows-qube.sh` though
             - This would allow us to interchange data between Dom0 and the VM without worrying about another Shellshock
 - [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the `wiminfo` command (Currently a WIP; see branch)
