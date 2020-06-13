@@ -9,7 +9,7 @@ if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
 fi
 
 usage() {
-    echo "Usage: ${0} <windows_media>..."
+    echo "Usage: $0 <windows_media>..."
     echo ""
     echo "Download specified list of Windows media."
     echo ""
