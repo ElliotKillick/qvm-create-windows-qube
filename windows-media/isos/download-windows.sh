@@ -121,7 +121,7 @@ fi
 
 if [ "$win81x64_enterprise_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows 8.1 Enterprise Evaluation..." >&2
-    # Use to be here but got taken down: https://www.microsoft.com/en-us/evalcenter/evaluate-windows-8-1-enterprise
+    # Used to be here but got taken down: https://www.microsoft.com/en-us/evalcenter/evaluate-windows-8-1-enterprise
     # https://gist.github.com/eyecatchup/11527136b23039a0066f
     scurl_1 "https://download.microsoft.com/download/B/9/9/B999286E-0A47-406D-8B3D-5B5AD7373A4A/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_ENTERPRISE_EVAL_EN-US-IR3_CENA_X64FREE_EN-US_DV9.ISO" -o "win81x64-enterprise-eval.iso"
 fi
