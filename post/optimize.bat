@@ -15,7 +15,7 @@ for %%s in ("SSDPSRV" "lmhosts") do (
     sc config %%s start= disabled
 )
 
-echo Enabling never check for updates...
+echo Enabling never automatically check for updates...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /ve /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /ve /f
 rem Works for all versions of Windows
@@ -74,8 +74,8 @@ echo Allowing all inbound and outbound traffic through firewall...
 netsh advfirewall set allprofiles firewallpolicy allowinbound,allowoutbound
 
 echo Disabling tasks in Task Scheduler...
-set task_dir=\Microsoft\Windows
-for %%t in ("%task_dir%\Defrag\ScheduledDefrag" "%task_dir%\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver" "%task_dir%\Maintenance\WinSAT" "%task_dir%\SystemRestore\SR" "%task_dir%\WindowsBackup\ConfigNotification") do (
+set win_task_dir=\Microsoft\Windows
+for %%t in ("%win_task_dir%\Defrag\ScheduledDefrag" "%win_task_dir%\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver" "%win_task_dir%\Maintenance\WinSAT" "%win_task_dir%\SystemRestore\SR" "%win_task_dir%\WindowsBackup\ConfigNotification") do (
     schtasks /change /tn %%t /disable
 )
 
