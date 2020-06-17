@@ -54,7 +54,13 @@
 '     - No support for verifying MSUs with Authenticode on Linux means we will have to do it before it's installed on Windows (Get-AuthenticodeSignature PowerShell cmdlet avilable in Windows 7)
 '         - Even if it was supported we wouldn't do it for security reasons: https://blog.reversinglabs.com/blog/breaking-the-linux-authenticode-security-model
 '     - thehotfixshare.net does not support HTTPS
-'     - I have archived the site and the MSU download on web.archive.org which does support HTTPS so maybe we download it from there
+'     - I have archived the site and the MSU download (They do support HTTPS so maybe we download is from there)
+'         - web.archive.org
+'             - https://web.archive.org/http://thehotfixshare.net/board/index.php?autocom=downloads&showfile=18882
+'             - https://web.archive.org/http://thehotfixshare.net/board/index.php?autocom=downloads&req=download&code=confirm_download&id=18882
+'         - archive.is
+'             - https://archive.is/http://thehotfixshare.net/board/index.php?autocom=downloads&showfile=18882
+'             - For some reason it fails to archive the MSU file: https://archive.is/http://thehotfixshare.net/board/index.php?autocom=downloads&req=download&code=confirm_download&id=18882
 
 Set wshShell = WScript.CreateObject("WScript.Shell")
 
