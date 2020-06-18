@@ -87,3 +87,6 @@ powercfg -h off || (
     rem We instead edit the registry key directly as a workaround causing hiberfil.sys to be deleted on the next boot as opposed to now
     reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v HibernateEnabled /t REG_DWORD /d 0 /f
 )
+
+echo Disabling password expiry...
+net accounts /maxpwage:unlimited
