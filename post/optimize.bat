@@ -48,6 +48,7 @@ echo Disabling Windows Defender...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f || (
     rem Fails due to Tamper Protection which is enabled by default on the latest versions of Windows 10 to stop malware from automatically disabling Windows Defender in order to bypass it
     rem To bypass Tamper Protection and disable Windows Defender anyway we remove all permissions from the WinDefend service registry key by disabling permission inheritance
+    rem Tamper Protection disallows the deleting of the below registry key but is fine with us changing the permissions on it
     rem This simple method causes Windows Defender to fail to start on the next boot
     rem The ownership change is not necessary, it's just so a user can easily re-enable Windows Defender without getting SYSTEM privileges
     rem This change is not detected by sfc /scannow, however, may be reset by a Windows update
