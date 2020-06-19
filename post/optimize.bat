@@ -31,6 +31,9 @@ rem Severely reduces Windows 7 appearance but on Windows 10 it's acceptable
 rem Does noticeably increase performance
 rem reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f
 
+echo Disabling Windows activation notifications...
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Activation" /v NotificationDisabled /t REG_DWORD /d 1 /f
+
 echo Disabling Action Center tray icon and notifications...
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v HideSCAHealth /t REG_DWORD /d 1 /f
 
