@@ -22,7 +22,7 @@ Usage: ./qvm-create-windows-qube.sh [options] <name>
   -n, --netvm <qube> NetVM for Windows to use
   -s, --seamless Enable seamless mode persistently across reboots
   -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube
-  -y, --anti-spy Disable Windows telemetry
+  -y, --spyless Configure Windows telemetry settings to respect privacy
   -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation
   -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
   -i, --iso <file> Windows media to automatically install and setup (default: win7x64-ultimate.iso)
@@ -66,7 +66,17 @@ qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.
 - Windows is treated as an untrusted guest operating system the entire way through
 - The impact of any theoretical vulnerabilities in handling of the Windows ISO or answer file is limited to `windows-mgmt`
 
-Windows 7 and Windows Server 2008 R2 reached End Of Life (EOL) on [January 14, 2020](https://support.microsoft.com/en-us/help/4057281/windows-7-support-will-end-on-january-14-2020). Updates for these OSs are still available with Extended Security Updates (ESUs) if paid for. Office 365 for these OSs will continue getting security updates until [January 2023](https://support.office.com/en-us/article/windows-7-end-of-support-and-office-78f20fab-b57b-44d7-8368-06a8493f3cb9).
+### Windows
+
+#### Maintenance & Limitations
+
+Don't forget to apply any applicable updates upon creation of your Windows qube. Microsoft frequently builds up-to-date ISOs for current versions of Windows, such as Windows 10. For these Windows versions, it's recommended to periodically visit the official Microsoft site `download-windows.sh` provides to get a fresh Windows image out of the box.
+
+Nevertheless, keep in mind that it's impossible for a proprietary platform such as Windows to ever be as secure as an open source one like Linux. For without the source code, we lack the means to verify the absence of [bugs or backdoors](https://www.gnu.org/proprietary/malware-microsoft.html) ([more in-depth analysis](https://www.whonix.org/wiki/Windows_Hosts#Windows_Backdoors)) and the code gets a lot less scrutiny. Windows should only be used for low security applications when absolutely necessary.
+
+#### Advisories
+
+Windows 7 and Windows Server 2008 R2 reached End of Life (EOL) on [January 14, 2020](https://support.microsoft.com/en-us/help/4057281/windows-7-support-will-end-on-january-14-2020). Updates for these OSs are still available with Extended Security Updates (ESUs) if paid for. Office 365 for these OSs will continue getting security updates at no additional cost until [January 2023](https://support.office.com/en-us/article/windows-7-end-of-support-and-office-78f20fab-b57b-44d7-8368-06a8493f3cb9).
 
 If RDP is to be enabled on a Windows 7 qube (not default) then make sure it is fully up-to-date because the latest Windows 7 ISO Microsoft offers is unfortunately still vulnerable to [BlueKeep](https://en.wikipedia.org/wiki/BlueKeep) and related DejaBlue vulnerabilities.
 
@@ -76,14 +86,16 @@ A critical vulnerability in Windows 10 and Windows Server 2016/2019 cryptography
 
 qvm-create-windows-qube aims to be the most private way to use Windows. Many Qubes users switched from Windows (or another proprietary OS) in part to get away from Microsoft (or Big Tech in general) and so being able to use Windows from a safe distance is of utmost importance to this project. Or at least, as safe a distance as possible for what is a huge, proprietary binary blob.
 
-### Microsoft Telemetry
+### Windows Telemetry
+
+Configures Windows telemetry settings to respect privacy.
 
 - Opt-out of Customer Experience Improvement Program (CEIP)
 - Disable Windows Error Reporting (WER)
 - Disable DiagTrack service
-- Disable all telemetry in Windows 10 Settings application
+- Switch off all telemetry in Windows 10 "Settings" application
 - Enable "Security" level of telemetry on compatible editions of Windows 10
-- See `anti-spy.bat` for more info
+- See `spyless.bat` for more info
 
 ### Whonix Recommendations for Windows-Whonix-Workstation
 
@@ -99,7 +111,7 @@ Fingerprinting is possible through the hypervisor in the event of VM compromise,
 
 - [Xen clocksource](https://phabricator.whonix.org/T389/)
     - Can partially be mitigated by configuring UTC time in the BIOS/UEFI, local timezone can still be configured for XFCE Dom0 clock
-- [lscpu](https://github.com/QubesOS/qubes-issues/issues/1142)
+- [CPUID](https://github.com/QubesOS/qubes-issues/issues/1142)
 - Generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface/) (e.g. screen dimensions)
 
 ## Contributing
@@ -139,7 +151,12 @@ See here:
 ## Todo
 
 - [x] Gain the ability to reliably unpack/insert answer file/repack for any given ISO 9660 (Windows ISO format)
+    - ISO 9660 is write-once (i.e. read-only) filesystem you cannot just add a file to it without creating a whole new ISO
     - Blocking issue for supporting other versions of Windows
+    - This is the same way VMWare does it as can be seen by the "Creating Disk..." part in the video below (Further research indicated that they use `mkisofs`)
+    - In the future, it would be best for Qubes to do this by [extending livirt XML templates](https://github.com/QubesOS/qubes-issues/issues/5085)
+        - Much faster
+        - Saves storage due to not having to create a new ISO
 - [x] auto-qwt takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
 - [x] Make Windows answer file automatically use trial key for Windows installation without hard-coding any product keys anywhere (Windows is finicky on this one)
 - [x] Support Windows 8.1-10 (Note: QWT doesn't fully officially any OS other than Windows 7 yet, however, everything is functional except the GUI driver)
@@ -173,9 +190,31 @@ See here:
         - Probably not worth getting into that, users should just update the VM upon making it
 - [ ] Headless mode
 - [ ] Package this project so its delivery can be made more streamlined and secure through `qubes-dom0-update`
+- [ ] Consider adding ReactOS support as an open source alternative to Windows
+    - This would be a good at least until a ReactOS template is made
+    - Perhaps ReactOS developers may also want to use this to develop ReactOS
+    - Or maybe just add ReactOS as a template (outside of this project)
+        - However, someone would have to maintain this template
+        - Also, there may not be much point if QWT/Xen PV drivers don't work
+            - At least for basic features like copy/paste and file transfer
+    - Interest from both sides
+        - https://github.com/QubesOS/qubes-issues/issues/2809
+        - https://reactos.org/forum/viewtopic.php?p=126279#p126279
+            - "one of the most interesting offers for collaboration we got till today"
+    - Seems different then Windows XML unattended installations
+        - https://reactos.org/wiki/Create_an_unattended_Installation_CD
+    - [ ] Only blocking issue I could find is the SCSI controller type
+        - Qubes could extend libvirt to add an option for using that controller
+            - This solution seems better because according to [this](https://github.com/QubesOS/qubes-issues/issues/3651#issuecomment-420914348) comment it would also fix a bunch of other OSs whose installer doesn't support our current controller
+        - ReactOS could add support for our current controller type
+        - https://reactos.org/forum/viewtopic.php?t=17529
+        - https://github.com/QubesOS/qubes-issues/issues/3494
+    - ReactOS is in alpha so for most users this probably won't be viable right now
+    - Help wanted
+        - No timeline for this currently
 
 ## End Goal
 
-Have feature similar (or superior) to [VMWare's Windows "Easy Install"](https://www.youtube.com/watch?v=1OpDXlttmE0) feature on Qubes.
+Have a feature similar (or superior) to [VMWare's Windows "Easy Install"](https://www.youtube.com/watch?v=1OpDXlttmE0) feature on Qubes.
 
 VirtualBox also has [something similar](https://blogs.oracle.com/scoter/oracle-vm-virtualbox-52:-unattended-guest-os-install).
