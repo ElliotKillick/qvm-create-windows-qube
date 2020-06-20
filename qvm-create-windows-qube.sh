@@ -26,7 +26,7 @@ usage() {
     echo "  -n, --netvm <qube> NetVM for Windows to use"
     echo "  -s, --seamless Enable seamless mode persistently across reboots"
     echo "  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube"
-    echo "  -y, --anti-spy Disable Windows telemetry"
+    echo "  -y, --spyless Configure Windows telemetry settings to respect privacy"
     echo "  -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -i, --iso <file> Windows media to automatically install and setup (default: $iso)"
@@ -35,7 +35,7 @@ usage() {
 
 # Option strings
 short="hc:tn:soywp:i:a:"
-long="help,count:,template,netvm:,seamless,optimize,anti-spy,whonix,packages:,iso:,answer-file:"
+long="help,count:,template,netvm:,seamless,optimize,spyless,whonix,packages:,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -75,8 +75,8 @@ while true; do
             optimize="true"
             shift
             ;;
-        -y | --anti-spy)
-            anti_spy="true"
+        -y | --spyless)
+            spyless="true"
             shift
             ;;
         -w | --whonix)
@@ -315,9 +315,9 @@ for (( counter = 1; counter <= count; counter++ )); do
         qvm-run -q "$qube" "cd $post_incoming_dir && optimize.bat" || true
     fi
 
-    if [ "$anti_spy" == "true" ]; then
+    if [ "$spyless" == "true" ]; then
         echo -e "${BLUE}[i]${NC} Disabling Windows telemetry..." >&2
-        qvm-run -q "$qube" "cd $post_incoming_dir && anti-spy.bat" || true
+        qvm-run -q "$qube" "cd $post_incoming_dir && spyless.bat" || true
     fi
 
     if [ "$whonix" == "true" ]; then
@@ -327,7 +327,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     # Let Windows connect to the Internet
-    # After anti-spy and whonix scripts but before packages
+    # After spyless and whonix scripts but before packages
     # Independent of whether or not packages are being installed, user-defined commands should have Internet access for consistency
     if [ "$netvm" ]; then
         echo -e "${BLUE}[i]${NC} Breaking air gap so Windows can connect to the Internet..." >&2

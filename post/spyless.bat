@@ -1,7 +1,7 @@
 @echo off
 title %~f0
 
-rem Answer file disables Customer Experience Improvement Program (CEIP) and Windows Error Reporting (WER) but do it again in case custom answer file was used
+rem Answer file disables Customer Experience Improvement Program (CEIP) and Windows Error Reporting (WER) but do it again in case a custom answer file is in use
 reg add "HKLM\SOFTWARE\Microsoft\SQMClient\Windows" /v CEIPEnable /t REG_DWORD /d 0 /f
 reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f
 
@@ -22,5 +22,9 @@ rem The DiagTrack service is used for sending Windows telemetry data to Microsof
 sc config DiagTrack start= disabled
 
 rem This disables the bulk of the telemetry, at least for what is necessary in a VM, while providing zero impact on user experience
-rem If you're looking to go further, I would recommend the following script which is based on official Microsoft documentation (See .NOTES section): https://github.com/cryps1s/DARKSURGEON/blob/master/configuration/configuration-scripts/Set-WindowsTelemetrySettings.ps1
+rem For Windows 7, I think this is sufficient, but for Windows 10 I will recommend the following if you're looking to go further
+
+rem I recommend this script because it's based on official Microsoft documentation (See .NOTES section):
+rem https://github.com/cryps1s/DARKSURGEON/blob/master/configuration/configuration-scripts/Set-WindowsTelemetrySettings.ps1
+
 rem Of course, the best option is to air gap Windows or refrain from using it

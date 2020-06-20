@@ -16,7 +16,7 @@ rem Switched from +/- 1 to 30 skew recommend in the Whonix "Other Operating Syst
 rem <nul is for a Windows 7 bug that causes PowerShell not to exit when used from CMD
 powershell -Command Set-Date ((Get-Date).AddSeconds((Get-Random -InputObject (-180..180)))) <nul
 
-rem Any clock skew is reset once the qube is rebooted so we must reapply the skew on every boot
+rem Any clock skew is reset once the qube reboots so we must reapply the skew on every boot
 rem Whonix does this for Whonix-Workstation with bootclockrandomization: https://github.com/Whonix/bootclockrandomization
 schtasks /create /ru SYSTEM /sc onstart /tn "Skew Clock" /tr "powershell -Command Set-Date ((Get-Date).AddSeconds((Get-Random -InputObject (-180..180))))"
 
@@ -26,10 +26,13 @@ netsh int tcp set global timestamps=disabled
 echo Disabling ICMP timestamps...
 netsh firewall set icmpsetting 13 disable
 
-rem I checked what happens on a suspend/resume:
+rem I checked what happens to clock skew on a suspend and resume:
 rem     - The clock keeps its original skew
 rem     - The clock jumps forward to make up for the time it was suspended
 rem     - All seems good
-rem Things to consider (https://www.whonix.org/wiki/Network_Time_Synchronization#Summary):
-rem     - Does Windows send out traffic before running the "Skew Clock" task (Should not let Windows access Internet until skew is applied)
+
+rem Things to consider:
+rem     - Does Windows send out traffic before running the "Skew Clock" task (Should not let Windows access the Internet until skew is applied)
 rem     - There is no sdwdate equivalent for Windows
+rem     - https://www.whonix.org/wiki/Network_Time_Synchronization#Summary
+rem     - Potentially add host firewall rules like Whonix-Workstation does: https://github.com/Whonix/whonix-firewall/blob/master/usr/bin/whonix-host-firewall
