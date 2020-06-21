@@ -12,6 +12,8 @@ The project emphasizes correctness, security and treating Windows as an untruste
 4. Run `chmod +x install.sh && ./install.sh`
 5. Review the code of the resulting `qvm-create-windows-qube.sh`
 
+Coming Soon: Streamlined and secure installation through `qubes-dom0-update` (Issue #11)
+
 ## Usage
 
 ```
@@ -151,9 +153,9 @@ See here:
 ## Todo
 
 - [x] Gain the ability to reliably unpack/insert answer file/repack for any given ISO 9660 (Windows ISO format)
-    - ISO 9660 is write-once (i.e. read-only) filesystem you cannot just add a file to it without creating a whole new ISO
+    - ISO 9660 is write-once (i.e. read-only) filesystem; you cannot just add a file to it without creating a whole new ISO
     - Blocking issue for supporting other versions of Windows
-    - This is the same way VMWare does it as can be seen by the "Creating Disk..." part in the video below (Further research indicated that they use `mkisofs`)
+    - This is the same way VMWare does it as can be seen by the "Creating Disk..." part in the video below (Further research indicates that they use `mkisofs`)
     - In the future, it would be best for Qubes to do this by [extending livirt XML templates](https://github.com/QubesOS/qubes-issues/issues/5085)
         - Much faster
         - Saves storage due to not having to create a new ISO
@@ -161,7 +163,8 @@ See here:
 - [x] Make Windows answer file automatically use trial key for Windows installation without hard-coding any product keys anywhere (Windows is finicky on this one)
 - [x] Support Windows 8.1-10 (Note: QWT doesn't fully officially any OS other than Windows 7 yet, however, everything is functional except the GUI driver)
 - [x] Support Windows Server 2008 R2 to Windows Server 2019
-- [x] Support Windows 10 Enterprise LTSC (Long Term Support Channel, provides security updates for 10 years, very stable and less bloat than stock Windows 10)
+- [x] Support Windows 10 Enterprise LTSC (Long Term Support Channel)
+    - Provides security updates for 10 years, very stable and less bloat than stock Windows 10
 - [x] Provision Chocolatey
 - [x] Add an option to slim down Windows as documented for Qubes [here](https://www.qubes-os.org/doc/windows-template-customization/)
 - [x] Make `windows-mgmt` air gapped
@@ -215,6 +218,6 @@ See here:
 
 ## End Goal
 
-Have a feature similar (or superior) to [VMWare's Windows "Easy Install"](https://www.youtube.com/watch?v=1OpDXlttmE0) feature on Qubes.
+Have a feature similar (or superior) to [VMWare's Windows "Easy Install"](https://www.youtube.com/watch?v=1OpDXlttmE0) feature on Qubes. VMWare's solution is proprietary and only available in their paid products.
 
-VirtualBox also has [something similar](https://blogs.oracle.com/scoter/oracle-vm-virtualbox-52:-unattended-guest-os-install).
+VirtualBox also has [something similar](https://blogs.oracle.com/scoter/oracle-vm-virtualbox-52:-unattended-guest-os-install) but is not as feature-rich.
