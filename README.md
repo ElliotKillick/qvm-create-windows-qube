@@ -194,8 +194,8 @@ See here:
 - [ ] Headless mode
 - [ ] Package this project so its delivery can be made more streamlined and secure through `qubes-dom0-update`
 - [ ] Consider adding ReactOS support as an open source alternative to Windows
-    - This would be a good at least until a ReactOS template is made
-    - Perhaps ReactOS developers may also want to use this to develop ReactOS
+    - This would be a good at least until a [ReactOS template is made](https://github.com/QubesOS/qubes-issues/issues/2809)
+    - Perhaps ReactOS developers may want to use this to develop ReactOS
     - Or maybe just add ReactOS as a template (outside of this project)
         - However, someone would have to maintain this template
         - Also, there may not be much point if QWT/Xen PV drivers don't work
