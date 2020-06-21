@@ -336,7 +336,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     if [ "$packages" ]; then
-        echo -e "${BLUE}[i]${NC} Installing packages... (Ignore TLS warning; TLS 1.2 is in use)" >&2
+        echo -e "${BLUE}[i]${NC} Installing packages..." >&2
         qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 $packages <nul" || true
 
         # Add new apps to app menu
