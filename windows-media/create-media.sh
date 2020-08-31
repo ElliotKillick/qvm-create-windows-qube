@@ -48,18 +48,22 @@ if ! [ -f "$answer_file" ]; then
     exit 1
 fi
 
-cleanup() {
+clean_exit() {
     exit_code="$?"
 
     if [ "$iso_device" ]; then
-        echo -e "${BLUE}[i]${NC} Unmounting and deleting loop device..." >&2
-        udisksctl unmount --block-device "$iso_device"
+        if findmnt "$iso_device" > /dev/null; then
+            echo -e "${BLUE}[i]${NC} Unmounting loop device..." >&2
+            udisksctl unmount --block-device "$iso_device"
+        fi
+
+        echo -e "${BLUE}[i]${NC} Deleting loop device..." >&2
         udisksctl loop-delete --block-device "$iso_device"
     fi
 
     if [ -d "$temp_dir" ]; then
         echo -e "${BLUE}[i]${NC} Deleting temporary folder..." >&2
-        chmod -R +w "$temp_dir" # Read-only permissions were inherited because ISO 9660 is a read-only format
+        chmod -R +w "$temp_dir" # Read-only permissions were inherited because ISO 9660 is a read-only filesystem
         rm -r "$temp_dir"
     fi
 
@@ -69,11 +73,16 @@ cleanup() {
             rm "$final_iso"
         fi
 
+        echo -e "${RED}[!]${NC} Failed to create automatic Windows installation media!"
         exit "$exit_code"
     fi
+
+    echo -e "${GREEN}[+]${NC} Created automatic Windows installation media for $(basename "$final_iso") successfully!"
 }
 
-trap cleanup ERR INT
+trap clean_exit EXIT
+trap exit ERR
+trap exit INT
 
 # shellcheck source=clean-timestamps.sh
 source clean-timestamps.sh
@@ -112,7 +121,3 @@ final_iso="${iso/isos/out}"
 run_clean_time_command genisoimage -udf -b boot.bin -no-emul-boot -allow-limited-size -quiet -o "$final_iso" "$temp_dir"
 
 clean_file_timestamp "$final_iso"
-
-cleanup
-
-echo -e "${GREEN}[+]${NC} Created automatic Windows installation media for $(basename "$final_iso") successfully!"
