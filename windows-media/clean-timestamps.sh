@@ -19,7 +19,8 @@ run_clean_time_command() {
 clean_file_timestamp() {
     file="$1"
 
-    touch --date @0 "$file"
+    # --no-dereference is to change the timestamp of symlinks too
+    touch --no-dereference --date @0 "$file"
 }
 
 # Set file/folder timestamps to the Unix epoch recursively
@@ -27,5 +28,5 @@ clean_file_timestamp() {
 clean_file_timestamps_recursively() {
     dir="$1"
 
-    find "$dir" -exec touch --date @0 {} +
+    find "$dir" -exec touch --no-dereference --date @0 {} +
 }
