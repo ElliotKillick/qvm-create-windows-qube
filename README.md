@@ -6,10 +6,13 @@ The project emphasizes correctness, security and treating Windows as an untruste
 
 ## Installation
 
-1. Download the [installation script](https://raw.githubusercontent.com/elliotkillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save as..."
-2. Copy `install.sh` into Dom0 by running the following command in Dom0: `qvm-run -p --filter-escape-chars --no-color-output <qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
-3. Review the code of `install.sh` to ensure its integrity (Safer with escape character filtering enabled above; qvm-run disables it by default when output is a file)
+1. Download the [installation script](https://raw.githubusercontent.com/elliotkillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save [Page] as..."
+2. Copy `install.sh` into Dom0 by running the following command in Dom0:
+    - `qvm-run -p --filter-escape-chars --no-color-output <qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
+3. Review the code of `install.sh` to ensure its integrity
+    - Safer with escape character filtering enabled above; qvm-run disables it by default when output is a file
 4. Run `chmod +x install.sh && ./install.sh`
+    - Note that this will install packages in the global default `TemplateVM`, which is `fedora-XX` by default
 5. Review the code of the resulting `qvm-create-windows-qube.sh`
 
 Coming Soon: Streamlined and secure installation through `qubes-dom0-update` (Issue #11)
@@ -156,7 +159,7 @@ See here:
     - ISO 9660 is write-once (i.e. read-only) filesystem; you cannot just add a file to it without creating a whole new ISO
     - Blocking issue for supporting other versions of Windows
     - This is the same way VMWare does it as can be seen by the "Creating Disk..." part in the video below (Further research indicates that they use `mkisofs`)
-    - In the future, it would be best for Qubes to do this by [extending livirt XML templates](https://github.com/QubesOS/qubes-issues/issues/5085)
+    - [ ] In the future, it would be best for Qubes to do this by [extending livirt XML templates](https://github.com/QubesOS/qubes-issues/issues/5085)
         - Much faster
         - Saves storage due to not having to create a new ISO
 - [x] auto-qwt takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
