@@ -66,6 +66,7 @@ qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.
     - ISOs are downloaded straight from Microsoft controlled subdomains of `microsoft.com`
     - HTTPS TLS 1.2/1.3
     - HTTP public key pinning (HPKP) to whitelist the website's certificate instead of relying on certificate authorities (CAs)
+        - Qubes aims to ["distrust the infrastructure"](https://www.qubes-os.org/faq/#what-does-it-mean-to-distrust-the-infrastructure)
     - SHA-256 verification of the files after download
 - Packages such as Firefox are offered out of the box so the infamously insecure Internet Explorer never has to be used
 - Windows is treated as an untrusted guest operating system the entire way through
@@ -73,11 +74,9 @@ qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.
 
 ### Windows
 
-#### Maintenance & Limitations
+#### Maintenance
 
 Don't forget to apply any applicable updates upon creation of your Windows qube. Microsoft frequently builds up-to-date ISOs for current versions of Windows, such as Windows 10. For these Windows versions, it's recommended to periodically visit the official Microsoft site `download-windows.sh` provides to get a fresh Windows image out of the box.
-
-Nevertheless, keep in mind that it's impossible for a proprietary platform such as Windows to ever be as secure as an open source one like Linux. For without the source code, we lack the means to verify the absence of [bugs or backdoors](https://www.gnu.org/proprietary/malware-microsoft.html) ([more in-depth analysis](https://www.whonix.org/wiki/Windows_Hosts#Windows_Backdoors)) and the code gets a lot less scrutiny. Windows should only be used for low security applications when absolutely necessary.
 
 #### Advisories
 
@@ -105,6 +104,8 @@ Configures Windows telemetry settings to respect privacy.
 ### Whonix Recommendations for Windows-Whonix-Workstation
 
 Everything mentioned [here](https://www.whonix.org/wiki/Other_Operating_Systems) up to "Even more security" is implemented. "Most security" is to use an official Whonix-Workstation built yourself from source. This feature is not official or endorsed by Whonix.
+
+It's recommended to read [this](https://www.whonix.org/wiki/Windows_Hosts#Windows_Backdoors) Whonix documentation to understand the implications of using Windows in this way.
 
 ### Easy to Reset Fingerprint
 
