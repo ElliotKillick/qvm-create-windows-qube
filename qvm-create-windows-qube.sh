@@ -216,7 +216,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         qube="$name"
     fi
 
-    echo -e "${BLUE}[i]${NC} Starting creation of $qube"
+    echo -e "${BLUE}[i]${NC} Starting creation of $qube" >&2
     qvm-create --class "$class" --label red "$qube"
     qvm-prefs "$qube" virt_mode hvm
     qvm-prefs "$qube" memory 1024
@@ -355,7 +355,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         # This is a more graceful method of shutdown
         wait_for_shutdown
     else
-        echo -e "${RED}[!]${NC} Qubes Windows Tools has stopped working! This is probably the result of installing a conflicting package. Shutting down..."
+        echo -e "${RED}[!]${NC} Qubes Windows Tools has stopped working! This is probably the result of installing a conflicting package. Shutting down..." >&2
         # Example of conflicting package: vcredist140 (during install of vcredist140-x64)
         qvm-shutdown --wait "$qube"
     fi
