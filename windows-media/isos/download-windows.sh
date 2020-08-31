@@ -112,7 +112,7 @@ if [ "$win81x64" ] || [ "$all" ]; then
     # Doesn't work because Microsoft gives links that are only valid for 24 hours (https://serverfault.com/questions/952196/how-do-i-download-a-win10x64-enterprise-eval-iso-file-from-microsoft-via-the-command-line)
     # https://www.microsoft.com/en-us/software-download/windows8ISO
     # Returns 403 forbidden: curl "https://software-download.microsoft.com/pr/Win8.1_English_x64.iso" -o "win81x64.iso
-    echo -e "${RED}[!]${NC} Microsoft does not allow automatic downloading of this Windows media; please download it manually here: https://www.microsoft.com/en-us/software-download/windows8ISO (Don't forget to verify it afterwards)" >&2
+    echo -e "${RED}[!]${NC} Microsoft does not allow automatic downloading of this Windows media so please download it manually here: https://www.microsoft.com/en-us/software-download/windows8ISO (Don't forget to verify it afterwards)" >&2
 fi
 
 if [ "$win10x64" ] || [ "$all" ]; then
@@ -120,7 +120,7 @@ if [ "$win10x64" ] || [ "$all" ]; then
     # Doesn't work for same reason as Windows 8.1
     # https://www.microsoft.com/en-us/software-download/windows10ISO
     # Returns 403 forbidden: curl "https://software-download.microsoft.com/sg/Win10_1909_English_x64.iso" -o "win10x64.iso"
-    echo -e "${RED}[!]${NC} Microsoft does not allow automatic downloading of this Windows media; please download it manually here: https://www.microsoft.com/en-us/software-download/windows10ISO (Don't forget to verify it afterwards)" >&2
+    echo -e "${RED}[!]${NC} Microsoft does not allow automatic downloading of this Windows media so please download it manually here: https://www.microsoft.com/en-us/software-download/windows10ISO (Don't forget to verify it afterwards)" >&2
 fi
 
 if [ "$win81x64_enterprise_eval" ] || [ "$all" ]; then
