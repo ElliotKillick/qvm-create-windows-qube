@@ -70,7 +70,7 @@ qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.
     - SHA-256 verification of the files after download
 - Packages such as Firefox are offered out of the box so the infamously insecure Internet Explorer never has to be used
 - Windows is treated as an untrusted guest operating system the entire way through
-- The impact of any theoretical vulnerabilities in handling of the Windows ISO or answer file is limited to `windows-mgmt`
+- The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
 
 ### Windows
 
@@ -105,7 +105,7 @@ Configures Windows telemetry settings to respect privacy.
 
 Everything mentioned [here](https://www.whonix.org/wiki/Other_Operating_Systems) up to "Even more security" is implemented. "Most security" is to use an official Whonix-Workstation built yourself from source. This feature is not official or endorsed by Whonix.
 
-It's recommended to read [this](https://www.whonix.org/wiki/Windows_Hosts#Windows_Backdoors) Whonix documentation to understand the implications of using Windows in this way.
+It's recommended to read [this](https://www.whonix.org/wiki/Windows_Hosts) Whonix documentation to understand the implications of using Windows in this way.
 
 ### Easy to Reset Fingerprint
 
@@ -115,8 +115,9 @@ There are countless unique identifiers present in every Windows installation suc
 
 Fingerprinting is possible through the hypervisor in the event of VM compromise, here are some practical examples (not specific to Windows):
 
-- [Xen clocksource](https://phabricator.whonix.org/T389/)
-    - Can partially be mitigated by configuring UTC time in the BIOS/UEFI, local timezone can still be configured for XFCE Dom0 clock
+- [Xen clocksource](https://phabricator.whonix.org/T389)
+    - Timezone leak can at least be mitigated by configuring UTC time in the BIOS/UEFI, the local timezone can still be configured for XFCE Dom0 clock
+    - However, correlation between other VMs remains trivial
 - [CPUID](https://github.com/QubesOS/qubes-issues/issues/1142)
 - Generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface/) (e.g. screen dimensions)
 
