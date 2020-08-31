@@ -14,7 +14,7 @@ run_clean_time_command() {
     datefudge --static @0 "${cmd[@]}"
 }
 
-# Set file timestamp to the Unix epoch
+# Set file/folder timestamp to the Unix epoch
 # I think only QEMU would have access to this but as a result of it being buggy (that's why we keep it in a stubdomain), we clean this timestamp too
 clean_file_timestamp() {
     file="$1"
@@ -22,7 +22,7 @@ clean_file_timestamp() {
     touch --date @0 "$file"
 }
 
-# Set file timestamps to the Unix epoch recursively
+# Set file/folder timestamps to the Unix epoch recursively
 # Testing proved that these timestamps were kept intact in the newly created ISO and could be seen from within Windows
 clean_file_timestamps_recursively() {
     dir="$1"
