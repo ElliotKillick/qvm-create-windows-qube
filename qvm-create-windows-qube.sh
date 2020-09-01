@@ -5,7 +5,13 @@ BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-trap exit ERR
+error() {
+    exit_code="$?"
+    echo -e "${RED}[!]${NC} An unexpected error has occurred! Exiting..." >&2
+    exit "$exit_code"
+}
+
+trap error ERR
 
 wait_for_shutdown() {
     # There is a small delay upon booting a qube before qvm-check will detect it as running
