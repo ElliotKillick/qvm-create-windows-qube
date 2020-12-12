@@ -6,23 +6,13 @@ The project emphasizes correctness, security and treating Windows as an untruste
 
 ## Installation
 
-1. Download the [installation script](https://raw.githubusercontent.com/elliotkillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save [Page] as..."
-2. Copy `install.sh` into Dom0 by running the following command in Dom0:
-    - `qvm-run -p --filter-escape-chars --no-color-output <qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
-3. Review the code of `install.sh` to ensure its integrity
-    - Safer with escape character filtering enabled above; qvm-run disables it by default when output is a file
-4. Run `chmod +x install.sh && ./install.sh`
-    - Note that this will install packages in the global default `TemplateVM`, which is `fedora-XX` by default
-5. Review the code of the resulting `qvm-create-windows-qube.sh`
-
-Coming Soon: Streamlined and secure installation through `qubes-dom0-update` (Issue #11)
+This tool can be automatically installed with Qubes [windows-mgmt](https://github.com/fepitre/qubes-mgmt-salt-windows-mgmt) salt formula.
 
 ## Usage
 
 ```
 Usage: ./qvm-create-windows-qube.sh [options] <name>
   -h, --help
-  -c, --count <number> Number of Windows qubes with given basename desired
   -t, --template Make this qube a TemplateVM instead of a StandaloneVM
   -n, --netvm <qube> NetVM for Windows to use
   -s, --seamless Enable seamless mode persistently across reboots

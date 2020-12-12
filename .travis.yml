@@ -1,4 +1,0 @@
-dist: bionic
-language: shell
-script:
-  - bash -c 'shopt -s globstar nullglob; shellcheck --external-sources --source-path=SCRIPTDIR **/*.sh'
