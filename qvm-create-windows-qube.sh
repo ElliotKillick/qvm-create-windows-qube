@@ -167,7 +167,7 @@ if [ "$packages" ]; then
     if [ "$resources_netvm" ] && ! qvm-tags "$resources_netvm" list anon-gateway &> /dev/null; then
         IFS="," read -ra package_arr <<< "$packages"
         for package in "${package_arr[@]}"; do
-            if [ "$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')" != 404 ]; then
+            if [ "$(curl -so /dev/null -w '%{http_code}' "https://chocolatey.org/api/v2/package/$package")" != 404 ]; then
                 echo_err "Package not found: $package"
                 exit 1
             fi
@@ -221,10 +221,10 @@ echo_info "Starting first part of Windows installation process..."
 # We create a loop device exposing the iso
 DEV_LOOP="$(sudo losetup --show -f -P "$resources_dir/windows-media/out/$iso" 2>/dev/null)"
 if [[ $DEV_LOOP =~ /dev/loop[0-9]+ ]]; then
-    until qvm-start --cdrom "$resources_qube:${DEV_LOOP//\/dev\//}" "$qube"; do
+    if ! qvm-start --cdrom "$resources_qube:${DEV_LOOP//\/dev\//}" "$qube"; then
         echo_err "Failed to start $qube! Retrying in 10 seconds..."
-        sleep 10
-    done
+        exit 1
+    fi
 else
     echo_err "Failed to create loop device for $iso. Exiting..."
     exit 1
@@ -235,10 +235,10 @@ wait_for_shutdown
 
 echo_info "Starting second part of Windows installation process..."
 qvm-features --unset "$qube" video-model
-until qvm-start "$qube"; do
+if ! qvm-start "$qube"; then
     echo_err "Failed to start $qube! Retrying in 10 seconds..."
-    sleep 10
-done
+    exit 1
+fi
 
 # Waiting for second part of Windows installation process to finish...
 wait_for_shutdown
@@ -264,10 +264,10 @@ if [ -f /usr/lib/qubes/qubes-windows-tools.iso ]; then
 
     DEV_LOOP="$(sudo losetup --show -f -P "$resources_qube:$resources_dir/tools-media/auto-qwt.iso" 2>/dev/null)"
     if [[ $DEV_LOOP =~ /dev/loop[0-9]+ ]]; then
-        until qvm-start --cdrom "$resources_qube:${DEV_LOOP//\/dev\//}" "$qube"; do
+        if ! qvm-start --cdrom "$resources_qube:${DEV_LOOP//\/dev\//}" "$qube"; then
             echo_err "Failed to start $qube! Retrying in 10 seconds..."
-            sleep 10
-        done
+            exit 1
+        fi
     else
         echo_err "Failed to create loop device for auto-qwt.iso. Exiting..."
         exit 1
@@ -277,10 +277,10 @@ if [ -f /usr/lib/qubes/qubes-windows-tools.iso ]; then
     wait_for_shutdown
 
     echo_info "Starting setup of Qubes Windows Tools..."
-    until qvm-start "$qube"; do
+    if ! qvm-start "$qube"; then
         echo_err "Failed to start $qube! Retrying in 10 seconds..."
-        sleep 10
-    done
+        exit 1
+    fi
 
     # Wait until QWT installation is advertised to Dom0
     until [ "$(qvm-features "$qube" os)" == "Windows" ]; do
