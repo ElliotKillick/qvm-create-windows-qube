@@ -1,28 +1,13 @@
 #!/bin/bash
 
 set -e
-
 [[ "$DEBUG" == 1 ]] && set -x
 
 resources_dir="$(readlink -f "$(dirname "$0")")"
 resources_qube="windows-mgmt"
 
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-GREEN='\033[0;32m'
-NC='\033[0m'
-
-echo_info() {
-    echo -e "${BLUE}[i]${NC} $*" >&2
-}
-
-echo_ok() {
-    echo -e "${GREEN}[i]${NC} $*" >&2
-}
-
-echo_err() {
-    echo -e "${RED}[i]${NC} $*" >&2
-}
+# shellcheck source=./scripts/common.sh
+source "$resources_dir/scripts/common.sh"
 
 exit_clean() {
     local exit_code="$?"
@@ -231,9 +216,9 @@ echo_info "Starting first part of Windows installation process..."
 
 # Existing block device identifier is needed when running from outside of dom0
 # We create a loop device exposing the iso
-DEV_LOOP="$(sudo losetup --show -f -P "$resources_dir/windows-media/out/$iso" 2>/dev/null)"
-if [[ $DEV_LOOP =~ /dev/loop[0-9]+ ]]; then
-    if ! qvm-start --cdrom "$resources_qube:${DEV_LOOP//\/dev\//}" "$qube"; then
+windows_iso_loop="$(mount_loop "$resources_dir/windows-media/out/$iso")"
+if [ -n "${windows_iso_loop}" ]; then
+    if ! qvm-start --cdrom "$resources_qube:${windows_iso_loop}" "$qube"; then
         echo_err "Failed to start $qube! Retrying in 10 seconds..."
         exit 1
     fi
@@ -244,6 +229,9 @@ fi
 
 # Waiting for first part of Windows installation process to finish...
 wait_for_shutdown
+
+# Free loopdev for windows_iso_loop
+sudo losetup -d "/dev/${windows_iso_loop}"
 
 echo_info "Starting second part of Windows installation process..."
 qvm-features --unset "$qube" video-model
@@ -274,9 +262,9 @@ if [ -f /usr/lib/qubes/qubes-windows-tools.iso ]; then
         qvm-prefs "$qube" netvm "$netvm"
     fi
 
-    DEV_LOOP="$(sudo losetup --show -f -P "$resources_qube:$resources_dir/tools-media/auto-qwt.iso" 2>/dev/null)"
-    if [[ $DEV_LOOP =~ /dev/loop[0-9]+ ]]; then
-        if ! qvm-start --cdrom "$resources_qube:${DEV_LOOP//\/dev\//}" "$qube"; then
+    autoqwt_iso_loop="$(mount_loop "$resources_dir/tools-media/auto-qwt.iso")"
+    if [ -n "${autoqwt_iso_loop}" ]; then
+        if ! qvm-start --cdrom "$resources_qube:${autoqwt_iso_loop}" "$qube"; then
             echo_err "Failed to start $qube! Retrying in 10 seconds..."
             exit 1
         fi
@@ -287,6 +275,9 @@ if [ -f /usr/lib/qubes/qubes-windows-tools.iso ]; then
 
     # Waiting for automatic shutdown after Qubes Windows Tools install...
     wait_for_shutdown
+
+    # Free loopdev for autoqwt_iso_loop
+    sudo losetup -d "/dev/${autoqwt_iso_loop}"
 
     echo_info "Starting setup of Qubes Windows Tools..."
     if ! qvm-start "$qube"; then

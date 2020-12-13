@@ -11,16 +11,48 @@
 # Update: Found a way to avoid hardcoding the product key for any version/edition of Windows which is great because it makes the answer files more adaptable to working with any given Windows media
 # Also, we don't have to do the tedious work of installing the Windows media manually then running that tool to get the trial product key
 
-# Test for 4-bit color (16 colors)
-if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
-    RED='\033[0;31m'
-    BLUE='\033[0;34m'
-    GREEN='\033[0;32m'
-    NC='\033[0m'
-fi
+[[ "$DEBUG" == 1 ]] && set -x
+localdir="$(readlink -f "$(dirname "$0")")"
+scriptsdir="$(readlink -f "$localdir/../scripts")"
+
+# shellcheck source=scripts/common.sh
+source "$scriptsdir/common.sh"
+# shellcheck source=scripts/clean-timestamps.sh
+source "$scriptsdir/clean-timestamps.sh"
 
 usage() {
     echo "Usage: $0 iso answer_file"
+}
+
+exit_clean() {
+    local exit_code="$?"
+
+    if [ -n "$iso_loop" ]; then
+        echo_info "Unmounting loop device for $iso..."
+        if [ -n "$iso_mntpoint" ]; then
+            sudo umount "$iso_mntpoint"
+        fi
+
+        echo_info "Deleting loop device..."
+        sudo losetup -d "/dev/$iso_loop"
+    fi
+
+    if [ -d "$temp_dir" ]; then
+        echo_info "Deleting temporary folder..."
+        chmod -R +w "$temp_dir" # Read-only permissions were inherited because ISO 9660 is a read-only filesystem
+        rm -r "$temp_dir"
+    fi
+
+    if [ "$exit_code" != 0 ]; then
+        if [ -f "$final_iso" ]; then
+            echo_info "Deleting incomplete ISO output..."
+            rm "$final_iso"
+        fi
+        echo_err "Failed to create automatic Windows installation media!"
+    else
+        echo_ok "Created automatic Windows installation media for $(basename "$final_iso") successfully!"
+    fi
+    exit "$exit_code"
 }
 
 for arg in "$@"; do
@@ -31,7 +63,7 @@ for arg in "$@"; do
 done
 
 if [ "$#" != "2" ]; then
-    usage >&2
+    usage
     exit 1
 fi
 
@@ -39,75 +71,40 @@ iso="$1"
 answer_file="$2"
 
 if ! [ -f "$iso" ]; then
-    echo -e "${RED}[!]${NC} ISO file not found: $iso" >&2
+    echo_err "ISO file not found: $iso"
     exit 1
 fi
 
 if ! [ -f "$answer_file" ]; then
-    echo -e "${RED}[!]${NC} Answer file not found: $answer_file" >&2
+    echo_err "Answer file not found: $answer_file"
     exit 1
 fi
 
-clean_exit() {
-    exit_code="$?"
+trap exit_clean EXIT ERR INT
 
-    if [ "$iso_device" ]; then
-        if findmnt "$iso_device" > /dev/null; then
-            echo -e "${BLUE}[i]${NC} Unmounting loop device..." >&2
-            udisksctl unmount --block-device "$iso_device"
-        fi
+echo_info "Creating loop device from ISO..."
+iso_loop="$(mount_loop "$iso")"
 
-        echo -e "${BLUE}[i]${NC} Deleting loop device..." >&2
-        udisksctl loop-delete --block-device "$iso_device"
-    fi
+if [ -z "$iso_loop" ]; then
+    echo_err "Failed to create loop device for $iso. Exiting..."
+    exit 1
+fi
 
-    if [ -d "$temp_dir" ]; then
-        echo -e "${BLUE}[i]${NC} Deleting temporary folder..." >&2
-        chmod -R +w "$temp_dir" # Read-only permissions were inherited because ISO 9660 is a read-only filesystem
-        rm -r "$temp_dir"
-    fi
+echo_info "Mounting loop device..."
+iso_mntpoint="$(mktemp -d)"
+if ! sudo mount "/dev/$iso_loop" "$iso_mntpoint" >/dev/null 2>&1; then
+    echo_err "Failed to mount loop device for $iso. Exiting..."
+    exit 1
+fi
 
-    if [ "$exit_code" != 0 ]; then
-        if [ -f "$final_iso" ]; then
-            echo -e "${BLUE}[i]${NC} Deleting incomplete ISO output..." >&2
-            rm "$final_iso"
-        fi
-
-        echo -e "${RED}[!]${NC} Failed to create automatic Windows installation media!"
-        exit "$exit_code"
-    fi
-
-    echo -e "${GREEN}[+]${NC} Created automatic Windows installation media for $(basename "$final_iso") successfully!"
-}
-
-trap clean_exit EXIT
-trap exit ERR
-trap exit INT
-
-# shellcheck source=clean-timestamps.sh
-source clean-timestamps.sh
-
-echo -e "${BLUE}[i]${NC} Creating loop device from ISO..." >&2
-iso_device="$(udisksctl loop-setup --file "$iso")"
-iso_device="${iso_device#Mapped file * as }"
-iso_device="${iso_device%.}"
-
-echo -e "${BLUE}[i]${NC} Mounting loop device..." >&2
-# Fix race condition where disk tries to mount before finishing setup
-until iso_mntpoint="$(udisksctl mount --block-device "$iso_device")"; do
-    sleep 1
-done
-iso_mntpoint="${iso_mntpoint#Mounted * at }"
-iso_mntpoint="${iso_mntpoint%.}"
-
-echo -e "${BLUE}[i]${NC} Copying loop device contents to temporary folder..." >&2
+echo_info "Copying loop device contents to temporary folder..."
 temp_dir="$(mktemp --directory --tmpdir=out)" # The default /tmp may be too small
 cp -r "$iso_mntpoint/." "$temp_dir"
 
-echo -e "${BLUE}[i]${NC} Copying answer file to Autounattend.xml in temporary folder..." >&2
+echo_info "Copying answer file to Autounattend.xml in temporary folder..."
 cp "$answer_file" "$temp_dir/Autounattend.xml"
 
-echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
+echo_info "Creating new ISO..."
 # https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso
 # https://theunderbase.blogspot.com/2013/03/editing-bootable-dvds-as-iso-images.html
 
