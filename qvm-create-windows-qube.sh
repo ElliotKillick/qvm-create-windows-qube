@@ -2,6 +2,9 @@
 
 [[ "$DEBUG" == 1 ]] && set -x
 
+resources_dir="$(readlink -f "$(dirname "$0")")"
+resources_qube="windows-mgmt"
+
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
@@ -50,6 +53,12 @@ usage() {
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
     echo "  -i, --iso <file> Windows media to automatically install and setup (default: $iso)"
     echo "  -a, --answer-file <xml file> Settings for Windows installation (default: $answer_file)"
+    echo ""
+    echo "Available ISOs:"
+    find "$resources_dir/windows-media/isos" -type f -name '*.iso' -printf '  %P\n'
+    echo ""
+    echo "Available answer files:"
+    find "$resources_dir/windows-media/answer-files" -type f -name '*.xml' -printf '  %P\n'
 }
 
 # Option strings
@@ -147,9 +156,6 @@ if [ "$netvm" ]; then
     fi
 fi
 
-resources_qube="windows-mgmt"
-resources_dir="/home/user/qvm-create-windows-qube"
-
 # Validate packages
 if [ "$packages" ]; then
     if ! [ "$netvm" ]; then
@@ -178,17 +184,13 @@ fi
 # Validate iso
 if ! [ -f "$resources_dir/windows-media/isos/$iso" ]; then
     echo_err "File not found in $resources_dir/windows-media/isos: $iso"
-    echo_info "Available ISOs: "
-    cd "$resources_dir/windows-media/isos" && find . -type f -name '*.iso' -printf '%P\n'
-    exit 1
+    exit 10
 fi
 
 # Validate answer-file
 if ! [ -f "$resources_dir/windows-media/answer-files/$answer_file" ]; then
     echo_err "File not found in $resources_dir/windows-media/answer-files: $answer_file"
-    echo_info "Available answer files: "
-    cd "$resources_dir/windows-media/answer-files" && find . -type f -name '*.xml' -printf '%P\n'
-    exit 1
+    exit 10
 fi
 
 # Put answer file into Windows media
