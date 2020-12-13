@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 [[ "$DEBUG" == 1 ]] && set -x
 
 resources_dir="$(readlink -f "$(dirname "$0")")"
@@ -204,7 +206,7 @@ fi
 # Put answer file into Windows media
 echo_info "Preparing Windows media for automatic installation..."
 if [ -f "$resources_dir/windows-media/isos/$iso" ]; then
-    cd "$resources_dir/windows-media" || exit 1
+    cd "$resources_dir/windows-media"
     ./create-media.sh "isos/$iso" "answer-files/$answer_file"
 else
     echo_err "Failed to create media! Out of disk space? Exiting..."
