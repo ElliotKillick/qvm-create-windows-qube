@@ -22,13 +22,19 @@ echo_err() {
     echo -e "${RED}[i]${NC} $*" >&2
 }
 
-error() {
-    exit_code="$?"
-    echo_err "An unexpected error has occurred! Exiting..."
+exit_clean() {
+    local exit_code="$?"
+
+    # Remove previously created loop devices
+    sudo losetup -D
+
+    if [ $exit_code -eq 0 ]; then
+        echo_ok "Completed successfully!"
+    elif [ $exit_code -ne 10 ]; then
+        echo_err "An error has occurred! Exiting..."
+    fi
     exit "$exit_code"
 }
-
-trap error ERR
 
 wait_for_shutdown() {
     # There is a small delay upon booting a qube before qvm-check will detect it as running
@@ -130,8 +136,10 @@ if [ $# != 1 ]; then
     usage >&2
     exit 1
 fi
-name="$1"
 
+trap exit_clean 0 1 2 3 6 15
+
+name="$1"
 # Validate name
 if qvm-check "$name" &> /dev/null; then
     echo_err "Qube already exists: $name"
@@ -184,13 +192,13 @@ fi
 # Validate iso
 if ! [ -f "$resources_dir/windows-media/isos/$iso" ]; then
     echo_err "File not found in $resources_dir/windows-media/isos: $iso"
-    exit 10
+    exit 1
 fi
 
 # Validate answer-file
 if ! [ -f "$resources_dir/windows-media/answer-files/$answer_file" ]; then
     echo_err "File not found in $resources_dir/windows-media/answer-files: $answer_file"
-    exit 10
+    exit 1
 fi
 
 # Put answer file into Windows media
@@ -367,8 +375,3 @@ fi
 
 # Give reasonable amount of memory for actual use
 qvm-prefs "$qube" memory 2048
-
-# Remove previously created loop devices
-sudo losetup -D
-
-echo_ok "Completed successfully!"
