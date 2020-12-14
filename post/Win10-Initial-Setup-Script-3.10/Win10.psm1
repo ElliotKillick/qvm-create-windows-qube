@@ -4081,11 +4081,13 @@ Function UnpinTaskbarIcons {
 #region Auxiliary Functions
 ##########
 
+# BEGIN QUBES SPECIFIC PART
 # Wait for key press
-Function WaitForKey {
-	Write-Output "`nPress any key to continue..."
-	[Console]::ReadKey($true) | Out-Null
-}
+# Function WaitForKey {
+# 	Write-Output "`nPress any key to continue..."
+# 	[Console]::ReadKey($true) | Out-Null
+# }
+# END QUBES SPECIFIC PART
 
 # Restart computer
 Function Restart {
