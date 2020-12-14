@@ -45,10 +45,10 @@ usage() {
     echo "  -p, --post-iso <file> Media containing 'run.bat' to run at firstboot"
     echo ""
     echo "Available ISOs:"
-    find "$resources_dir/windows-media/isos" -type f -name '*.iso' -printf '  %P\n'
+    find "$resources_dir/windows/isos" -type f -name '*.iso' -printf '  %P\n'
     echo ""
     echo "Available answer files:"
-    find "$resources_dir/windows-media/answer-files" -type f -name '*.xml' -printf '  %P\n'
+    find "$resources_dir/windows/answer-files" -type f -name '*.xml' -printf '  %P\n'
 }
 
 # Option strings
@@ -138,14 +138,14 @@ if [ "$netvm" ]; then
 fi
 
 # Validate iso
-if ! [ -f "$resources_dir/windows-media/isos/$iso" ]; then
-    echo_err "File not found in $resources_dir/windows-media/isos: $iso"
+if ! [ -f "$resources_dir/windows/isos/$iso" ]; then
+    echo_err "File not found in $resources_dir/windows/isos: $iso"
     exit 1
 fi
 
 # Validate answer-file
-if ! [ -f "$resources_dir/windows-media/answer-files/$answer_file" ]; then
-    echo_err "File not found in $resources_dir/windows-media/answer-files: $answer_file"
+if ! [ -f "$resources_dir/windows/answer-files/$answer_file" ]; then
+    echo_err "File not found in $resources_dir/windows/answer-files: $answer_file"
     exit 1
 fi
 
@@ -157,8 +157,8 @@ fi
 
 # Put answer file into Windows media
 echo_info "Preparing Windows media for automatic installation..."
-if [ -f "$resources_dir/windows-media/isos/$iso" ]; then
-    cd "$resources_dir/windows-media"
+if [ -f "$resources_dir/windows/isos/$iso" ]; then
+    cd "$resources_dir/windows"
     ./create-media.sh "isos/$iso" "answer-files/$answer_file"
 else
     echo_err "Failed to create media! Out of disk space? Exiting..."
@@ -183,7 +183,7 @@ echo_info "Starting first part of Windows installation process..."
 
 # Existing block device identifier is needed when running from outside of dom0
 # We create a loop device exposing the iso
-windows_iso_loop="$(mount_loop "$resources_dir/windows-media/out/$iso")"
+windows_iso_loop="$(mount_loop "$resources_dir/windows/out/$iso")"
 if [ -n "${windows_iso_loop}" ]; then
     if ! qvm-start --cdrom "$resources_qube:${windows_iso_loop}" "$qube"; then
         echo_err "Failed to start $qube!"
