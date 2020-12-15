@@ -6,7 +6,7 @@ The project emphasizes correctness, security and treating Windows as an untruste
 
 ## Installation
 
-This tool can be automatically installed with Qubes [windows-mgmt](https://github.com/fepitre/qubes-mgmt-salt-windows-mgmt) salt formula.
+This tool has to be used inside a Qubes `AdminVM` with a minimal recommended private volume size to `40GiB`. A setup of such `AdminVM` called `windows-mgmt` can be done with the help of a Salt formula (see  https://github.com/fepitre/qubes-mgmt-salt-windows-mgmt).
 
 ## Usage
 
@@ -15,43 +15,53 @@ Usage: ./qvm-create-windows-qube.sh [options] <name>
   -h, --help
   -t, --template Make this qube a TemplateVM instead of a StandaloneVM
   -n, --netvm <qube> NetVM for Windows to use
-  -s, --seamless Enable seamless mode persistently across reboots
-  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube
-  -y, --spyless Configure Windows telemetry settings to respect privacy
-  -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation
-  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
+  -w, --with-internet Allow network traffic to internet at first boot only"
   -i, --iso <file> Windows media to automatically install and setup (default: win7x64-ultimate.iso)
   -a, --answer-file <xml file> Settings for Windows installation (default: win7x64-ultimate.xml)
+  -p, --post-iso <file> Media containing 'run.bat' to run at firstboot
 ```
 
 ### Examples
 
+#### Download Microsoft Windows ISO
+
+The script `windows/isos/download-windows.sh` helps to do download official Microsoft Windows ISO to be used by `qvm-create-windows-qube`.
+
+#### Post installation ISO
+
+The `qvm-create-windows-qube` tool allows to specify a first boot automated installation content with the help of an ISO. The entrypoint of this ISO is the batch script `run.bat` (specified in the answer file). The script `post/create-post-media.sh` allows to generate such media. The generated ISO is located at `post/post.iso`.
+
+##### Default post ISO
+
+By default, it generates a post ISO with content in `post/default`. This is currently some of the legacy options provided by this tool on Qubes R4.0: `--optimize`, `--spyless` and `--whonix` (see `Privacy` section). The packages option feature remains available but manual definition of `packages` variable is needed in `default/run.bat`.
+
+##### Disassembler0/Win10-Initial-Setup-Script
+
+The scripts provided by https://github.com/Disassembler0/Win10-Initial-Setup-Script are available for being integrated as first boot installation. For that, run in folder `post`:
+
+`[user@windows-mgmt post]$ ./create-post-media.sh Win10-Initial-Setup-Script-3.10`
+
+
+#### Creating Windows VM
+
 Windows 7:
 
-`./qvm-create-windows-qube.sh -n sys-firewall -soyp firefox,notepadplusplus,office365proplus work-win7`
+`[user@windows-mgmt qvm-create-windows-qube]$ ./qvm-create-windows-qube.sh -n sys-firewall work-win7`
 
-Windows 10 (After downloading with `download-windows.sh`):
+Windows 10:
 
-`./qvm-create-windows-qube.sh -oyp steam -i win10x64.iso -a win10x64-pro.xml game-console`
-
-Windows 10 LTSC:
-
-`./qvm-create-windows-qube.sh -n sys-whonix -oyw -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml anon-win10`
+`[user@windows-mgmt qvm-create-windows-qube]$ ./qvm-create-windows-qube.sh -i win10x64.iso -a win10x64-pro.xml -p post/post.iso work-win10`
 
 Windows Server 2019:
 
-`./qvm-create-windows-qube.sh -n sys-firewall -oy -i win2019-eval.iso -a win2019-datacenter-eval.xml fs-win2019`
+`[user@windows-mgmt qvm-create-windows-qube]$ ./qvm-create-windows-qube.sh -n sys-firewall -i win2019-eval.iso -a win2019-datacenter-eval.xml fs-win2019`
 
 ## Security
 
-qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.org) would have it.
+qvm-create-windows-qube is "reasonably secure" as [Qubes](https://www.qubes-os.org) would have it.
 
-- `windows-mgmt` is air gapped
 - The entirety of the Windows qube setup process happens is done air gapped
-    - There is an exception for installing packages at the very end of the Windows qube installation
-- Entire class of command injection vulnerabilities eliminated in the Dom0 shell script by not letting it parse any output from the untrusted `windows-mgmt` qube
-    - Only exit codes are passed by `qvm-run`; no variables
-    - This also mitigates the fallout of another [Shellshock](https://en.wikipedia.org/wiki/Shellshock_(software_bug)) Bash vulnerability
+    - There is an exception for the automated first boot process. An option `--with-internet` allows network traffic on the `NetVM` provided for the generated Windows VM.
 - Downloading of the Windows ISOs is made secure by enforcing:
     - ISOs are downloaded straight from Microsoft controlled subdomains of `microsoft.com`
     - HTTPS TLS 1.2/1.3
@@ -59,10 +69,9 @@ qvm-create-windows-qube is "reasonably secure," as [Qubes](https://www.qubes-os.
         - Qubes aims to ["distrust the infrastructure"](https://www.qubes-os.org/faq/#what-does-it-mean-to-distrust-the-infrastructure)
         - Remember, `transport security = encryption * authentication` (This allows for the utmost authentication)
     - SHA-256 verification of the files after download
-- Packages such as Firefox are offered out of the box so the infamously insecure Internet Explorer never has to be used
 - Windows is treated as an untrusted guest operating system the entire way through
-- All commits are signed with my PGP signature
-- The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
+- All commits are signed with PGP signatures (please refer to the current maintainer fork used).
+- The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to the AdminVM `windows-mgmt` creating VMs.
 
 ### Windows
 
@@ -121,9 +130,11 @@ Lots of Windows-related [GSoCs](https://www.qubes-os.org/gsoc/) for those intere
 
 This project is the product of an independent effort that is not officially endorsed by Qubes OS.
 
-## QWT Known Issues
+## Qubes Windows Tools
 
-I may get around to patching some of these upstream issues later if nobody else does. Fixing these issues requires building QWT for which I would have to become the maintainer for, but, as of right now, I simply lack the time.
+Currently there is no Qubes Windows Tools (aka QWT) working and supported on the upcoming Qubes R4.1.
+
+### Known issues on QWT in Qubes R4.0
 
 All OSs:
 - [No Windows display when Qubes GUI driver is not installed](https://github.com/QubesOS/qubes-issues/issues/5739)
@@ -147,7 +158,7 @@ See here:
 - https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-tools
 - https://github.com/QubesOS/qubes-issues/labels/C%3A%20windows-vm
 
-## Todo
+## WIP: Todo (TO BE ADAPTED WITH CURRENT VERSION)
 
 - [x] Gain the ability to reliably unpack/insert answer file/repack for any given ISO 9660 (Windows ISO format)
     - ISO 9660 is write-once (i.e. read-only) filesystem; you cannot just add a file to it without creating a whole new ISO
