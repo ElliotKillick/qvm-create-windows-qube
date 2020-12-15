@@ -5,6 +5,7 @@ rem This file is yours to customize and add what ever custom commands you would 
 
 rem Post QWT scripts
 set post_iso_drive=D:
+set "packages="
 
 cd /d %post_iso_drive%
 
@@ -17,7 +18,9 @@ start /min /wait cmd /c spyless.bat
 rem Applying Whonix recommended settings for a Windows-Whonix-Workstation...
 start /min /wait cmd /c whonix.bat
 
-@REM rem Installing packages...
-@REM powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 $packages <nul
+if "!packages!"!="" (
+rem Installing packages...
+powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 %packages% <nul
+)
 
 shutdown /s /t 0
