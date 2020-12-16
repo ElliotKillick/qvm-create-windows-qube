@@ -18,7 +18,7 @@ start /min /wait cmd /c spyless.bat
 rem Applying Whonix recommended settings for a Windows-Whonix-Workstation...
 start /min /wait cmd /c whonix.bat
 
-if "!packages!"!="" (
+if not "%packages%"=="" (
 rem Installing packages...
 powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 %packages% <nul
 )
