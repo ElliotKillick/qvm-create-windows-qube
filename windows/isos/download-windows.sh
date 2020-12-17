@@ -171,4 +171,4 @@ if ! sha256sum -c SHA256SUMS --ignore-missing; then
     exit 1
 fi
 
-echo_done "Successfully downloaded and verified integrity of Windows media!"
+echo_ok "Successfully downloaded and verified integrity of Windows media!"
