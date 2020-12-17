@@ -2,7 +2,7 @@
 
 [[ "$DEBUG" == 1 ]] && set -x
 localdir="$(readlink -f "$(dirname "$0")")"
-scriptsdir="$(readlink -f "$localdir/../scripts")"
+scriptsdir="$(readlink -f "$localdir/../../scripts")"
 
 # shellcheck source=scripts/common.sh
 source "$scriptsdir/common.sh"
