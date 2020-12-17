@@ -103,7 +103,7 @@ echo_info "Downloading Windows media from Microsoft servers..." >&2
 if [ "$win7x64_ultimate" ] || [ "$all" ]; then
     echo_info "Downloading Windows 7..." >&2
     # Heidoc Windows ISO Downloader
-    scurl_file "$localdir/isos/win7x64-ultimate.iso" "$download_microsoft_com_key" "1.2" "https://download.microsoft.com/download/5/1/9/5195A765-3A41-4A72-87D8-200D897CBE21/7601.24214.180801-1700.win7sp1_ldr_escrow_CLIENT_ULTIMATE_x64FRE_en-us.iso"
+    scurl_file "$localdir/win7x64-ultimate.iso" "$download_microsoft_com_key" "1.2" "https://download.microsoft.com/download/5/1/9/5195A765-3A41-4A72-87D8-200D897CBE21/7601.24214.180801-1700.win7sp1_ldr_escrow_CLIENT_ULTIMATE_x64FRE_en-us.iso"
 fi
 
 if [ "$win81x64" ] || [ "$all" ]; then
@@ -126,43 +126,43 @@ if [ "$win81x64_enterprise_eval" ] || [ "$all" ]; then
     echo_info "Downloading Windows 8.1 Enterprise Evaluation..." >&2
     # Used to be here but got taken down: https://www.microsoft.com/en-us/evalcenter/evaluate-windows-8-1-enterprise
     # https://gist.github.com/eyecatchup/11527136b23039a0066f
-    scurl_file "$localdir/isos/win81x64-enterprise-eval.iso" "$download_microsoft_com_key" "1.2" "https://download.microsoft.com/download/B/9/9/B999286E-0A47-406D-8B3D-5B5AD7373A4A/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_ENTERPRISE_EVAL_EN-US-IR3_CENA_X64FREE_EN-US_DV9.ISO"
+    scurl_file "$localdir/win81x64-enterprise-eval.iso" "$download_microsoft_com_key" "1.2" "https://download.microsoft.com/download/B/9/9/B999286E-0A47-406D-8B3D-5B5AD7373A4A/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_ENTERPRISE_EVAL_EN-US-IR3_CENA_X64FREE_EN-US_DV9.ISO"
 fi
 
 if [ "$win10x64_enterprise_eval" ] || [ "$all" ]; then
     echo_info "Downloading Windows 10 Enterprise Evaluation..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-10-enterprise
-    scurl_file "$localdir/isos/win10x64-enterprise-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/18363.418.191007-0143.19h2_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
+    scurl_file "$localdir/win10x64-enterprise-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/18363.418.191007-0143.19h2_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
 fi
 
 if [ "$win10x64_ltsc_eval" ] || [ "$all" ]; then
     echo_info "Downloading Windows 10 Enterprise LTSC Evaluation..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-10-enterprise
-    scurl_file "$localdir/isos/win10x64-ltsc-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/sg/17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso"
+    scurl_file "$localdir/win10x64-ltsc-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/sg/17763.107.101029-1455.rs5_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso"
 fi
 
 if [ "$win2008r2" ] || [ "$all" ]; then
     echo_info "Downloading Windows Server 2008 R2..." >&2
     # https://www.microsoft.com/en-us/download/details.aspx?id=11093
-    scurl_file "$localdir/isos/win2008r2.iso" "$download_microsoft_com_key" "1.2" "https://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso"
+    scurl_file "$localdir/win2008r2.iso" "$download_microsoft_com_key" "1.2" "https://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso"
 fi
 
 if [ "$win2012r2_eval" ] || [ "$all" ]; then
     echo_info "Downloading Windows Server 2012 R2..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2012-r2
-    scurl_file "$localdir/isos/win2012r2-eval.iso" "$download_microsoft_com_key" "1.2" "https://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO"
+    scurl_file "$localdir/win2012r2-eval.iso" "$download_microsoft_com_key" "1.2" "https://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO"
 fi
 
 if [ "$win2016_eval" ] || [ "$all" ]; then
     echo_info "Downloading Windows Server 2016..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2016
-    scurl_file "$localdir/isos/win2016-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/win2016_eval_Datacenter_EVAL_en-us_14393_refresh.ISO"
+    scurl_file "$localdir/win2016-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/win2016_eval_Datacenter_EVAL_en-us_14393_refresh.ISO"
 fi
 
 if [ "$win2019_eval" ] || [ "$all" ]; then
     echo_info "Downloading Windows Server 2019..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2019
-    scurl_file "$localdir/isos/win2019-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso"
+    scurl_file "$localdir/win2019-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso"
 fi
 
 echo_info "Verifying integrity..." >&2
