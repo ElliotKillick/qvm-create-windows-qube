@@ -84,8 +84,8 @@ done
 
 trap exit ERR
 
-download_microsoft_com_key="sha256//2e0F/Ardt/GQmXeDy1wheisQhjSImsJtf1rIekoQE7E="
-software_download_microsoft_com_key="sha256//XkxB3HpkW1URRks+KuhFNxVJTbtJeWIvl1KzpWrplcM="
+download_microsoft_com_key="sha256//C1Ivsf0VYDC6TILfQWXF0j71jAsAesFVXGgyzSvjqvo="
+software_download_microsoft_com_key="sha256//rnXgdWLOejNRPNbtt0e9bPOrVh4mIrnJ9AjE3Fb3UAY="
 
 scurl_file() {
     out_file="$1"
