@@ -4,7 +4,7 @@
 
 <div align="center">
     <a href="https://github.com/elliotkillick/qvm-create-windows-qube">
-        <img width="175" src="icons/qvm-create-windows-qube.png" alt="qvm-create-windows-qube" />
+        <img width="175" src="icons/logo.png" alt="qvm-create-windows-qube" />
     </a>
 </div>
 
@@ -101,9 +101,9 @@ qvm-create-windows-qube is "reasonably secure" as [Qubes](https://www.qubes-os.o
 - All commits by the maintainers are always signed with their respective PGP keys
     - Should signing ever cease, assume compromise
     - Current maintainer 1: [Elliot Killick](https://github.com/elliotkillick) <a href="https://keybase.io/elliotkillick" target="_blank"><img src="https://img.shields.io/keybase/pgp/elliotkillick" alt="PGP key" /></a>
-        - PGP Key: 018F B9DE 6DFA 13FB 18FB 5552 F9B9 0D44 F83D D5F2
+        - PGP key: 018F B9DE 6DFA 13FB 18FB 5552 F9B9 0D44 F83D D5F2
     - Current maintainer 2: [Frédéric Pierret](https://github.com/fepitre) (No Keybase account)
-        - PGP Key: 9FA6 4B92 F95E 706B F28E 2CA6 4840 10B5 CDC5 76E2
+        - PGP key: 9FA6 4B92 F95E 706B F28E 2CA6 4840 10B5 CDC5 76E2
         - Mostly concerned with Qubes R4.1 support
             - See the `release4.1` branch and [qubes-mgmt-salt-windows-mgmt](https://github.com/fepitre/qubes-mgmt-salt-windows-mgmt)
 - The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
