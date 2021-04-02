@@ -1,12 +1,12 @@
 # qvm-create-windows-qube
 
-<div style="text-align: center">
+<div align="center">
     <a href="https://github.com/elliotkillick/qvm-create-windows-qube">
         <img width="150" src="icons/qvm-create-windows-qube.png" alt="qvm-create-windows-qube" />
     </a>
 </div>
 
-<div style="text-align: center">
+<div align="center">
     <img src="https://img.shields.io/travis/com/elliotkillick/qvm-create-windows-qube" alt="Travis CI build" />
     <a href="LICENSE">
         <img src="https://img.shields.io/github/license/elliotkillick/qvm-create-windows-qube" alt="License" />
