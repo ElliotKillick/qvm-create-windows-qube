@@ -76,7 +76,7 @@ The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely
 - Not recommended because Windows 7 is no longer supported by Microsoft, however, it's the only desktop OS the Qubes GUI driver (in Qubes Windows Tools) supports if seamless window integration or dynamic resizing is required
 - See the Security > Windows > Advisories section below for more info
 
-`./qvm-create-windows-qube.sh -n sys-firewall -soyp firefox,notepadplusplus,office365proplus  -i win7x64-ultimate.iso -a win7x64-ultimate.xml`
+`./qvm-create-windows-qube.sh -n sys-firewall -soyp firefox,notepadplusplus,office365proplus -i win7x64-ultimate.iso -a win7x64-ultimate.xml work-win7`
 
 ## Security
 
@@ -96,15 +96,14 @@ qvm-create-windows-qube is "reasonably secure" as [Qubes](https://www.qubes-os.o
         - Remember, `transport security = encryption * authentication` (This allows for the utmost authentication)
     - SHA-256 verification of the files after download
 - Windows is treated as an untrusted guest operating system the entire way through
-- All commits by the maintainer(s) are always signed with their PGP key
+- All commits by the maintainers are always signed with their respective PGP keys
     - Should signing ever cease, assume compromise
-    - Current maintainer 1: [Elliot Killick](https://github.com/elliotkillick) <a href="https://keybase.io/elliotkillick" target="_blank"><img src="https://img.shields.io/keybase/pgp/elliotkillick" alt="PGP Key" /></a>
+    - Current maintainer 1: [Elliot Killick](https://github.com/elliotkillick) <a href="https://keybase.io/elliotkillick" target="_blank"><img src="https://img.shields.io/keybase/pgp/elliotkillick" alt="PGP key" /></a>
         - PGP Key: 018F B9DE 6DFA 13FB 18FB 5552 F9B9 0D44 F83D D5F2
-    - Current maintainer 2: [
-Frédéric Pierret](https://github.com/fepitre) (No Keybase account)
+    - Current maintainer 2: [Frédéric Pierret](https://github.com/fepitre) (No Keybase account)
         - PGP Key: 9FA6 4B92 F95E 706B F28E 2CA6 4840 10B5 CDC5 76E2
         - Mostly concerned with Qubes R4.1 support
-            - See `release4.1` branch and [qubes-mgmt-salt-windows-mgmt](https://github.com/fepitre/qubes-mgmt-salt-windows-mgmt)
+            - See the `release4.1` branch and [qubes-mgmt-salt-windows-mgmt](https://github.com/fepitre/qubes-mgmt-salt-windows-mgmt)
 - The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
 
 ### Windows
