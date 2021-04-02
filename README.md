@@ -1,8 +1,10 @@
 # qvm-create-windows-qube
 
+<br>
+
 <div align="center">
     <a href="https://github.com/elliotkillick/qvm-create-windows-qube">
-        <img width="150" src="icons/qvm-create-windows-qube.png" alt="qvm-create-windows-qube" />
+        <img width="175" src="icons/qvm-create-windows-qube.png" alt="qvm-create-windows-qube" />
     </a>
 </div>
 
