@@ -25,7 +25,7 @@ wait_for_shutdown() {
 }
 
 usage() {
-    echo "Usage: $0 [options] <name>"
+    echo "Usage: $0 [options] -i <iso> -a <answer file> <name>"
     echo "  -h, --help"
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
     echo "  -t, --template Make this qube a TemplateVM instead of a StandaloneVM"
@@ -35,8 +35,8 @@ usage() {
     echo "  -y, --spyless Configure Windows telemetry settings to respect privacy"
     echo "  -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
-    echo "  -i, --iso <file> Windows media to automatically install and setup (default: $iso)"
-    echo "  -a, --answer-file <xml file> Settings for Windows installation (default: $answer_file)"
+    echo "  -i, --iso <file> Windows media to automatically install and setup"
+    echo "  -a, --answer-file <xml file> Settings for Windows installation"
 }
 
 # Option strings
@@ -51,8 +51,6 @@ eval set -- "$opts"
 
 # Set defaults
 count="1"
-iso="win7x64-ultimate.iso"
-answer_file="win7x64-ultimate.xml"
 
 # Put options into variables
 while true; do
