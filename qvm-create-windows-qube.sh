@@ -114,10 +114,10 @@ fi
 name="$1"
 
 # Validate this is Dom0
-if [ "$(hostname)" != "dom0" ]; then
-    echo -e "${RED}[!]${NC} This script must be run in Dom0" >&2
-    exit 1
-fi
+#if [ "$(hostname)" != "dom0" ]; then
+#    echo -e "${RED}[!]${NC} This script must be run in Dom0" >&2
+#    exit 1
+#fi
 
 # Validate name
 if [ "$count" == 1 ]; then
@@ -182,20 +182,34 @@ if [ "$packages" ]; then
     fi
 fi
 
-# Validate iso
-if ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
-    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/isos: $iso" >&2
-    echo -e "${BLUE}[i]${NC} Available ISOs: " >&2
+no_iso_error() {
+    echo -e "${BLUE}[i]${NC} Available ISOs:" >&2
     qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && find -type f -name '*.iso' -printf '%P\n'"
     exit 1
+}
+
+# Validate iso
+if ! [ "$iso" ]; then
+    echo -e "${RED}[!]${NC} ISO not specified"
+    no_iso_error
+elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
+    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/isos: $iso" >&2
+    no_iso_error
 fi
 
-# Validate answer-file
-if ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
-    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/answer-files: $answer_file" >&2
-    echo -e "${BLUE}[i]${NC} Available answer files: " >&2
+no_answer_file_error() {
+    echo -e "${BLUE}[i]${NC} Available answer files:" >&2
     qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && find -type f -name '*.xml' -printf '%P\n'"
     exit 1
+}
+
+# Validate answer-file
+if ! [ "$answer_file" ]; then
+    echo -e "${RED}[!]${NC} Answer file not specified"
+    no_answer_file_error
+elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
+    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/answer-files: $answer_file" >&2
+    no_answer_file_error
 fi
 
 # Put answer file into Windows media
