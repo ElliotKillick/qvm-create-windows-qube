@@ -1,6 +1,9 @@
 @echo off
 title %~f0
 
+:: Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+:: Licensed under the MIT License. See LICENSE file for details.
+
 rem Based on: https://www.qubes-os.org/doc/windows-template-customization/
 
 echo Disabling features...

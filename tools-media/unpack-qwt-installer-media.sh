@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+# Licensed under the MIT License. See LICENSE file for details.
+
 iso_device="$(udisksctl loop-setup --file qwt-installer.iso)"
 iso_device="${iso_device#Mapped file * as }"
 iso_device="${iso_device%.}"

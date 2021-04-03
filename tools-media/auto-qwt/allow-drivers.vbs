@@ -1,3 +1,6 @@
+' Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+' Licensed under the MIT License. See LICENSE file for details.
+
 ' This is a backup method of saying "Yes" to the "Would you like to install this device software?" prompt in recent versions of Windows 7/Windows Server 2008 R2 where a bug exists causing Windows to still show that prompt whether or not the drivers are backed by a trusted certificate
 ' This is the result of Microsoft making the following hotfix "no longer available":
 ' https://support.microsoft.com/en-us/help/2921916/the-untrusted-publisher-dialog-box-appears-when-you-install-a-driver-i

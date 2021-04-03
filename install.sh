@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (C) 2021 Elliot Killick <elliotkillick@zohomail.eu>
+# Licensed under the MIT License. See LICENSE file for details.
+
 trap 'exit' ERR
 
 RED='\033[0;31m'

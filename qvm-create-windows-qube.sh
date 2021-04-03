@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+# Licensed under the MIT License. See LICENSE file for details.
+
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'

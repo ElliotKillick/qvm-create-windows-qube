@@ -1,6 +1,9 @@
 @echo off
 title %~f0
 
+:: Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+:: Licensed under the MIT License. See LICENSE file for details.
+
 rem Closes "Qubes private disk image initalized as disk <drive>" prompt so installer will proceed to reboot computer
 set app=prepare-volume.exe
 :qwt_installing

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+# Licensed under the MIT License. See LICENSE file for details.
+
 # Answer file templates: https://github.com/boxcutter/windows/tree/master/floppy
 
 # Optional: Validate answer file with Windows AIK/ADK (Must add cpi:offlineImage tag to answer file referencing the CLG or WIM file embedded in the ISO)

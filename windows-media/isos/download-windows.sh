@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+# Licensed under the MIT License. See LICENSE file for details.
+
 # Test for 4-bit color (16 colors)
 if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
     RED='\033[0;31m'

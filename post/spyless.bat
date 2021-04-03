@@ -1,6 +1,9 @@
 @echo off
 title %~f0
 
+:: Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+:: Licensed under the MIT License. See LICENSE file for details.
+
 rem Answer file disables Customer Experience Improvement Program (CEIP) and Windows Error Reporting (WER) but do it again in case a custom answer file is in use
 reg add "HKLM\SOFTWARE\Microsoft\SQMClient\Windows" /v CEIPEnable /t REG_DWORD /d 0 /f
 reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f

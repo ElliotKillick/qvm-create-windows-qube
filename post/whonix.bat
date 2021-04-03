@@ -1,6 +1,9 @@
 @echo off
 title %~f0
 
+:: Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+:: Licensed under the MIT License. See LICENSE file for details.
+
 rem Based on:
 rem https://www.whonix.org/wiki/Other_Operating_Systems
 rem https://www.whonix.org/wiki/Disable_TCP_and_ICMP_Timestamp

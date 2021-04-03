@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+# Licensed under the MIT License. See LICENSE file for details.
+
 # Protect against time attacks due to leaking of ISO file metadata
 
 # https://www.whonix.org/wiki/Time_Attacks
