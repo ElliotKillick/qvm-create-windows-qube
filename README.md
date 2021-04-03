@@ -4,7 +4,7 @@
 
 <div align="center">
     <a href="https://github.com/elliotkillick/qvm-create-windows-qube">
-        <img width="175" src="icons/logo.png" alt="qvm-create-windows-qube" />
+        <img width="175" src="icons/logo.png" alt="Logo" />
     </a>
 </div>
 
@@ -70,6 +70,8 @@ The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely
 #### Windows 10 LTSC
 
 - A more stable, minified, secure and private version of Windows 10 officially provided by Microsoft
+
+`./qvm-create-windows-qube.sh -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml work-win10`
 
 `./qvm-create-windows-qube.sh -n sys-whonix -oyw -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml anon-win10`
 
