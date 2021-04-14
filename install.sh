@@ -82,8 +82,8 @@ echo -e "${BLUE}[i]${NC} Please check for a \"Good signature\" from GPG (Verify 
 qvm-run -q "$resources_qube" "gpg --keyserver keys.openpgp.org --recv-keys 018FB9DE6DFA13FB18FB5552F9B90D44F83DD5F2"
 qvm-run -p "$resources_qube" "cd '$resources_dir' && git verify-commit \$(git rev-list --max-parents=0 HEAD)"
 
-echo -e "${BLUE}[i]${NC} Downloading Windows 7 (Other versions of Windows can be downloaded later by using download-windows.sh)..." >&2
-qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && ./download-windows.sh win7x64-ultimate"
+echo -e "${BLUE}[i]${NC} Remember to download the desired version(s) of Windows using download-windows.sh in the $resources_qube qube..." >&2
+qvm-run -p "$resources_qube" "'$resources_dir/windows-media/isos/download-windows.sh' --help"
 
 echo -e "${BLUE}[i]${NC} Shutting down $resources_qube..." >&2
 qvm-shutdown --wait "$resources_qube"
