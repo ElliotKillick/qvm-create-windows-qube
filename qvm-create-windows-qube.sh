@@ -214,6 +214,12 @@ no_answer_file_error() {
     exit 1
 }
 
+break_airgap() {
+    echo -e "${BLUE}[i]${NC} Breaking air gap so Windows can connect to the Internet..." >&2
+    qvm-firewall "$qube" del drop
+    qvm-firewall "$qube" add accept
+}
+
 # Validate answer-file
 if ! [ "$answer_file" ]; then
     echo -e "${RED}[!]${NC} Answer file not specified"
@@ -355,13 +361,9 @@ for (( counter = 1; counter <= count; counter++ )); do
         qvm-run -q "$qube" "cd $post_incoming_dir && whonix.bat" || true
     fi
 
-    # Let Windows connect to the Internet
-    # After spyless and whonix scripts but before packages
-    # Independent of whether or not packages are being installed, user-defined commands should have Internet access for consistency
-    if [ "$netvm" ]; then
-        echo -e "${BLUE}[i]${NC} Breaking air gap so Windows can connect to the Internet..." >&2
-        qvm-firewall "$qube" del drop
-        qvm-firewall "$qube" add accept
+    # Let Windows connect to the Internet earlier for package installation
+    if [ "$packages" ]; then
+        break_airgap
     fi
 
     if [ "$packages" ]; then
@@ -392,6 +394,11 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Give reasonable amount of memory for actual use
     qvm-prefs "$qube" memory 2048
+
+    # Let Windows connect to the Internet with the user selected NetVM later when package installation is disabled
+    if [ "$netvm" ] && [ ! "$packages" ]; then
+        break_airgap
+    fi
 
     if [ "$count" -gt 1 ]; then
         echo -e "${GREEN}[+]${NC} Finished creation of $qube successfully!"
