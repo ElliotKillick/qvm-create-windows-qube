@@ -3,7 +3,13 @@
 # Copyright (C) 2021 Elliot Killick <elliotkillick@zohomail.eu>
 # Licensed under the MIT License. See LICENSE file for details.
 
-trap 'exit' ERR
+error() {
+    exit_code="$?"
+    echo -e "${RED}[!]${NC} An unexpected error has occurred! Exiting..." >&2
+    exit "$exit_code"
+}
+
+trap error ERR
 
 RED='\033[0;31m'
 BLUE='\033[0;34m'
@@ -67,6 +73,12 @@ if ! [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
     qvm-prefs "$resources_qube" netvm "$resources_qube_netvm"
 fi
 
+echo -e "${BLUE}[i]${NC} Starting $template..." >&2
+until qvm-start "$template"; do
+    echo -e "${RED}[!]${NC} Failed to start $template! Retrying in 10 seconds..." >&2
+    sleep 10
+done
+
 echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
 fedora_packages="genisoimage geteltorito datefudge"
 debian_packages="genisoimage curl datefudge"
@@ -74,6 +86,12 @@ qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install
 
 echo -e "${BLUE}[i]${NC} Shutting down $template..." >&2
 qvm-shutdown --wait "$template"
+
+echo -e "${BLUE}[i]${NC} Starting $resources_qube..." >&2
+until qvm-start "$resources_qube"; do
+    echo -e "${RED}[!]${NC} Failed to start $resources_qube! Retrying in 10 seconds..." >&2
+    sleep 10
+done
 
 echo -e "${BLUE}[i]${NC} Cloning qvm-create-windows-qube GitHub repository..." >&2
 qvm-run -p "$resources_qube" "cd ${resources_dir%/*} && git clone https://github.com/elliotkillick/qvm-create-windows-qube"
