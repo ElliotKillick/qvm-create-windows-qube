@@ -330,6 +330,11 @@ for (( counter = 1; counter <= count; counter++ )); do
         sleep 1
     done
 
+    # Some of the app menus may not appear in the XFCE Applications menu although they will show up in a "qvm-appmenus --get-available"
+    # This issue only seems to occur with Windows 10 (it didn't happen with Windows 7). More research is required
+    # Running this fixes it (rebooting the computer also fixes this issue)
+    qvm-appmenus --update --force "$qube" &> /dev/null
+
     # Post QWT scripts
 
     # Prepend allowing policy to qubes.Filecopy and copy post scripts from resources qube to Windows
