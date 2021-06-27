@@ -6,7 +6,7 @@ title %~f0
 
 rem Based on: https://www.qubes-os.org/doc/windows-template-customization/
 
-echo Disabling features...
+echo Disabling unwanted features...
 for %%f in ("WindowsGadgetPlatform" "TabletPCOC" "MSRDC-Infrastructure" "Printing-XPSServices-Features" "Xps-Foundation-Xps-Viewer") do (
     dism /norestart /online /disable-feature /featurename:%%f
 )
@@ -80,9 +80,10 @@ echo Disabling password expiry...
 net accounts /maxpwage:unlimited
 
 echo Allowing all inbound and outbound traffic through firewall...
+rem Security-wise this is okay because the VM connects to sys-firewall or sys-whonix as its NetVM which acts as its firewall
 netsh advfirewall set allprofiles firewallpolicy allowinbound,allowoutbound
 
-echo Disabling tasks in Task Scheduler...
+echo Disabling unwanted tasks in Task Scheduler...
 set win_task_dir=\Microsoft\Windows
 for %%t in ("%win_task_dir%\Defrag\ScheduledDefrag" "%win_task_dir%\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver" "%win_task_dir%\Maintenance\WinSAT" "%win_task_dir%\SystemRestore\SR" "%win_task_dir%\WindowsBackup\ConfigNotification") do (
     schtasks /change /tn %%t /disable
