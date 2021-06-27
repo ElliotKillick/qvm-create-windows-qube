@@ -160,6 +160,14 @@ fi
 resources_qube="windows-mgmt"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
+if ! qvm-check --running "$resources_qube" &> /dev/null; then
+    echo -e "${BLUE}[i]${NC} Starting $resources_qube..." >&2
+    if ! qvm-start "$resources_qube"; then
+        echo -e "${RED}[!]${NC} Failed to start qube: $resources_qube" >&2
+        exit 1
+    fi
+fi
+
 # Validate packages
 if [ "$packages" ]; then
     if ! [ "$netvm" ]; then
@@ -186,7 +194,7 @@ if [ "$packages" ]; then
 fi
 
 no_iso_error() {
-    echo -e "${BLUE}[i]${NC} Available ISOs:" >&2
+    echo -e "${BLUE}[i]${NC} Available ISOs (Make sure to download them with download-windows.sh as instructed in the README):" >&2
     qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && find -type f -name '*.iso' -printf '%P\n'"
     exit 1
 }
@@ -222,7 +230,7 @@ if ! qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media' && if ! [ -
     exit 1
 fi
 
-# Create Windows qube the number of times specified using name as the basename if creating more than 1
+# Create Windows qube the number of times specified using name as the basename if creating more than one
 for (( counter = 1; counter <= count; counter++ )); do
     if [ "$count" -gt 1 ]; then
         qube="$name-$counter"
@@ -290,7 +298,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         sleep 10
     done
 
-    # Waiting for automatic shutdown after Qubes Windows Tools install...
+    # Waiting for automatic shutdown after Qubes Windows Tools installation...
     wait_for_shutdown
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
@@ -371,6 +379,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.." || true
     sed -i "/^$policy$/d" "$policy_file"
 
+    echo -e "${BLUE}[i]${NC} Shutting down Windows..." >&2
     # Shutdown and wait until complete before finishing or starting next installation
     if qvm-run -q "$qube" "shutdown /s /t 0"; then
         # This is a more graceful method of shutdown
