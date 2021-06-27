@@ -1,43 +1,55 @@
-# qvm-create-windows-qube
-
-<br>
-
 <div align="center">
     <a href="https://github.com/elliotkillick/qvm-create-windows-qube">
-        <img width="175" src="icons/logo.png" alt="Logo" />
+        <img width="160" src="icons/logo.png" alt="Logo" />
     </a>
 </div>
 
+<h3 align="center">
+    qvm-create-windows-qube
+</h3>
+
+<p align="center">
+    Spin up new Windows qubes quickly, effortlessly and securely
+</p>
+
 <div align="center">
-    <img src="https://img.shields.io/travis/com/elliotkillick/qvm-create-windows-qube" alt="Travis CI build" />
+    <img src="https://img.shields.io/travis/com/elliotkillick/qvm-create-windows-qube?style=flat-square" alt="Travis CI build" />
     <a href="LICENSE">
-        <img src="https://img.shields.io/github/license/elliotkillick/qvm-create-windows-qube" alt="License" />
+        <img src="https://img.shields.io/github/license/elliotkillick/qvm-create-windows-qube?style=flat-square" alt="License" />
+    </a>
+    <a href="https://www.qubes-os.org">
+        <img src="https://img.shields.io/badge/Made%20for-Qubes%20OS-63a0ff?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACE0lEQVR4Ae2Vg5JdQRiE56HyQrGTQmzbTgqxbdu2bWvN09vLf3E1OlfTVV/pYvobqpCQHMyqMziy%2bizKCVr4rfIlLPuXIBGrzuKjytWw3Dspm5J6fvduLm2XG42lCDSp4m8PZbP4XpaoJLDkTzb2%2bU8Cl3BbvYljn7%2bQQb1Qx5W96mO7XOCf1xLERIXL7VJmM6NGB1z4YVsehpQk%2bK9qAhOUSZadMhqsltvtbIoz9JDfiQgyYQ1ZReYe1ZSYsBt3Ju8F5h0BVpzOaLCIAz3VWNkvmQgsPgGM2Q303QD0XIc7OgJoZep%2bYOExgDObbKDvhhfD5kTnaw1ZfgqYzHEHbAJ6rGP5FjQFhIlkxgFgyQnXN4XccCyOlZykmYeBoVulNLEVECbtAeZwAJ6Pn8px5h9D1fAdQO/1MuuOBQTlKVI8TwV6FoNAEAgCQSAIBIEgEATINw/lr8YjIJQ5LH%2bdIF4B4bhF8YsEGXJbR%2bC0pkREtqsM02sdjmsU15t9kcA9Ak2q0xTfzjKRFNObff8Swt8E26WawL68vsRlAhNG70RN7/Wo0y4t/FDWEZFbBgKggEnxSPkIS%2b0hUQwCF5WfyC3lVUD47VvkmlcB4aVPifWkzpuAUOd7NQ5mKFBHHhi%2bB79JN98i55MJ8CG70ult%2bOfzSrV%2bP0QgwWEUiZOkJkXxCrJT5XpY8iGRR49S5KrK8YQ0AG5m/ZMNiwL6AAAAAElFTkSuQmCC&style=flat-square" alt="Made for Qubes OS" />
     </a>
 </div>
 
 ## About
 
-qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org) with [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) drivers automatically. It officially supports Windows 7, 8.1 and 10 as well as Windows Server 2008 R2, 2012 R2, 2016 and 2019.
+qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org/doc/glossary/#qube) with [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) drivers automatically. It officially supports Windows 7, 8.1 and 10 as well as Windows Server 2008 R2, 2012 R2, 2016 and 2019.
 
-The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. It also features other goodies such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using [Chocolatey](https://chocolatey.org).
+The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. The installation takes place 100% air gapped and features optional [Whonix integration](https://github.com/elliotkillick/qvm-create-windows-qube#whonix-recommendations-for-windows-whonix-workstation) on the finished Windows qube for added privacy.
+
+It also features other niceties such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using Chocolatey to get you up and running quickly in your new environment.
 
 ## Installation
 
 1. Download the [installation script](https://raw.githubusercontent.com/elliotkillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save [Page] as..."
 2. Copy `install.sh` into Dom0 by running the following command in Dom0:
-    - `qvm-run -p --filter-escape-chars --no-color-output <qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
+    - `qvm-run -p --filter-escape-chars --no-color-output <name_of_qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
+    - Make sure to get all the single and double quotes
 3. Review the code of `install.sh` to ensure its integrity
-    - Safer with escape character filtering enabled above; qvm-run disables it by default when output is a file
+    - Safer with escape character filtering enabled in the prior step; `qvm-run` disables it by default when the output is a file
 4. Run `chmod +x install.sh && ./install.sh`
     - Note that this will install packages in the global default `TemplateVM`, which is `fedora-XX` by default
-5. Review the code of the resulting `qvm-create-windows-qube.sh`
+5. Review the code of the resulting `/usr/bin/qvm-create-windows-qube`
+
+**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/elliotkillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a couple small issues in the case of Windows 10 and other newer OSs all of which have easy workarounds available.
 
 A more streamlined and secure installation process with packaging will be shipping with Qubes R4.1.
 
 ## Usage
 
 ```
-Usage: ./qvm-create-windows-qube.sh [options] -i <iso> -a <answer file> <name>
+Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
   -h, --help
   -c, --count <number> Number of Windows qubes with given basename desired
   -t, --template Make this qube a TemplateVM instead of a StandaloneVM
@@ -53,42 +65,44 @@ Usage: ./qvm-create-windows-qube.sh [options] -i <iso> -a <answer file> <name>
 
 ### Downloading Windows ISO
 
-The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely downloads the official Windows ISO to be used by `qvm-create-windows-qube`.
+The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely downloads the Windows ISO to be used by `qvm-create-windows-qube` from official Microsoft servers.
+
+`windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `download-windows.sh` script and `SHA256SUMS` file to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `~/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
 
 ### Creating Windows VM
 
 #### Windows 10
 
-`./qvm-create-windows-qube.sh -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64.iso -a win10x64-pro.xml work-win10`
+`qvm-create-windows-qube -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64.iso -a win10x64-pro.xml work-win10`
 
-`./qvm-create-windows-qube.sh -n sys-firewall -oyp steam -i win10x64.iso -a win10x64-pro.xml game-console`
+`qvm-create-windows-qube -n sys-firewall -oyp steam -i win10x64.iso -a win10x64-pro.xml game-console`
 
 #### Windows Server 2019
 
-`./qvm-create-windows-qube.sh -n sys-firewall -oy -i win2019-eval.iso -a win2019-datacenter-eval.xml fs-win2019`
+`qvm-create-windows-qube -n sys-firewall -oy -i win2019-eval.iso -a win2019-datacenter-eval.xml fs-win2019`
 
 #### Windows 10 LTSC
 
 - A more stable, minified, secure and private version of Windows 10 officially provided by Microsoft
+- This version of Windows 10 is recommended for those who need the best in Windows security and privacy
 
-`./qvm-create-windows-qube.sh -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml work-win10`
+`qvm-create-windows-qube -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml work-win10`
 
-`./qvm-create-windows-qube.sh -n sys-whonix -oyw -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml anon-win10`
+`qvm-create-windows-qube -n sys-whonix -oyw -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml anon-win10`
 
 #### Windows 7
 
-- Not recommended because Windows 7 is no longer supported by Microsoft, however, it's the only desktop OS the Qubes GUI driver (in Qubes Windows Tools) supports if seamless window integration or dynamic resizing is required
-- See the Security > Windows > Advisories section below for more info
+- Not recommended because Windows 7 is [no longer supported](https://github.com/elliotkillick/qvm-create-windows-qube#advisories) by Microsoft, however, it's the only desktop OS the Qubes GUI driver (in Qubes Windows Tools) supports if seamless window integration or dynamic resizing is required
 
-`./qvm-create-windows-qube.sh -n sys-firewall -soyp firefox,notepadplusplus,office365proplus -i win7x64-ultimate.iso -a win7x64-ultimate.xml work-win7`
+`qvm-create-windows-qube -n sys-firewall -soyp firefox,notepadplusplus,office365proplus -i win7x64-ultimate.iso -a win7x64-ultimate.xml work-win7`
 
 ## Security
 
 qvm-create-windows-qube is "reasonably secure" as [Qubes](https://www.qubes-os.org) would have it.
 
 - `windows-mgmt` is air gapped
-- The entirety of the Windows qube setup process happens is done air gapped
-    - There is an exception for installing packages at the very end of the Windows qube installation
+- The entirety of the Windows qube setup process is done air gapped
+    - Exception: If (and only if) packages are configured for installation then Windows will be allowed access to the Internet at the very end of the Windows qube installation
 - Entire class of command injection vulnerabilities eliminated in the Dom0 shell script by not letting it parse any output from the untrusted `windows-mgmt` qube
     - Only exit codes are passed by `qvm-run`; no variables
     - This also mitigates the fallout of another [Shellshock](https://en.wikipedia.org/wiki/Shellshock_(software_bug)) Bash vulnerability
@@ -100,15 +114,15 @@ qvm-create-windows-qube is "reasonably secure" as [Qubes](https://www.qubes-os.o
         - Remember, `transport security = encryption * authentication` (This allows for the utmost authentication)
     - SHA-256 verification of the files after download
 - Windows is treated as an untrusted guest operating system the entire way through
+- The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
 - All commits by the maintainers are always signed with their respective PGP keys
     - Should signing ever cease, assume compromise
-    - Current maintainer 1: [Elliot Killick](https://github.com/elliotkillick) <a href="https://keybase.io/elliotkillick" target="_blank"><img src="https://img.shields.io/keybase/pgp/elliotkillick" alt="PGP key" /></a>
+    - Current maintainer 1: [Elliot Killick](https://github.com/elliotkillick) <a href="https://keybase.io/elliotkillick" target="_blank"><img src="https://img.shields.io/keybase/pgp/elliotkillick?style=flat-square" alt="PGP key" /></a>
         - PGP key: 018F B9DE 6DFA 13FB 18FB 5552 F9B9 0D44 F83D D5F2
     - Current maintainer 2: [Frédéric Pierret](https://github.com/fepitre) (No Keybase account)
         - PGP key: 9FA6 4B92 F95E 706B F28E 2CA6 4840 10B5 CDC5 76E2
         - Mostly concerned with Qubes R4.1 support
             - See the `release4.1` branch and [qubes-mgmt-salt-windows-mgmt](https://github.com/fepitre/qubes-mgmt-salt-windows-mgmt)
-- The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
 
 ### Windows
 
@@ -126,7 +140,7 @@ A critical vulnerability in Windows 10 and Windows Server 2016/2019 cryptography
 
 ## Privacy
 
-qvm-create-windows-qube aims to be the most private way to use Windows. Many Qubes users switched from Windows (or another proprietary OS) in part to get away from Microsoft (or Big Tech in general) and so being able to use Windows from a safe distance is of utmost importance to this project. Or at least, as safe a distance as possible for what is a huge, proprietary binary blob.
+qvm-create-windows-qube aims to be the most private way to use Windows. Many Qubes users switched from Windows (or another proprietary OS) in part to get away from Microsoft (or Big Tech in general) and so being able to use Windows from a safe distance is of utmost importance to this project. Or at least, as safe a distance as possible for what is essentially a huge, proprietary binary blob.
 
 ### Windows Telemetry
 
@@ -136,7 +150,7 @@ Configures Windows telemetry settings to respect privacy.
 - Disable Windows Error Reporting (WER)
 - Disable DiagTrack service
 - Switch off all telemetry in Windows 10 "Settings" application
-- Enable "Security" level of telemetry on compatible editions of Windows 10
+- Enable ["Security"](https://docs.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization#diagnostic-data-settings) level of telemetry on compatible editions of Windows 10
 - See `spyless.bat` for more info
 
 ### Whonix Recommendations for Windows-Whonix-Workstation
@@ -159,6 +173,20 @@ Fingerprinting is possible through the hypervisor in the event of VM compromise,
 - [CPUID](https://github.com/QubesOS/qubes-issues/issues/1142)
 - Generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface/) (e.g. screen dimensions)
 
+## FAQ
+
+### Do I need a Windows license to use this project?
+
+No, with every Windows installation comes an embedded trial product key which is used by default if none other is provided. qvm-create-windows-qube explicitly specifies no product key in the answer files in order to use the default trial key.
+
+On general consumer versions of Windows such as 7, 8.1 and 10, these licenses extend forever with the understanding that a watermark or pop up may start appearing requesting activation the product.
+
+On Windows Server versions, once the trial is up the machine will automatically be shut down after being up for a set amount of time by the Windows License Monitoring Service (`C:\Windows\System32\wlms\wlms.exe`). When this occurs, the aforementioned reason for shutdown will be logged in the Event Log. To renew the trial run `slmgr /rearm` in the command prompt. This will work for the number of times specified in `slmgr /dlv` (it can vary) at which point the product must be activated.
+
+It's recommended that you license the product when the trial is up in all cases.
+
+Giving Windows Internet access is not required for using the trial key (as it's embedded within each ISO). However, it is required for activating Windows with a product key of your own (unless you do activation by phone).
+
 ## Contributing
 
 You can start by giving this project a star! High quality PRs are also welcome! Take a look at the todo list below if you're looking for things that need improvement. Other improvements such as more elegant ways of completing a task, code cleanup and other fixes are also welcome.
@@ -173,20 +201,27 @@ This project is the product of an independent effort that is not officially endo
 
 Please send patches for these if you are able to. Although, be aware that Qubes Windows Tools is [currently unmaintained](https://github.com/elliotkillick/qvm-create-windows-qube/issues/15).
 
-### All OSs
+### All OSs (Windows 8.1/10 and Windows Server 2012 R2 or greater in the default configuration)
 - [No Windows display when Qubes GUI driver is not installed](https://github.com/QubesOS/qubes-issues/issues/5739)
     - Any OS other than Windows 7/Windows Server 2008 R2 does not support Qubes GUI driver
-    - Temporary fix: Run `qvm-features <windows_qube> gui 1` to make the display show up after Windows qube creation is complete
+    - **Temporary fix:** Run `qvm-features <name_of_windows_qube> gui 1` in Dom0 to make the display show up after Windows qube creation completes successfully
 
-### All OSs except Windows 7/Windows Server 2008 R2
+### All OSs *except* Windows 7 and Windows Server 2008 R2
 - [Prompt to install earlier version of .NET](https://github.com/QubesOS/qubes-issues/issues/5091)
     - This only appears to be a cosmetic issue because qrexec services still work
+        - This prompt can safely be ignored
     - Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer
 
-### Windows 10/Windows Server 2019
+### Windows 10 and Windows Server 2019
 - [Private disk creation fails](https://github.com/QubesOS/qubes-issues/issues/5090)
-    - Temporary fix: Close `prepare-volume.exe` window causing there to be no private disk (can't make a `TemplateVM`) but besides that Windows qube creation will continue as normal
+    - **Temporary fix:** Close the `prepare-volume.exe` window causing there to be no private disk (can't make a `TemplateVM`) but besides that Windows qube creation will continue as normal
     - Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer
+
+### Older Xen Drivers Notice
+
+Due to instabilities of the older Xen drivers currently packaged with Qubes Windows Tools, there is a non-zero chance (probably about 1 in 10) that the first boot after Qubes Windows Tools installation will result in a Windows crash (BSOD) in newer OSs such as Windows 10. This is an issue with the underlying drivers which qvm-create-windows-qube cannot help. If this occurs, it's recommended to delete that qube and re-run the same qvm-create-windows-qube command to restart the installation from scratch.
+
+Once they get up and running though, community reports have proven these older Xen drivers to be stable even in Windows 10.
 
 #### Mailing list threads
 
@@ -224,8 +259,8 @@ Please send patches for these if you are able to. Although, be aware that Qubes 
             - Thanks to @jevank for the [patch](https://github.com/QubesOS/qubes-issues/issues/5279#issuecomment-525947408)
     - [ ] Port to Python
         - This seems like it would be unnecessary for scripts like `create-media.sh` where the Python script would essentially just be calling out to external programs
-        - This would certainly be suitable for `qvm-create-windows-qube.sh` though
-            - This would allow us to interchange data between Dom0 and the VM without worrying about another Shellshock
+        - This would certainly be suitable for `qvm-create-windows-qube` though
+            - This would allow us to interchange data between Dom0 and the VM without worrying about the potential for command injection or another Shellshock
 - [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the `wiminfo` command (Currently a WIP; see branch)
     - `wiminfo` works just like DISM on Windows
     - [ ] Once core admin is extended to allow for libvirt XML templates (answer files) becomes possible (previous todo), we can also securely read the answer file from the ISO without even having to mount it as a loop device using [`libguestfs`](https://libguestfs.org)
@@ -233,24 +268,25 @@ Please send patches for these if you are able to. Although, be aware that Qubes 
         - Note that `libguestfs` cannot write (an answer file) to an ISO which is why we cannot use this library until we no longer need to create a whole new ISO to add the answer file to it
 - [x] Follow [this](https://www.whonix.org/wiki/Other_Operating_Systems) Whonix documentation to make Windows-Whonix-Workstation
 - [ ] Add functionality for `create-media.sh` to add MSUs (Microsoft Update standalone packages) to be installed during the Windows PE pass ("Installing updates...") of Windows setup
-    - We could fix currently not working QWT installation for old Windows 7 SP1 and Windows Server 2008 R2 ISOs using [KB4474419](https://github.com/QubesOS/qubes-issues/issues/3585#issuecomment-521280301) to add SHA-256 support
-    - Allows us to get rid of `allow-drivers.vbs` hack by fixing SHA-256 automatic driver installation bug
+    - We could fix currently not working QWT installation for old Windows 7 SP1 and Windows Server 2008 R2 ISOs using [KB4474419](https://github.com/QubesOS/qubes-issues/issues/3585#issuecomment-521280301) to add SHA-256 driver signing support
         - The other option is to have Xen sign their drivers with SHA-1 as well, which other driver vendors seem to do, but is not ideal from a security standpoint
+    - Allows us to get rid of `allow-drivers.vbs` hack by fixing SHA-256 automatic driver installation bug in newer versions of Windows 7 with KB2921916 (see `allow-drivers.vbs` for details)
+        - This Windows bug was intentionally patched and unpatched by Microsoft in an attempt to force enterprises to upgrade to Windows 10
     - Patch a couple Windows security bugs?
-        - Patch BlueKeep for Windows 7 out-of-the-box
-        - Windows Server 2008 R2 base ISO is also vulnerable to ETERNALBLUE and BlueKeep out-of-the-box
+        - Patch BlueKeep for Windows 7 out of the box
+        - Windows Server 2008 R2 base ISO is also vulnerable to ETERNALBLUE and BlueKeep out of the box
         - Probably not worth getting into that, users should just update the VM upon making it
 - [ ] Headless mode
     - Help wanted
         - What mechanism is there to accomplish this in Qubes? Something in Qubes GUI agent/daemon?
 - [ ] Package this project so its delivery can be made more streamlined and secure through `qubes-dom0-update`
     - Coming to Qubes R4.1
-- [ ] Consider adding ReactOS support as an open source alternative to Windows
+- [ ] Add [ReactOS](https://reactos.org) support as an open source alternative to Windows
     - This would be a good at least until a [ReactOS template is made](https://github.com/QubesOS/qubes-issues/issues/2809)
     - Perhaps ReactOS developers may want to use this to develop ReactOS
     - Or maybe just add ReactOS as a template (outside of this project)
         - However, someone would have to maintain this template
-        - Also, there may not be much point if QWT/Xen PV drivers don't work
+        - Also, there may not be much point if QWT/Xen drivers don't work
             - At least for basic features like copy/paste and file transfer
     - Interest from both sides
         - [Qubes OS](https://github.com/QubesOS/qubes-issues/issues/2809)
