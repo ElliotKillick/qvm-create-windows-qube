@@ -19,7 +19,7 @@ NC='\033[0m'
 usage() {
     echo "Usage: ${0} [NetVM]"
     echo ""
-    echo "Create resources qube, install package dependencies in template, clone project repo, download Windows, install Qubes Windows Tools and finally copy qvm-create-windows-qube.sh to Dom0"
+    echo "Create resources qube, install package dependencies in template, clone project repo, install Qubes Windows Tools and finally copy qvm-create-windows-qube main program to Dom0"
     echo ""
     echo "The optional NetVM paramater is the NetVM for use in downloading the project and Windows media (default: sys-firewall if no global default is set)"
 }
