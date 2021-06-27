@@ -13,7 +13,7 @@ rem This is opposed to its function in previous versions of Windows where it con
 rem https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-shell-setup-oobe-protectyourpc
 
 rem Set telemetry level to "Security" which is the lowest possible
-rem Levels of telemetry: https://docs.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization
+rem Levels of telemetry: https://docs.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization#diagnostic-data-settings
 rem This telemetry level is disallowed on Windows 10 Pro or lesser editions of Windows 10 made for typical end users
 rem The Windows installation must be some type of Enterprise edition of Windows 10 or Windows Server 2016+
 rem Otherwise, the telemetry level is locked in at the next level up, which is "Basic"
