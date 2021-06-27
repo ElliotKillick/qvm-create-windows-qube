@@ -11,13 +11,6 @@ for %%f in ("WindowsGadgetPlatform" "TabletPCOC" "MSRDC-Infrastructure" "Printin
     dism /norestart /online /disable-feature /featurename:%%f
 )
 
-echo Disabling services...
-rem Some of the services in the documentation are either already disabled by Windows or their functionality disabled in a cleaner way below
-rem Others such as the "Disk Defragmenter" ("defragsvc") service are disabled by the QWT installer
-for %%s in ("SSDPSRV" "lmhosts") do (
-    sc config %%s start= disabled
-)
-
 echo Enabling never automatically check for updates...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /ve /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /ve /f
