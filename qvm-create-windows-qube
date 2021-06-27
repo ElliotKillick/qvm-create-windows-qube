@@ -28,7 +28,7 @@ wait_for_shutdown() {
 }
 
 usage() {
-    echo "Usage: $0 [options] -i <iso> -a <answer file> <name>"
+    echo "Usage: $(basename "$0") [options] -i <iso> -a <answer file> <name>"
     echo "  -h, --help"
     echo "  -c, --count <number> Number of Windows qubes with given basename desired"
     echo "  -t, --template Make this qube a TemplateVM instead of a StandaloneVM"
@@ -117,10 +117,10 @@ fi
 name="$1"
 
 # Validate this is Dom0
-#if [ "$(hostname)" != "dom0" ]; then
-#    echo -e "${RED}[!]${NC} This script must be run in Dom0" >&2
-#    exit 1
-#fi
+if [ "$(hostname)" != "dom0" ]; then
+    echo -e "${RED}[!]${NC} This script must be run in Dom0" >&2
+    exit 1
+fi
 
 # Validate name
 if [ "$count" == 1 ]; then

@@ -112,10 +112,10 @@ qvm-prefs "$resources_qube" netvm ""
 echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
 sudo qubes-dom0-update -y qubes-windows-tools
 
-echo -e "${BLUE}[i]${NC} Copying qvm-create-windows-qube.sh to Dom0..." >&2
-qvm-run -p --filter-escape-chars --no-colour-output "$resources_qube" "cat '$resources_dir/qvm-create-windows-qube.sh'" > qvm-create-windows-qube.sh
+echo -e "${BLUE}[i]${NC} Copying qvm-create-windows-qube main program to Dom0..." >&2
+qvm-run -p --filter-escape-chars --no-color-output "$resources_qube" "cat '$resources_dir/qvm-create-windows-qube'" | sudo tee /usr/bin/qvm-create-windows-qube > /dev/null
 
 # Allow execution of script
-chmod +x qvm-create-windows-qube.sh
+sudo chmod +x /usr/bin/qvm-create-windows-qube
 
 echo -e "${GREEN}[+]${NC} Installation complete!"
