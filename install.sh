@@ -75,7 +75,7 @@ fi
 
 echo -e "${BLUE}[i]${NC} Starting $template..." >&2
 until qvm-start "$template"; do
-    echo -e "${RED}[!]${NC} Failed to start $template! Retrying in 10 seconds..." >&2
+    echo -e "${RED}[!]${NC} Failed to start $template! Not enough memory? Retrying in 10 seconds..." >&2
     sleep 10
 done
 
@@ -89,7 +89,7 @@ qvm-shutdown --wait "$template"
 
 echo -e "${BLUE}[i]${NC} Starting $resources_qube..." >&2
 until qvm-start "$resources_qube"; do
-    echo -e "${RED}[!]${NC} Failed to start $resources_qube! Retrying in 10 seconds..." >&2
+    echo -e "${RED}[!]${NC} Failed to start $resources_qube! Not enough memory? Retrying in 10 seconds..." >&2
     sleep 10
 done
 

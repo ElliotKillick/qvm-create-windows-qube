@@ -163,7 +163,7 @@ resources_dir="/home/user/Documents/qvm-create-windows-qube"
 if ! qvm-check --running "$resources_qube" &> /dev/null; then
     echo -e "${BLUE}[i]${NC} Starting $resources_qube..." >&2
     if ! qvm-start "$resources_qube"; then
-        echo -e "${RED}[!]${NC} Failed to start qube: $resources_qube" >&2
+        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory?" >&2
         exit 1
     fi
 fi
@@ -264,7 +264,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
     until qvm-start --cdrom "$resources_qube:$resources_dir/windows-media/out/$iso" "$qube"; do
-        echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
+        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
         sleep 10
     done
 
@@ -274,7 +274,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     echo -e "${BLUE}[i]${NC} Commencing second part of Windows installation process..." >&2
     qvm-features --unset "$qube" video-model
     until qvm-start "$qube"; do
-        echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
+        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
         sleep 10
     done
 
@@ -300,7 +300,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-qwt.iso" "$qube"; do
-        echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
+        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
         sleep 10
     done
 
@@ -309,7 +309,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
     until qvm-start "$qube"; do
-        echo -e "${RED}[!]${NC} Failed to start $qube! Retrying in 10 seconds..." >&2
+        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
         sleep 10
     done
 

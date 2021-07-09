@@ -28,7 +28,7 @@ usage() {
     echo "  win2016-eval"
     echo "  win2019-eval"
     echo ""
-    echo "Important: The direct ISO downloads listed here are not necessarily subject to being updated and it is therefore recommended that the source referenced above each curl command is checked to see if a newer version is available"
+    echo "Important: The direct ISO downloads listed here are not necessarily subject to being updated and it is therefore recommended that the source referenced above each curl command in the script is checked to see if a newer version is available. Contributions regarding updates for these links are welcome."
 }
 
 for arg in "$@"; do
@@ -97,7 +97,7 @@ scurl_file() {
     url="$4"
 
     until curl --output "$out_file" --pinnedpubkey "$pinned_public_key" --"tlsv$tls_version" --proto =https "$url"; do
-        echo -e "${RED}[!]${NC} Failed to download Windows! Retrying in 10 seconds..." >&2
+        echo -e "${RED}[!]${NC} Failed to download Windows! Is there an Internet connection? Retrying in 10 seconds..." >&2
         sleep 10
     done
 }
