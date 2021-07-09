@@ -65,13 +65,15 @@ Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
 
 ### Downloading Windows ISO
 
-The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely downloads the Windows ISO to be used by `qvm-create-windows-qube` from official Microsoft servers.
+The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely downloads the Windows ISO to be used by qvm-create-windows-qube from official Microsoft servers.
 
 `windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `download-windows.sh` script and `SHA256SUMS` file to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `~/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
 
 ### Creating Windows VM
 
 #### Windows 10
+
+*[Video demonstration](https://www.youtube.com/watch?v=cCi2MOUwS_Q)*
 
 `qvm-create-windows-qube -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64.iso -a win10x64-pro.xml work-win10`
 
@@ -93,6 +95,8 @@ The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely
 #### Windows 7
 
 - Not recommended because Windows 7 is [no longer supported](https://github.com/elliotkillick/qvm-create-windows-qube#advisories) by Microsoft, however, it's the only desktop OS the Qubes GUI driver (in Qubes Windows Tools) supports if seamless window integration or dynamic resizing is required
+
+*[Video demonstration](https://www.youtube.com/watch?v=duUM1VLrXIQ)*
 
 `qvm-create-windows-qube -n sys-firewall -soyp firefox,notepadplusplus,office365proplus -i win7x64-ultimate.iso -a win7x64-ultimate.xml work-win7`
 
@@ -217,11 +221,11 @@ Please send patches for these if you are able to. Although, be aware that Qubes 
     - **Temporary fix:** Close the `prepare-volume.exe` window causing there to be no private disk (can't make a `TemplateVM`) but besides that Windows qube creation will continue as normal
     - Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer
 
-### Older Xen Drivers Notice
+### Older Xen Drivers Notice (for newer OSs such as Windows 10)
 
 Due to instabilities of the older Xen drivers currently packaged with Qubes Windows Tools, there is a non-zero chance (probably about 1 in 10) that the first boot after Qubes Windows Tools installation will result in a Windows crash (BSOD) in newer OSs such as Windows 10. This is an issue with the underlying drivers which qvm-create-windows-qube cannot help. If this occurs, it's recommended to delete that qube and re-run the same qvm-create-windows-qube command to restart the installation from scratch.
 
-Once they get up and running though, community reports have proven these older Xen drivers to be stable even in Windows 10.
+Once the Windows qube gets up and running though, community reports have proven these older Xen drivers to be stable even in Windows 10.
 
 #### Mailing list threads
 
@@ -259,7 +263,7 @@ Once they get up and running though, community reports have proven these older X
             - Thanks to @jevank for the [patch](https://github.com/QubesOS/qubes-issues/issues/5279#issuecomment-525947408)
     - [ ] Port to Python
         - This seems like it would be unnecessary for scripts like `create-media.sh` where the Python script would essentially just be calling out to external programs
-        - This would certainly be suitable for `qvm-create-windows-qube` though
+        - This would certainly be suitable for qvm-create-windows-qube though
             - This would allow us to interchange data between Dom0 and the VM without worrying about the potential for command injection or another Shellshock
 - [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the `wiminfo` command (Currently a WIP; see branch)
     - `wiminfo` works just like DISM on Windows
