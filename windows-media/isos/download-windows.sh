@@ -169,10 +169,13 @@ if [ "$win2019_eval" ] || [ "$all" ]; then
     scurl_file "win2019-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso"
 fi
 
-echo -e "${BLUE}[i]${NC} Verifying integrity..." >&2
-if ! sha256sum -c SHA256SUMS --ignore-missing; then
-    echo -e "${RED}[!]${NC} One or more of the downloaded Windows media did not match the expected hash! This means either the media was corrupted during download or that is has been (potentially maliciously) modified! Please re-attempt the download and do not use the bad media." >&2
-    exit 1
-fi
+# If ISO files exist then verify them with their SHA-256 sums and report overall success or failure
+if test -n "$(find . -maxdepth 1 -type f -name "*.iso")"; then
+    echo -e "${BLUE}[i]${NC} Verifying integrity..." >&2
+    if ! sha256sum -c SHA256SUMS --ignore-missing; then
+        echo -e "${RED}[!]${NC} One or more of the downloaded Windows media did not match the expected hash! This means either the media was corrupted during download or that is has been (potentially maliciously) modified! Please re-attempt the download and do not use the bad media." >&2
+        exit 1
+    fi
 
-echo -e "${GREEN}[+]${NC} Successfully downloaded and verified integrity of Windows media!"
+    echo -e "${GREEN}[+]${NC} Successfully downloaded and verified integrity of Windows media!"
+fi
