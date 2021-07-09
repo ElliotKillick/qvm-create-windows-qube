@@ -42,8 +42,6 @@ It also features other niceties such as automatic installation of packages inclu
     - Note that this will install packages in the global default `TemplateVM`, which is `fedora-XX` by default
 5. Review the code of the resulting `/usr/bin/qvm-create-windows-qube`
 
-**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/elliotkillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a couple small issues in the case of Windows 10 and other newer OSs all of which have easy workarounds available.
-
 A more streamlined and secure installation process with packaging will be shipping with Qubes R4.1.
 
 ## Usage
@@ -70,6 +68,8 @@ The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely
 `windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `download-windows.sh` script and `SHA256SUMS` file to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `~/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
 
 ### Creating Windows VM
+
+**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/elliotkillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a couple small upstream issues in the case of Windows 10 and other newer OSs all of which have easy workarounds available.
 
 #### Windows 10
 
