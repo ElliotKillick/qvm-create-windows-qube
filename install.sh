@@ -58,7 +58,7 @@ echo -e "${BLUE}[i]${NC} Creating $resources_qube..." >&2
 qvm-create --class AppVM --template "$template" --label black "$resources_qube"
 
 echo -e "${BLUE}[i]${NC} Increasing storage capacity of $resources_qube..." >&2
-qvm-volume extend "$resources_qube:private" 40GiB
+qvm-volume extend "$resources_qube:private" 60GiB
 
 # Temporarily enable networking
 # If no global default NetVM has already been set (upon creation of qube)
