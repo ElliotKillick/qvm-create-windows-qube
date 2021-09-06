@@ -139,7 +139,7 @@ fi
 if [ "$win10x64_enterprise_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows 10 Enterprise Evaluation..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-10-enterprise
-    scurl_file "win10x64-enterprise-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/18363.418.191007-0143.19h2_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
+    scurl_file "win10x64-enterprise-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/sg/19043.928.210409-1212.21h1_release_svc_refresh_CLIENTENTERPRISEEVAL_OEMRET_x64FRE_en-us.iso"
 fi
 
 if [ "$win10x64_ltsc_eval" ] || [ "$all" ]; then
@@ -163,7 +163,7 @@ fi
 if [ "$win2016_eval" ] || [ "$all" ]; then
     echo -e "${BLUE}[i]${NC} Downloading Windows Server 2016..." >&2
     # https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2016
-    scurl_file "win2016-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/win2016_eval_Datacenter_EVAL_en-us_14393_refresh.ISO"
+    scurl_file "win2016-eval.iso" "$software_download_microsoft_com_key" "1.3" "https://software-download.microsoft.com/download/pr/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO"
 fi
 
 if [ "$win2019_eval" ] || [ "$all" ]; then
