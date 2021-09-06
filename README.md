@@ -57,6 +57,7 @@ Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
   -y, --spyless Configure Windows telemetry settings to respect privacy
   -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation
   -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
+  -P, --pool <name> LVM storage pool to install Windows on (https://www.qubes-os.org/doc/secondary-storage/)
   -i, --iso <file> Windows media to automatically install and setup
   -a, --answer-file <xml file> Settings for Windows installation
 ```

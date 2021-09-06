@@ -38,13 +38,14 @@ usage() {
     echo "  -y, --spyless Configure Windows telemetry settings to respect privacy"
     echo "  -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation"
     echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
+    echo "  -P, --pool <name> LVM storage pool to install Windows on (https://www.qubes-os.org/doc/secondary-storage/)"
     echo "  -i, --iso <file> Windows media to automatically install and setup"
     echo "  -a, --answer-file <xml file> Settings for Windows installation"
 }
 
 # Option strings
-short="hc:tn:soywp:i:a:"
-long="help,count:,template,netvm:,seamless,optimize,spyless,whonix,packages:,iso:,answer-file:"
+short="hc:tn:soywp:P:i:a:"
+long="help,count:,template,netvm:,seamless,optimize,spyless,whonix,packages:,pool:,iso:,answer-file:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -92,6 +93,10 @@ while true; do
             ;;
         -p | --packages)
             packages="$2"
+            shift 2
+            ;;
+        -P | --pool)
+            pool="$2"
             shift 2
             ;;
         -i | --iso)
@@ -252,7 +257,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     echo -e "${BLUE}[i]${NC} Starting creation of $qube" >&2
-    qvm-create --class "$class" --label red "$qube"
+    qvm-create --class "$class" --label red "$qube" -P "$pool"
     qvm-prefs "$qube" virt_mode hvm
     qvm-prefs "$qube" memory 1024
     qvm-prefs "$qube" maxmem 0 # Disable currently unstable Qubes memory manager (Also gray the option out in qubes-vm-settings)
