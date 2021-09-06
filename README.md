@@ -63,9 +63,9 @@ Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
 
 ### Downloading Windows ISO
 
-The `windows-media/isos/download-windows.sh` script (in `windows-mgmt`) securely downloads the Windows ISO to be used by qvm-create-windows-qube from official Microsoft servers.
+The `download-windows.sh` script (located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos/download-windows.sh` in `windows-mgmt`) securely downloads the Windows ISO to be used by qvm-create-windows-qube from official Microsoft servers.
 
-`windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `download-windows.sh` script and `SHA256SUMS` file to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `~/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
+`windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `download-windows.sh` script and `SHA256SUMS` file to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
 
 ### Creating Windows VM
 
@@ -113,9 +113,6 @@ qvm-create-windows-qube is "reasonably secure" as [Qubes](https://www.qubes-os.o
 - Downloading of the Windows ISOs is made secure by enforcing:
     - ISOs are downloaded straight from Microsoft controlled subdomains of `microsoft.com`
     - HTTPS TLS 1.2/1.3
-    - HTTP public key pinning (HPKP) to whitelist the website's certificate instead of relying on certificate authorities (CAs)
-        - Qubes aims to ["distrust the infrastructure"](https://www.qubes-os.org/faq/#what-does-it-mean-to-distrust-the-infrastructure)
-        - Remember, `transport security = encryption * authentication` (This allows for the utmost authentication)
     - SHA-256 verification of the files after download
 - Windows is treated as an untrusted guest operating system the entire way through
 - The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
@@ -137,10 +134,6 @@ Don't forget to apply any applicable updates upon creation of your Windows qube.
 #### Advisories
 
 Windows 7 and Windows Server 2008 R2 reached end of life (EOL) on [January 14, 2020](https://support.microsoft.com/en-us/help/4057281/windows-7-support-will-end-on-january-14-2020). Updates for these OSs are still available with Extended Security Updates (ESUs) if paid for. Office 365 for these OSs will continue getting security updates at no additional cost until [January 2023](https://support.office.com/en-us/article/windows-7-end-of-support-and-office-78f20fab-b57b-44d7-8368-06a8493f3cb9).
-
-If RDP is to be enabled on a Windows 7 qube (not default) then make sure it is fully up-to-date because the latest Windows 7 ISO Microsoft offers is unfortunately still vulnerable to [BlueKeep](https://en.wikipedia.org/wiki/BlueKeep) and related DejaBlue vulnerabilities.
-
-A critical vulnerability in Windows 10 and Windows Server 2016/2019 cryptography was [recently disclosed](https://media.defense.gov/2020/Jan/14/2002234275/-1/-1/0/CSA-WINDOWS-10-CRYPT-LIB-20190114.PDF). This allows any and all cryptography in these OSs (including HTTPS; the little padlock in your browser) to be easily intercepted. When Microsoft releases an updated ISO, the direct links in `download-windows.sh` will be updated but until then please update your qubes if they run the aforementioned OSs.
 
 ## Privacy
 
@@ -173,23 +166,29 @@ Fingerprinting is possible through the hypervisor in the event of VM compromise,
 
 - [Xen clocksource as wallclock](https://phabricator.whonix.org/T389)
     - Timezone leak can at least be mitigated by configuring UTC time in the BIOS/UEFI, the local timezone can still be configured for XFCE Dom0 clock
-    - However, correlation between other VMs remains trivial
+    - However, time correlation between VMs remain trivial
 - [CPUID](https://github.com/QubesOS/qubes-issues/issues/1142)
 - Generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface/) (e.g. screen dimensions)
 
-## FAQ
+## Frequently Asked Questions (FAQ)
 
 ### Do I need a Windows license to use this project?
 
 No, with every Windows installation comes an embedded trial product key which is used by default if none other is provided. qvm-create-windows-qube explicitly specifies no product key in the answer files in order to use the default trial key.
 
-On general consumer versions of Windows such as 7, 8.1 and 10, these licenses extend forever with the understanding that a watermark or pop up may start appearing requesting activation the product.
+On general consumer versions of Windows such as 7, 8.1 and 10, these licenses extend forever with the understanding that a watermark or pop up may start appearing requesting activation of the product.
 
-On Windows Server versions, once the trial is up the machine will automatically be shut down after being up for a set amount of time by the Windows License Monitoring Service (`C:\Windows\System32\wlms\wlms.exe`). When this occurs, the aforementioned reason for shutdown will be logged in the Event Log. To renew the trial run `slmgr /rearm` in the command prompt. This will work for the number of times specified in `slmgr /dlv` (it can vary) at which point the product must be activated.
+On Windows Server Evaluation versions, once the trial is up the machine will automatically be shut down after being up for a set amount of time by the Windows License Monitoring Service (`C:\Windows\System32\wlms\wlms.exe`). When this occurs, the aforementioned reason for shutdown will be logged in the Event Viewer. To renew the trial run `slmgr /rearm` in the command prompt. This will work for the number of times specified in `slmgr /dlv` (it can vary) at which point the product must be activated.
 
 It's recommended that you license the product when the trial is up in all cases.
 
 Giving Windows Internet access is not required for using the trial key (as it's embedded within each ISO). However, it is required for activating Windows with a product key of your own (unless you do activation by phone).
+
+## What is the purpose of the `windows-mgmt` AppVM? May I delete it once the Windows installation is complete?
+
+The purpose of the `windows-mgmt` AppVM is to securely isolate everything that goes on as part of the Windows installation to a single virtual machine. That way, the exploitation of any bugs that exist in, for example, in the Linux ISO filesystem parsing code is limited in the amount of harm it can do should a Windows ISO be malicious. This is the security principle upon which all of Qubes OS is built upon, it's known as "security by isolation" or "security by compartmentalization".
+
+Feel free to delete `windows-mgmt` if you are sure there are no more Windows VMs you would like to create. However, if it's just the disk space you want to reclaim then you can simply delete the ISOs located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` (in `windows-mgmt`) to save the vast majority of that space.
 
 ## Contributing
 
