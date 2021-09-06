@@ -87,6 +87,9 @@ done
 
 trap exit ERR
 
+local_dir="$(dirname "$(readlink -f "$0")")"
+cd "$local_dir" || exit
+
 download_microsoft_com_key="sha256//C1Ivsf0VYDC6TILfQWXF0j71jAsAesFVXGgyzSvjqvo="
 software_download_microsoft_com_key="sha256//rnXgdWLOejNRPNbtt0e9bPOrVh4mIrnJ9AjE3Fb3UAY="
 
