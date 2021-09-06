@@ -177,9 +177,9 @@ Fingerprinting is possible through the hypervisor in the event of VM compromise,
 
 No, with every Windows installation comes an embedded trial product key which is used by default if none other is provided. qvm-create-windows-qube explicitly specifies no product key in the answer files in order to use the default trial key.
 
-On general consumer versions of Windows such as 7, 8.1 and 10, these licenses extend forever with the understanding that a watermark or pop up may start appearing requesting activation of the product.
+On general consumer versions of Windows such as (non-enterprise) 7, 8.1 and 10, these trials extend forever with the understanding that a watermark or pop up may start appearing requesting activation of the product.
 
-On Windows Server Evaluation versions, once the trial is up the machine will automatically be shut down after being up for a set amount of time by the Windows License Monitoring Service (`C:\Windows\System32\wlms\wlms.exe`). When this occurs, the aforementioned reason for shutdown will be logged in the Event Viewer. To renew the trial run `slmgr /rearm` in the command prompt. This will work for the number of times specified in `slmgr /dlv` (it can vary) at which point the product must be activated.
+On Windows Enterprise and Server Evaluation versions, once the trial is up the machine will automatically be shut down after being up for a set amount of time by the Windows License Monitoring Service (`C:\Windows\System32\wlms\wlms.exe`). When this occurs, the aforementioned reason for shutdown will be logged in the Event Viewer. To renew the trial run `slmgr /rearm` in the command prompt. This will work for the number of times specified in `slmgr /dlv` (it can vary) at which point the product must be activated or reinstalled.
 
 It's recommended that you license the product when the trial is up in all cases.
 
