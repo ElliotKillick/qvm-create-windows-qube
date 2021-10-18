@@ -30,6 +30,8 @@ The project emphasizes correctness, security and treating Windows as an untruste
 
 It also features other niceties such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using Chocolatey to get you up and running quickly in your new environment.
 
+**As featured on: [<img width="15" src="https://news.ycombinator.com/favicon.ico" alt="Hacker News Favicon" /> Hacker News](https://news.ycombinator.com/item?id=28900125)**
+
 ## Installation
 
 1. Download the [installation script](https://raw.githubusercontent.com/elliotkillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save [Page] as..."
