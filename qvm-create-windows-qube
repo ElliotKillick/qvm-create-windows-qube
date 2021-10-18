@@ -353,7 +353,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
     policy="$resources_qube $qube allow"
     policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
-    sed -i "1i$policy" "$policy_file"
+    sudo sed -i "1i$policy" "$policy_file"
     qvm-run -q "$resources_qube" "cd '$resources_dir' && qvm-copy-to-vm $qube post"
 
     post_incoming_dir="%USERPROFILE%\\Documents\\QubesIncoming\\$resources_qube\\post"
@@ -397,7 +397,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Clean up post scripts and remove policy
     qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.." || true
-    sed -i "/^$policy$/d" "$policy_file"
+    sudo sed -i "/^$policy$/d" "$policy_file"
 
     echo -e "${BLUE}[i]${NC} Shutting down Windows..." >&2
     # Shutdown and wait until complete before finishing or starting next installation
