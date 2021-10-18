@@ -110,7 +110,7 @@ qvm-prefs "$resources_qube" netvm ""
 
 if [ -e "/usr/lib/qubes/qubes-windows-tools.iso" ]
     then
-        echo -e "${BLUE}[i]${NC} Qubes Windows Tools already installed..." >&2
+        echo -e "${BLUE}[i]${NC} Verified that Qubes Windows Tools is already installed in dom0..." >&2
     else
         echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
         sudo qubes-dom0-update -y qubes-windows-tools
