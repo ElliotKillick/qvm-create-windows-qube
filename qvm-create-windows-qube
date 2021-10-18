@@ -343,6 +343,14 @@ for (( counter = 1; counter <= count; counter++ )); do
     # Post QWT scripts
 
     # Prepend allowing policy to qubes.Filecopy and copy post scripts from resources qube to Windows
+    if [ ! -e "/etc/qubes-rpc/policy/qubes.Filecopy" ]
+    then
+        touch "/etc/qubes-rpc/policy/qubes.Filecopy"
+        chmod u+rw,g+rw,o+r "/etc/qubes-rpc/policy/qubes.Filecopy"
+        echo '$anyvm $anyvm ask' > "/etc/qubes-rpc/policy/qubes.Filecopy"
+        chgrp qubes "/etc/qubes-rpc/policy/qubes.Filecopy"
+        chown root "/etc/qubes-rpc/policy/qubes.Filecopy"
+    fi
     policy="$resources_qube $qube allow"
     policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
     sed -i "1i$policy" "$policy_file"
