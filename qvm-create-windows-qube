@@ -357,8 +357,8 @@ for (( counter = 1; counter <= count; counter++ )); do
         policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
         sed -i "1i$policy" "$policy_file"
     else
-        # For R4.1 and later, create a new, temporary policy file just for this session in R4.1 and later directory
-        # note: a temp file is used here to work around permissions complexities in target directory
+        # For R4.1 and later, create a new, temporary policy file, just for this, session in the new policy directory.
+        # note: a file in /tmp is used here to work around permissions complexities in the new policy directory,
         # without having to resort to double quoting inside "sudo sh -c '...'"
         tmp_file="/tmp/qvm-create-windows-vm-$$"
         
@@ -415,10 +415,10 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.." || true
     
     if [ "${qubes_version}" == "R4.0" ] ; then
-        #unmodify R4.0 policy file
+        #unmodify R4.0 policy file.
         sed -i "/^$policy$/d" "$policy_file"
     else
-        #remove custom R4.1 policy file
+        #remove custom R4.1 policy file from new policy directory.
         sudo rm -f "${policy_file}"
     fi
     echo -e "${BLUE}[i]${NC} Shutting down Windows..." >&2
