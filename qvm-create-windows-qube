@@ -367,7 +367,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         echo "${policy}" >> ${tmp_file}
         
         policy_file="/etc/qubes/policy.d/25-qvm-create-windows-qube-bash-$$.policy"
-        sudo mv "${temp_file}" "${policy_file}"
+        sudo mv "${tmp_file}" "${policy_file}"
     fi
     
     qvm-run -q "$resources_qube" "cd '$resources_dir' && qvm-copy-to-vm $qube post"
