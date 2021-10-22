@@ -10,7 +10,7 @@ NC='\033[0m'
 
 # Qubes version impacts rpc policy later in the script
 qubes_version=$(awk -F"[()]" '{print $2}' /etc/qubes-release)
-if [ ${qubes_version} == "R4.0" ] ||  [ ${qubes_version} = "R4.1" ] ; then
+if [ ${qubes_version} == "R4.0" ] ||  [ ${qubes_version} == "R4.1" ] ; then
     echo -e "${BLUE}[i]${NC} Qubes version ${qubes_version} is supported." >&2
 else
     echo -e "${RED}[!]${NC} Qubes version ${qubes_version} not supported or missing. Exiting..." >&2
