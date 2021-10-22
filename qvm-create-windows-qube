@@ -10,7 +10,7 @@ NC='\033[0m'
 
 # Qubes version impacts rpc policy later in the script
 qubes_version=$(awk -F"[()]" '{print $2}' /etc/qubes-release)
-if [ ${qubes_version} = "R4.0" ] ||  [ ${qubes_version} = "R4.1" ] ; then
+if [ ${qubes_version} == "R4.0" ] ||  [ ${qubes_version} = "R4.1" ] ; then
     echo -e "${BLUE}[i]${NC} Qubes version ${qubes_version} is supported." >&2
 else
     echo -e "${RED}[!]${NC} Qubes version ${qubes_version} not supported or missing. Exiting..." >&2
@@ -351,7 +351,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Post QWT scripts
 
-    if [ "${qubes_version}" = "R4.0" ] ; then
+    if [ "${qubes_version}" == "R4.0" ] ; then
         # For R4.0: prepend allowing policy to qubes.Filecopy and copy post scripts from resources qube to Windows
         policy="$resources_qube $qube allow"
         policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
@@ -414,7 +414,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     # Clean up post scripts and remove policy
     qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.." || true
     
-    if [ "${qubes_version}" = "R4.0" ] ; then
+    if [ "${qubes_version}" == "R4.0" ] ; then
         #unmodify R4.0 policy file
         sed -i "/^$policy$/d" "$policy_file"
     else
