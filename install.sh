@@ -55,7 +55,10 @@ if [ -e "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
     echo -e "${BLUE}[i]${NC} Verified that Qubes Windows Tools is already installed in dom0, skipping download..." >&2
 else
     echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
-    sudo qubes-dom0-update -y qubes-windows-tools || (echo -e "${RED}[i]${NC} Error downloading Qubes Windows Tools, exiting..." && exit 1)
+    sudo qubes-dom0-update -y qubes-windows-tools || (echo -e "${RED}[i]${NC} Error installing Qubes Windows Tools, exiting..." && exit 1)
+    if [ ! -e "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
+        echo -e "${RED}[i]${NC} Qubes Windows Tools RPM was installed, but /usr/lib/qubes/qubes-windows-tools.iso is still missing. Exiting..." && exit 1
+    fi
 fi
 
 resources_qube="windows-mgmt"
