@@ -5,4 +5,4 @@ title %~f0
 :: Licensed under the MIT License. See LICENSE file for details.
 
 cd installer
-for /f "tokens=*" %%a in ('dir /b qubes-tools-*.exe') do start %%a /passive
+for /f "tokens=*" %%a in ('dir /b qubes-tools-*.exe qubes-tools-*.msi') do start %%a /passive
