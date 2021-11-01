@@ -5,7 +5,7 @@
 </div>
 
 <h3 align="center">
-    qvm-create-windows-qube
+    Qvm-Create-Windows-Qube
 </h3>
 
 <p align="center">
@@ -24,13 +24,13 @@
 
 ## About
 
-qvm-create-windows-qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org/doc/glossary/#qube) with [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) drivers automatically. It officially supports Windows 7, 8.1 and 10 as well as Windows Server 2008 R2, 2012 R2, 2016 and 2019.
+Qvm-Create-Windows-Qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org/doc/glossary/#qube) with [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) drivers automatically. It officially supports Windows 7, 8.1 and 10 as well as Windows Server 2008 R2, 2012 R2, 2016 and 2019.
 
 The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. The installation takes place 100% air gapped and features optional [Whonix integration](https://github.com/elliotkillick/qvm-create-windows-qube#whonix-recommendations-for-windows-whonix-workstation) on the finished Windows qube for added privacy.
 
 It also features other niceties such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using Chocolatey to get you up and running quickly in your new environment.
 
-**As featured on: [<img width="15" src="https://news.ycombinator.com/favicon.ico" alt="Hacker News Favicon" /> Hacker News](https://news.ycombinator.com/item?id=28900125)**
+**As featured on: [<img width="15" src="https://news.ycombinator.com/favicon.ico" alt="Hacker News Favicon" /> Hacker News](https://news.ycombinator.com/item?id=28900125)** | *Proudly ranked in the top 10 on the front page of Hacker News as well as first place for Show HN*
 
 ## Installation
 
@@ -45,6 +45,16 @@ It also features other niceties such as automatic installation of packages inclu
 5. Review the code of the resulting `/usr/bin/qvm-create-windows-qube`
 
 A more streamlined and secure installation process with packaging will be shipping with Qubes R4.1.
+
+### Updating
+
+To update Qvm-Create-Windows-Qube, start by simply deleting the `windows-mgmt` VM and main program by running the following command in Dom0:
+
+`qvm-remove -f windows-mgmt && sudo rm /usr/bin/qvm-create-windows-qube`
+
+Lastly, follow the installation steps above to reinstall.
+
+Note that this will also delete any Windows ISOs that have already been downloaded. This may be desierable in the case that Microsoft has updated the Windows ISOs (meaning you should redownload them anyway). However, if you would like to avoid downloading any of the Windows ISOs again, simply navigate to `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` in the `windows-mgmt` VM and copy its contents to another (preferably dispoable) qube. After the reinstall is complete, copy those ISOs back into `windows-mgmt` at the aformentioned directory.
 
 ## Usage
 
@@ -66,7 +76,7 @@ Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
 
 ### Downloading Windows ISO
 
-The `download-windows.sh` script (located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos/download-windows.sh` in `windows-mgmt`) securely downloads the Windows ISO to be used by qvm-create-windows-qube from official Microsoft servers.
+The `download-windows.sh` script (located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos/download-windows.sh` in `windows-mgmt`) securely downloads the Windows ISO to be used by Qvm-Create-Windows-Qube from official Microsoft servers.
 
 `windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `download-windows.sh` script and `SHA256SUMS` file to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
 
@@ -105,7 +115,7 @@ The `download-windows.sh` script (located at `/home/user/Documents/qvm-create-wi
 
 ## Security
 
-qvm-create-windows-qube is "reasonably secure" as [Qubes](https://www.qubes-os.org) would have it.
+Qvm-Create-Windows-Qube is "reasonably secure" as [Qubes](https://www.qubes-os.org) would have it.
 
 - `windows-mgmt` is air gapped
 - The entirety of the Windows qube setup process is done air gapped
@@ -140,7 +150,7 @@ Windows 7 and Windows Server 2008 R2 reached end of life (EOL) on [January 14, 2
 
 ## Privacy
 
-qvm-create-windows-qube aims to be the most private way to use Windows. Many Qubes users switched from Windows (or another proprietary OS) in part to get away from Microsoft (or Big Tech in general) and so being able to use Windows from a safe distance is of utmost importance to this project. Or at least, as safe a distance as possible for what is essentially a huge, proprietary binary blob.
+Qvm-Create-Windows-Qube aims to be the most private way to use Windows. Many Qubes users switched from Windows (or another proprietary OS) in part to get away from Microsoft (or Big Tech in general) and so being able to use Windows from a safe distance is of utmost importance to this project. Or at least, as safe a distance as possible for what is essentially a huge, proprietary binary blob.
 
 ### Windows Telemetry
 
@@ -161,7 +171,7 @@ It's recommended to read [this](https://www.whonix.org/wiki/Windows_Hosts) Whoni
 
 ### Easy to Reset Fingerprint
 
-There are countless unique identifiers present in every Windows installation such as the MachineGUID, installation ID, NTFS drive Volume Serial Numbers (VSNs) and more. With qvm-create-windows-qube, these unique identifiers can easily be reset by automatically reinstalling Windows.
+There are countless unique identifiers present in every Windows installation such as the MachineGUID, installation ID, NTFS drive Volume Serial Numbers (VSNs) and more. With Qvm-Create-Windows-Qube, these unique identifiers can easily be reset by automatically reinstalling Windows.
 
 ### Limitations
 
@@ -177,7 +187,7 @@ Fingerprinting is possible through the hypervisor in the event of VM compromise,
 
 ### Do I need a Windows license to use this project?
 
-No, with every Windows installation comes an embedded trial product key which is used by default if none other is provided. qvm-create-windows-qube explicitly specifies no product key in the answer files in order to use the default trial key.
+No, with every Windows installation comes an embedded trial product key which is used by default if none other is provided. Qvm-Create-Windows-Qube explicitly specifies no product key in the answer files in order to use the default trial key.
 
 On general consumer versions of Windows such as (non-enterprise) 7, 8.1 and 10, these trials extend forever with the understanding that a watermark or pop up may start appearing requesting activation of the product.
 
@@ -225,7 +235,7 @@ Please send patches for these if you are able to. Although, be aware that Qubes 
 
 ### Older Xen Drivers Notice (for newer OSs such as Windows 10)
 
-Due to instabilities of the older Xen drivers currently packaged with Qubes Windows Tools, there is a non-zero chance (probably about 1 in 10) that the first boot after Qubes Windows Tools installation will result in a Windows crash (BSOD) in newer OSs such as Windows 10. This is an issue with the underlying drivers which qvm-create-windows-qube cannot help. If this occurs, it's recommended to delete that qube and re-run the same qvm-create-windows-qube command to restart the installation from scratch.
+Due to instabilities of the older Xen drivers currently packaged with Qubes Windows Tools, there is a non-zero chance (probably about 1 in 10) that the first boot after Qubes Windows Tools installation will result in a Windows crash (BSOD) in newer OSs such as Windows 10. This is an issue with the underlying drivers which Qvm-Create-Windows-Qube cannot help. If this occurs, it's recommended to delete that qube and re-run the same `qvm-create-windows-qube` command to restart the installation from scratch.
 
 Once the Windows qube gets up and running though, community reports have proven these older Xen drivers to be stable even in Windows 10.
 
@@ -265,7 +275,7 @@ Once the Windows qube gets up and running though, community reports have proven 
             - Thanks to @jevank for the [patch](https://github.com/QubesOS/qubes-issues/issues/5279#issuecomment-525947408)
     - [ ] Port to Python
         - This seems like it would be unnecessary for scripts like `create-media.sh` where the Python script would essentially just be calling out to external programs
-        - This would certainly be suitable for qvm-create-windows-qube though
+        - This would certainly be suitable for the `qvm-create-windows-qube` program though
             - This would allow us to interchange data between Dom0 and the VM without worrying about the potential for command injection or another Shellshock
 - [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the `wiminfo` command (Currently a WIP; see branch)
     - `wiminfo` works just like DISM on Windows
@@ -312,6 +322,6 @@ Once the Windows qube gets up and running though, community reports have proven 
 
 ## End Goal
 
-Have a feature similar (or superior) to [VMWare's Windows "Easy Install"](https://www.youtube.com/watch?v=1OpDXlttmE0) feature on Qubes. VMWare's solution is proprietary and only available in their paid products.
+Have a feature similar (or superior) to [VMWare's Windows "Easy Install"](https://www.youtube.com/watch?v=1OpDXlttmE0) feature on Qubes OS. VMWare's solution is proprietary and only available in their paid products.
 
 VirtualBox also has [something similar](https://blogs.oracle.com/scoter/oracle-vm-virtualbox-52:-unattended-guest-os-install) but it's not as feature-rich.
