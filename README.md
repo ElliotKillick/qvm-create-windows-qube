@@ -54,7 +54,7 @@ To update Qvm-Create-Windows-Qube, start by simply deleting the `windows-mgmt` V
 
 Lastly, follow the installation steps above to reinstall.
 
-Note that this will also delete any Windows ISOs that have already been downloaded. This may be desierable in the case that Microsoft has updated the Windows ISOs (meaning you should redownload them anyway). However, if you would like to avoid downloading any of the Windows ISOs again, simply navigate to `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` in the `windows-mgmt` VM and copy its contents to another (preferably dispoable) qube. After the reinstall is complete, copy those ISOs back into `windows-mgmt` at the aformentioned directory.
+Note that this will also delete any Windows ISOs that have already been downloaded. This may be desirable in the case that Microsoft has updated the Windows ISOs (meaning you should redownload them anyway). However, if you would like to avoid downloading any of the Windows ISOs again, simply navigate to `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` in the `windows-mgmt` VM and copy its contents to another (preferably disposable) qube. After the reinstall is complete, copy those ISOs back into `windows-mgmt` at the aforementioned directory.
 
 ## Usage
 
