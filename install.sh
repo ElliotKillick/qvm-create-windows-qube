@@ -56,11 +56,11 @@ if [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
 else
     echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
     if ! sudo qubes-dom0-update -y qubes-windows-tools; then
-        echo -e "${RED}[!]${NC} Error installing Qubes Windows Tools! Exiting..."
+        echo -e "${RED}[!]${NC} Error installing Qubes Windows Tools! Exiting..." >&2
         exit 1
     fi
     if ! [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
-        echo -e "${RED}[!]${NC} Qubes Windows Tools package is installed, but /usr/lib/qubes/qubes-windows-tools.iso is still missing in Dom0. Exiting..."
+        echo -e "${RED}[!]${NC} Qubes Windows Tools package is installed, but /usr/lib/qubes/qubes-windows-tools.iso is still missing in Dom0. Exiting..." >&2
         exit 1
     fi
 fi
