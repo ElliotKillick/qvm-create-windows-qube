@@ -50,6 +50,21 @@ if [ "$netvm" ]; then
     fi
 fi
 
+# Validate QWT installation
+if [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
+    echo -e "${BLUE}[i]${NC} Qubes Windows Tools is already installed in Dom0. Skipping download..." >&2
+else
+    echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
+    if ! sudo qubes-dom0-update -y qubes-windows-tools; then
+        echo -e "${RED}[!]${NC} Error installing Qubes Windows Tools! Exiting..." >&2
+        exit 1
+    fi
+    if ! [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
+        echo -e "${RED}[!]${NC} Qubes Windows Tools package is installed, but /usr/lib/qubes/qubes-windows-tools.iso is still missing in Dom0. Exiting..." >&2
+        exit 1
+    fi
+fi
+
 resources_qube="windows-mgmt"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
 template="$(qubes-prefs default_template)"
@@ -107,9 +122,6 @@ qvm-shutdown --wait "$resources_qube"
 
 echo -e "${BLUE}[i]${NC} Air gapping $resources_qube..." >&2
 qvm-prefs "$resources_qube" netvm ""
-
-echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
-sudo qubes-dom0-update -y qubes-windows-tools
 
 echo -e "${BLUE}[i]${NC} Copying qvm-create-windows-qube main program to Dom0..." >&2
 qvm-run -p --filter-escape-chars --no-color-output "$resources_qube" "cat '$resources_dir/qvm-create-windows-qube'" | sudo tee /usr/bin/qvm-create-windows-qube > /dev/null
