@@ -127,6 +127,25 @@ if [ "$(hostname)" != "dom0" ]; then
     exit 1
 fi
 
+# Qubes version impacts RPC policy format later
+qubes_version="$(awk -F"[()]" '{ print $2 }' /etc/qubes-release)"
+
+# Validate Qubes OS version support
+case "$qubes_version" in
+    "R4.0")
+        ;;
+    "R4.1")
+        if ! [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
+            echo -e "${RED}[!]${NC} Qubes version $qubes_version is supported. However, Qubes OS does not currently offer an official build of Qubes Windows Tools for $qubes_version. To continue, please build Qubes Windows Tools yourself and place it at: /usr/lib/qubes/qubes-windows-tools.iso" >&2
+            exit 1
+        fi
+        ;;
+    *)
+        echo -e "${RED}[!]${NC} Qubes version is unknown and therefore support cannot be guaranteed. Exiting..." >&2
+        exit 1
+        ;;
+esac
+
 # Validate name
 if [ "$count" == 1 ]; then
     if qvm-check "$name" &> /dev/null; then
@@ -342,10 +361,19 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Post QWT scripts
 
-    # Prepend allowing policy to qubes.Filecopy and copy post scripts from resources qube to Windows
-    policy="$resources_qube $qube allow"
-    policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
-    sed -i "1i$policy" "$policy_file"
+    # Temporarily update qubes.Filecopy policy for resource qube and Windows qubes only, to allow copying post QWT scripts without user interaction
+    if [ "$qubes_version" == "R4.0" ]; then
+        # For R4.0: Prepend allowing policy to existing qubes.Filecopy file
+        policy="$resources_qube $qube allow"
+        policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
+        sed -i "1i$policy" "$policy_file"
+    else
+        # For R4.1 and later: Create a new, temporary policy file, just for this session, in the new policy directory
+        policy="qubes.Filecopy        *           $resources_qube $qube allow"
+        policy_file="/etc/qubes/policy.d/25-qvm-create-windows-qube-$$.policy"
+        echo "$policy" | sudo tee "$policy_file" > /dev/null
+    fi
+
     qvm-run -q "$resources_qube" "cd '$resources_dir' && qvm-copy-to-vm $qube post"
 
     post_incoming_dir="%USERPROFILE%\\Documents\\QubesIncoming\\$resources_qube\\post"
@@ -389,7 +417,14 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     # Clean up post scripts and remove policy
     qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.." || true
-    sed -i "/^$policy$/d" "$policy_file"
+
+    if [ "$qubes_version" == "R4.0" ]; then
+        # Remove modification to R4.0 policy file
+        sed -i "/^$policy$/d" "$policy_file"
+    else
+        # Remove custom policy file from new policy directory for R4.1 and later
+        sudo rm -f "$policy_file"
+    fi
 
     echo -e "${BLUE}[i]${NC} Shutting down Windows..." >&2
     # Shutdown and wait until complete before finishing or starting next installation
