@@ -73,11 +73,14 @@ if ! [ "$(qvm-prefs "$resources_qube" netvm)" ]; then
     qvm-prefs "$resources_qube" netvm "$resources_qube_netvm"
 fi
 
-echo -e "${BLUE}[i]${NC} Starting $template..." >&2
-until qvm-start "$template"; do
-    echo -e "${RED}[!]${NC} Failed to start $template! Already running? Not enough memory? Retrying in 10 seconds..." >&2
-    sleep 10
-done
+# If template hasn't already been started then start it
+if ! qvm-check --running "$template"; then
+    echo -e "${BLUE}[i]${NC} Starting $template..." >&2
+    until qvm-start "$template"; do
+        echo -e "${RED}[!]${NC} Failed to start $template! Not enough memory? Retrying in 10 seconds..." >&2
+        sleep 10
+    done
+fi
 
 echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
 fedora_packages="genisoimage geteltorito datefudge"
