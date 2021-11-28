@@ -286,7 +286,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-volume extend "$qube:root" 30GiB
     qvm-prefs "$qube" netvm ""
 
-    echo -e "${BLUE}[i]${NC} Commencing first part of Windows installation process..." >&2
+    echo -e "${BLUE}[i]${NC} Starting first part of Windows installation process..." >&2
     until qvm-start --cdrom "$resources_qube:$resources_dir/windows-media/out/$iso" "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
         sleep 10
@@ -295,7 +295,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     # Waiting for first part of Windows installation process to finish...
     wait_for_shutdown
 
-    echo -e "${BLUE}[i]${NC} Commencing second part of Windows installation process..." >&2
+    echo -e "${BLUE}[i]${NC} Starting second part of Windows installation process..." >&2
     qvm-features --unset "$qube" video-model
     until qvm-start "$qube"; do
         echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
