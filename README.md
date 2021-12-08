@@ -231,6 +231,7 @@ Please send patches for these if you are able to. Although, be aware that Qubes 
 ### Windows 10 and Windows Server 2019
 - [Private disk creation fails](https://github.com/QubesOS/qubes-issues/issues/5090)
     - **Temporary fix:** Close the `prepare-volume.exe` window causing there to be no private disk (can't make a `TemplateVM`) but besides that Windows qube creation will continue as normal
+    - **Advanced temporary fix:** Open disk management, delete partition with drive letter d:, create a new partition, give it letter d: and format as NTFS. Tricky part: You need to launch prepare-volume.exe with the same ID it used before, quickest way is to look up the command line in task manager. prepare-volume.exe should run successfully now and setup will continue. **Do not try this if you don't know what you're doing**
     - Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer
 
 ### Older Xen Drivers Notice (for newer OSs such as Windows 10)
