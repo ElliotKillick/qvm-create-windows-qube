@@ -134,7 +134,7 @@ qubes_version="$(awk -F"[()]" '{ print $2 }' /etc/qubes-release)"
 case "$qubes_version" in
     "R4.0")
         ;;
-    "R4.1")
+    "R4.1"|"R4.2")
         if ! [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
             echo -e "${RED}[!]${NC} Qubes version $qubes_version is supported. However, Qubes OS does not currently offer an official build of Qubes Windows Tools for $qubes_version. To continue, please build Qubes Windows Tools yourself and place it at: /usr/lib/qubes/qubes-windows-tools.iso" >&2
             exit 1
