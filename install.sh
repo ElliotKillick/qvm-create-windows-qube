@@ -100,7 +100,16 @@ fi
 echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
 fedora_packages="genisoimage geteltorito datefudge"
 debian_packages="genisoimage curl datefudge"
-qvm-run -p "$template" "if command -v dnf &> /dev/null; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
+script='if grep -q '\''ID=fedora'\'' /etc/os-release; then
+  sudo dnf -y install '"$fedora_packages"'
+elif grep -q '\''ID=debian'\'' /etc/os-release; then
+  sudo apt-get -y install '"$debian_packages"'
+else
+  echo "Unsupported distribution."
+  exit 1
+fi'
+
+qvm-run -p "$template" "$script"
 
 echo -e "${BLUE}[i]${NC} Shutting down $template..." >&2
 qvm-shutdown --wait "$template"
