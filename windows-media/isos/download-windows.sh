@@ -95,7 +95,7 @@ scurl_file() {
     tls_version="$2"
     url="$3"
 
-    until curl --output "$out_file" --"tlsv$tls_version" --proto =https -- "$url"; do
+    until curl -L --output "$out_file" --"tlsv$tls_version" --proto =https -- "$url"; do
         echo -e "${RED}[!]${NC} Failed to download Windows! Is there an Internet connection? Retrying in 10 seconds..." >&2
         sleep 10
     done
