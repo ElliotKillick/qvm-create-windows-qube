@@ -76,9 +76,11 @@ Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
 
 ### Downloading Windows ISO
 
-The `download-windows.sh` script (located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos/download-windows.sh` in `windows-mgmt`) securely downloads the Windows ISO to be used by Qvm-Create-Windows-Qube from official Microsoft servers.
+Mido (`mido.sh`) is the secure Microsoft Windows Downloader (for Linux), inspired by [Fido](https://github.com/pbatard/Fido) from Rufus. It's capable of automating the download process for a few Windows ISOs that Microsoft has behind a [gated download web interface](https://www.microsoft.com/en-us/software-download/windows10ISO). Mido is robust and securely downloads Windows ISOs to be used by Qvm-Create-Windows-Qube from official Microsoft servers. You can find it located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos/mido.sh` in `windows-mgmt`.
 
-`windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `download-windows.sh` script and `SHA256SUMS` file to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
+`windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `mido.sh` script to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
+
+For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handling ISOs that can work with any given Windows ISO. If you have your own Windows ISO you would like to use then likely only a very slight adjustment to the closest matching answer file (namely the `/IMAGE/NAME` key) would be needed to make it work. You can get the valid `/IMAGE/NAME` values for your ISO by parsing the `install.wim` inside using the `wiminfo` command (packaged as `wimlib-utils` on Fedora or `wimtools` on Debian) or from within Windows using Windows ADK.
 
 ### Creating Windows VM
 
@@ -127,6 +129,10 @@ Qvm-Create-Windows-Qube is "reasonably secure" as [Qubes](https://www.qubes-os.o
     - ISOs are downloaded straight from Microsoft controlled subdomains of `microsoft.com`
     - HTTPS TLS 1.2/1.3
     - SHA-256 verification of the files after download
+        - Each file is saved with the extension `.UNVERIFIED` until it's made certain that its checksum is a match
+    - Mido is robust and very explicit (but also user friendly) so you can be sure any downloaded ISOs are authentic and untampered with
+    - Mido is written in POSIX sh (the minimal Dash shell will be used if available) so interaction with Microsoft's gated download web interface is more secure
+        - For more security, it could even be run in a POSIX-compliant Rust shell (e.g. nsh) with Rust coreutils (e.g. uutils). This is not the default configuration.
 - Windows is treated as an untrusted guest operating system the entire way through
 - The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
 - All commits by the maintainers are always signed with their respective PGP keys
@@ -142,7 +148,7 @@ Qvm-Create-Windows-Qube is "reasonably secure" as [Qubes](https://www.qubes-os.o
 
 #### Maintenance
 
-Don't forget to apply any applicable updates upon creation of your Windows qube. Microsoft frequently builds up-to-date ISOs for current versions of Windows, such as Windows 10. For these Windows versions, it's recommended to periodically visit the official Microsoft site `download-windows.sh` provides to get a fresh Windows image out of the box.
+Don't forget to apply any applicable updates upon creation of your Windows qube. Microsoft frequently builds up-to-date ISOs for current versions of Windows, such as Windows 10. For these Windows versions, it's recommended to periodically download the latest version using Mido to get a fresh Windows image out of the box.
 
 #### Advisories
 
@@ -267,6 +273,7 @@ Once the Windows qube gets up and running though, community reports have proven 
 - [x] Provision Chocolatey
 - [x] Add an option to slim down Windows as documented for Qubes [here](https://www.qubes-os.org/doc/windows-template-customization/)
 - [x] Make `windows-mgmt` air gapped
+- [x] Extend functionality of `download-windows.sh` (now `mido.sh` to download ISOs from behind Microsoft's gated ISO download API
 - [ ] I recently discovered this is a Qubes [Google Summer of Code](https://www.qubes-os.org/gsoc/) project
     - [x] Add automated tests
         - Using Travis CI for automated ShellCheck

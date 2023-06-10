@@ -98,7 +98,7 @@ if ! qvm-check --running "$template"; then
 fi
 
 echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
-fedora_packages="genisoimage geteltorito datefudge"
+fedora_packages="genisoimage geteltorito datefudge dash"
 debian_packages="genisoimage curl datefudge"
 qvm-run -p "$template" "if [ -f /etc/fedora-release ]; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
 
@@ -117,8 +117,8 @@ qvm-run -p "$resources_qube" "cd ${resources_dir%/*} && git clone https://github
 echo -e "${BLUE}[i]${NC} Please check for a \"Good signature\" from GPG (Verify it out-of-band if necessary)..." >&2
 qvm-run -p "$resources_qube" "cd '$resources_dir' && gpg --import author.asc && git verify-commit \$(git rev-list --max-parents=0 HEAD)"
 
-echo -e "${BLUE}[i]${NC} Remember to download the desired version(s) of Windows using download-windows.sh in the $resources_qube qube..." >&2
-qvm-run -p "$resources_qube" "'$resources_dir/windows-media/isos/download-windows.sh' --help"
+echo -e "${BLUE}[i]${NC} Remember to download the desired version(s) of Windows using Mido in the $resources_qube qube..." >&2
+qvm-run -p "$resources_qube" "'$resources_dir/windows-media/isos/mido.sh' --help"
 
 echo -e "${BLUE}[i]${NC} Shutting down $resources_qube..." >&2
 qvm-shutdown --wait "$resources_qube"
