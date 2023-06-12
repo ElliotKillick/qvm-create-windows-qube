@@ -22,6 +22,7 @@ rem Does disabling DiagTrack mitigate the information leaks in the above article
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f
 
 rem The DiagTrack service is used for sending Windows telemetry data to Microsoft
+rem Space after "start=" is required on Windows 7
 sc config DiagTrack start= disabled
 
 rem This disables the bulk of the telemetry, at least for what is necessary in a VM, while providing zero impact on the user experience
@@ -40,7 +41,7 @@ rem With all these methods combined, Windows telemetry is greatly diminished
 rem This can be seen in Wireshark by the fact that Windows is not reaching out to Microsoft servers nearly as often as it did originally
 rem This is at least once you've had Windows online for a while because it connects out a lot when it's first installed
 
-rem Be aware that while this does a good job at disabling telemetry of Windows itself, this doesn't account for other Microsoft (e.g. Office 365) or third-party products
+rem Be aware that while this does a good job at disabling telemetry for Windows itself, it doesn't account for other Microsoft (e.g. Office 365) or third-party products
 rem More research is required here
 
 rem Of course, the best option is to air gap Windows or refrain from using it
