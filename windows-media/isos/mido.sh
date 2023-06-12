@@ -334,7 +334,6 @@ consumer_download() {
         # This should only happen if there's been some change to how this API works
         error_code=$?
         handle_curl_error "$error_code"
-        [ "$error_code" = 22 ] && echo_err "Microsoft servers denied our request for an automated download. Please manually download this ISO in a web browser: $url"
         manual_verification="true"
         return "$error_code"
     }
