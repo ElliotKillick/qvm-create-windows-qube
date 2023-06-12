@@ -624,6 +624,6 @@ fi
 if [ "$exit_code" = 0 ]; then
     echo_ok "Successfully downloaded and verified integrity of all Windows media!"
 else
-    echo_ok "Finished! Please take note of the above information and/or errors."
+    echo_ok "Finished! Please see the above errors with information"
     exit "$exit_code"
 fi
