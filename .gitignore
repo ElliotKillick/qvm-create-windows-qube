@@ -2,4 +2,6 @@
 *.iso
 *.exe
 *.txt
+*.PART
+*.UNVERIFIED
 .vscode
