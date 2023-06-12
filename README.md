@@ -39,12 +39,10 @@ It also features other niceties such as automatic installation of packages inclu
     - `qvm-run -p --filter-escape-chars --no-color-output <name_of_qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
     - Make sure to get all the single and double quotes
 3. Review the code of `install.sh` to ensure its integrity
-    - Safer with escape character filtering enabled in the prior step; `qvm-run` disables it by default when the output is a file
+    - Safer with escape character filtering enabled in the previous step; `qvm-run` disables it by default when the output is a file
 4. Run `chmod +x install.sh && ./install.sh`
     - Note that this will install packages in the global default `TemplateVM`, which is `fedora-XX` by default
 5. Review the code of the resulting `/usr/bin/qvm-create-windows-qube`
-
-A more streamlined and secure installation process with packaging will be shipping with Qubes R4.1.
 
 ### Updating
 
@@ -184,10 +182,11 @@ There are countless unique identifiers present in every Windows installation suc
 Fingerprinting is possible through the hypervisor in the event of VM compromise, here are some practical examples (not specific to Windows):
 
 - [Xen clocksource as wallclock](https://phabricator.whonix.org/T389)
-    - Timezone leak can at least be mitigated by configuring UTC time in the BIOS/UEFI, the local timezone can still be configured for XFCE Dom0 clock
-    - However, time correlation between VMs remain trivial
+    - Timezone leak can at least be mitigated by configuring UTC time in the BIOS/UEFI
+        - The local timezone can still be configured for the XFCE Dom0 clock and in desired VMs by running `timedatectl set-timezone` every boot using the standard `/rw/config/rc.local` Qubes provides
+    - However, time correlation between VMs remains trivial
 - [CPUID](https://github.com/QubesOS/qubes-issues/issues/1142)
-- Generally some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface/) (e.g. screen dimensions)
+- Generally, some of the VM interfaces documented [here](https://www.qubes-os.org/doc/vm-interface/) (e.g. screen dimensions)
 
 ## Frequently Asked Questions (FAQ)
 
@@ -197,7 +196,7 @@ No, with every Windows installation comes an embedded trial product key which is
 
 On general consumer versions of Windows such as (non-enterprise) 7, 8.1 and 10, these trials extend forever with the understanding that a watermark or pop up may start appearing requesting activation of the product.
 
-On Windows Enterprise and Server Evaluation versions, once the trial is up the machine will automatically be shut down after being up for a set amount of time by the Windows License Monitoring Service (`C:\Windows\System32\wlms\wlms.exe`). When this occurs, the aforementioned reason for shutdown will be logged in the Event Viewer. To renew the trial run `slmgr /rearm` in the command prompt. This will work for the number of times specified in `slmgr /dlv` (it can vary) at which point the product must be activated or reinstalled.
+On Windows Enterprise Evaluation and Server Evaluation versions, once the trial is up the machine will automatically (and without warning) be shut down after being up for a set amount of time by the Windows License Monitoring Service (`C:\Windows\System32\wlms\wlms.exe`; it's in a hidden folder). When this occurs, the aforementioned reason for shutdown will be logged in the Event Viewer. To renew the trial run `slmgr /rearm` in the command prompt. This will work for the number of times specified in `slmgr /dlv` (it can vary) at which point the product must be activated or reinstalled.
 
 It's recommended that you license the product when the trial is up in all cases.
 
@@ -207,7 +206,11 @@ Giving Windows Internet access is not required for using the trial key (as it's 
 
 The purpose of the `windows-mgmt` AppVM is to securely isolate everything that goes on as part of the Windows installation to a single virtual machine. That way, the exploitation of any bugs that exist in, for example, in the Linux ISO filesystem parsing code is limited in the amount of harm it can do should a Windows ISO be malicious. This is the security principle upon which all of Qubes OS is built upon, it's known as "security by isolation" or "security by compartmentalization".
 
-Feel free to delete `windows-mgmt` if you are sure there are no more Windows VMs you would like to create. However, if it's just the disk space you want to reclaim then you can simply delete the ISOs located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` (in `windows-mgmt`) to save the vast majority of that space.
+Feel free to delete `windows-mgmt` if you are sure there are no more Windows VMs you would like to create. However, if it's just the disk space you want to reclaim then you can simply delete the ISOs located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` and `/home/user/Documents/qvm-create-windows-qube/windows-media/out` (in `windows-mgmt`) to save the vast majority of that space.
+
+## Anything else I should know?
+
+Don't enable "Include in memory balancing" (the checkbox) in the Windows qube settings. This feature of Qubes OS is currently unstable on Windows and enabling it will lead to frequent Windows crashes (BSODs).
 
 ## Contributing
 
@@ -270,6 +273,11 @@ Once the Windows qube gets up and running though, community reports have proven 
 - [x] Support Windows Server 2008 R2 to Windows Server 2019
 - [x] Support Windows 10 Enterprise LTSC (Long Term Support Channel)
     - Provides security updates for 10 years, very stable and less bloat than stock Windows 10
+- [ ] Support Windows 11
+    - Qvm-Create-Windows-Qube was made to be Windows version independent, the only real work to do here is creating an answer file (probably just slightly modifying the Windows 10 one) and adding it `mido.sh` (which will not be a problem now that I've extended it's functionality to download from behind the gated Microsoft ISO download API)
+    - The real question is whether Qubes Windows Tools is going to work under Windows 11
+        - Microsoft has a fantastic track record for backwards compatibility even at the kernel API level though (because businesses love backwards compatibility) so it's possible it works just fine
+        - Help wanted, testers welcome
 - [x] Provision Chocolatey
 - [x] Add an option to slim down Windows as documented for Qubes [here](https://www.qubes-os.org/doc/windows-template-customization/)
 - [x] Make `windows-mgmt` air gapped
@@ -277,7 +285,7 @@ Once the Windows qube gets up and running though, community reports have proven 
 - [ ] I recently discovered this is a Qubes [Google Summer of Code](https://www.qubes-os.org/gsoc/) project
     - [x] Add automated tests
         - Using Travis CI for automated ShellCheck
-    - [ ] ACPI tables for fetching Windows the license embedded there
+    - [x] ACPI tables for fetching Windows the license embedded there
         - Found more info on this, should be very simple by just placing the following jinja libvirt template extension in `/etc/qubes/templates/libvirt/xen/by-name/<windows_qube>`
             - Thanks to @jevank for the [patch](https://github.com/QubesOS/qubes-issues/issues/5279#issuecomment-525947408)
     - [ ] Port to Python
@@ -286,14 +294,14 @@ Once the Windows qube gets up and running though, community reports have proven 
             - This would allow us to interchange data between Dom0 and the VM without worrying about the potential for command injection or another Shellshock
 - [ ] Automatically select which answer file to use based on Windows ISO characteristics gathered from the `wiminfo` command (Currently a WIP; see branch)
     - `wiminfo` works just like DISM on Windows
-    - [ ] Once core admin is extended to allow for libvirt XML templates (answer files) becomes possible (previous todo), we can also securely read the answer file from the ISO without even having to mount it as a loop device using [`libguestfs`](https://libguestfs.org)
+    - [ ] Once core admin is extended to allow for libvirt XML templates (answer files) becomes possible (previous todo, it's a blocking issue), we could also securely read the characteristics of the install.wim from the ISO without even having to mount the ISO as a loop device using [`libguestfs`](https://libguestfs.org)
         - I've also seen `libguestfs` used on QEMU/KVM so it's definitely a good candidate for this use case
-        - Note that `libguestfs` cannot write (an answer file) to an ISO which is why we cannot use this library until we no longer need to create a whole new ISO to add the answer file to it
+        - Note that `libguestfs` cannot write (an answer file) to an ISO which is why we there's no point in using using this library until we no longer need to create a whole new ISO to add the answer file to it
 - [x] Follow [this](https://www.whonix.org/wiki/Other_Operating_Systems) Whonix documentation to make Windows-Whonix-Workstation
-- [ ] Add functionality for `create-media.sh` to add MSUs (Microsoft Update standalone packages) to be installed during the Windows PE pass ("Installing updates...") of Windows setup
-    - We could fix currently not working QWT installation for old Windows 7 SP1 and Windows Server 2008 R2 ISOs using [KB4474419](https://github.com/QubesOS/qubes-issues/issues/3585#issuecomment-521280301) to add SHA-256 driver signing support
+- [ ] Add functionality for `create-media.sh` to add MSUs (Microsoft Update standalone packages) to be installed during the Windows PE pass (specifically "Installing updates...") of Windows setup
+    - We could fix currently not working QWT installation for old Windows 7 SP1 and Windows Server 2008 (non-R2) ISOs using [KB4474419](https://github.com/QubesOS/qubes-issues/issues/3585#issuecomment-521280301) to add SHA-256 driver signing support
         - The other option is to have Xen sign their drivers with SHA-1 as well, which other driver vendors seem to do, but is not ideal from a security standpoint
-    - Allows us to get rid of `allow-drivers.vbs` hack by fixing SHA-256 automatic driver installation bug in newer versions of Windows 7 with KB2921916 (see `allow-drivers.vbs` for details)
+    - Allows us to get rid of `allow-drivers.vbs` hack by fixing SHA-256 *automatic* driver installation bug in newer versions of Windows 7 with KB2921916 (see `allow-drivers.vbs` for details)
         - This Windows bug was intentionally patched and unpatched by Microsoft in an attempt to force enterprises to upgrade to Windows 10
     - Patch a couple Windows security bugs?
         - Patch BlueKeep for Windows 7 out of the box
@@ -303,7 +311,6 @@ Once the Windows qube gets up and running though, community reports have proven 
     - Help wanted
         - What mechanism is there to accomplish this in Qubes? Something in Qubes GUI agent/daemon?
 - [ ] Package this project so its delivery can be made more streamlined and secure through `qubes-dom0-update`
-    - Coming to Qubes R4.1
 - [ ] Add [ReactOS](https://reactos.org) support as an open source alternative to Windows
     - This would be a good at least until a [ReactOS template is made](https://github.com/QubesOS/qubes-issues/issues/2809)
     - Perhaps ReactOS developers may want to use this to develop ReactOS
