@@ -96,14 +96,14 @@ For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handli
 
 `qvm-create-windows-qube -n sys-firewall -oy -i win2019-eval.iso -a win2019-datacenter-eval.xml fs-win2019`
 
-#### Windows 10 LTSC
+#### Windows 10 Enterprise LTSC
 
 - A more stable, minified, secure and private version of Windows 10 officially provided by Microsoft
 - This version of Windows 10 is recommended for those who need the best in Windows security and privacy
 
-`qvm-create-windows-qube -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml work-win10`
+`qvm-create-windows-qube -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64-enterprise-ltsc-eval.iso -a win10x64-enterprise-ltsc-eval.xml work-win10`
 
-`qvm-create-windows-qube -n sys-whonix -oyw -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml anon-win10`
+`qvm-create-windows-qube -n sys-whonix -oyw -i win10x64-enterprise-ltsc-eval.iso -a win10x64-enterprise-ltsc-eval.xml anon-win10`
 
 #### Windows 7
 
@@ -150,7 +150,7 @@ Don't forget to apply any applicable updates upon creation of your Windows qube.
 
 #### Advisories
 
-Windows 7 and Windows Server 2008 R2 reached end of life (EOL) on [January 14, 2020](https://support.microsoft.com/en-us/help/4057281/windows-7-support-will-end-on-january-14-2020). Updates for these OSs are still available with Extended Security Updates (ESUs) if paid for. Office 365 for these OSs will continue getting security updates at no additional cost until [January 2023](https://support.office.com/en-us/article/windows-7-end-of-support-and-office-78f20fab-b57b-44d7-8368-06a8493f3cb9).
+Windows 7 and Windows Server 2008 R2 reached end of life (EOL) on [January 14, 2020](https://support.microsoft.com/en-us/help/4057281/windows-7-support-will-end-on-january-14-2020).
 
 ## Privacy
 
@@ -225,17 +225,6 @@ This project is the product of an independent effort that is not officially endo
 ## Qubes Windows Tools Known Issues
 
 Please send patches for these if you are able to. Although, be aware that Qubes Windows Tools is [currently unmaintained](https://github.com/elliotkillick/qvm-create-windows-qube/issues/15).
-
-### All OSs (Windows 8.1/10 and Windows Server 2012 R2 or greater in the default configuration)
-- [No Windows display when Qubes GUI driver is not installed](https://github.com/QubesOS/qubes-issues/issues/5739)
-    - Any OS other than Windows 7/Windows Server 2008 R2 does not support Qubes GUI driver
-    - **Temporary fix:** Run `qvm-features <name_of_windows_qube> gui 1` in Dom0 to make the display show up after Windows qube creation completes successfully
-
-### All OSs *except* Windows 7 and Windows Server 2008 R2
-- [Prompt to install earlier version of .NET](https://github.com/QubesOS/qubes-issues/issues/5091)
-    - This only appears to be a cosmetic issue because qrexec services still work
-        - This prompt can safely be ignored
-    - Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer
 
 ### Windows 10 and Windows Server 2019
 - [Private disk creation fails](https://github.com/QubesOS/qubes-issues/issues/5090)

@@ -16,6 +16,9 @@ error() {
 
 trap error ERR
 
+resources_qube="windows-mgmt"
+resources_dir="/home/user/Documents/qvm-create-windows-qube"
+
 wait_for_shutdown() {
     # There is a small delay upon booting a qube before qvm-check will detect it as running
     # To account for this as well as scenarios where the qube is already running and is shutting down we need both loops
@@ -25,6 +28,33 @@ wait_for_shutdown() {
     while qvm-check --running "$qube" &> /dev/null; do
         sleep 1
     done
+}
+
+airgap() {
+    qvm-firewall "$qube" del accept
+    qvm-firewall "$qube" add drop
+    qvm-prefs "$qube" netvm "$netvm"
+}
+
+break_airgap() {
+    echo -e "${BLUE}[i]${NC} Breaking air gap so Windows can connect to the Internet..." >&2
+    qvm-firewall "$qube" del drop
+    qvm-firewall "$qube" add accept
+}
+
+is_dom0() {
+    [ "$(hostname)" == "dom0" ]
+}
+
+print_isos() {
+    echo -e "${BLUE}[i]${NC} Available ISOs (Make sure to download them with Mido as instructed in the README):" >&2
+    qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && find -type f -name '*.iso' -printf '%P\n'"
+}
+
+print_answer_files() {
+    echo -e "${BLUE}[i]${NC} Available answer files:" >&2
+    qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && find -type f -name '*.xml' -printf '%P\n'"
+    exit 1
 }
 
 usage() {
@@ -41,6 +71,13 @@ usage() {
     echo "  -P, --pool <name> LVM storage pool to install Windows on (https://www.qubes-os.org/doc/secondary-storage/)"
     echo "  -i, --iso <file> Windows media to automatically install and setup"
     echo "  -a, --answer-file <xml file> Settings for Windows installation"
+
+    if is_dom0; then
+        echo ""
+        print_isos
+        echo ""
+        print_answer_files
+    fi
 }
 
 # Option strings
@@ -65,27 +102,23 @@ while true; do
             ;;
         -c | --count)
             count="$2"
-            shift 2
+            shift
             ;;
         -t | --template)
             template="true"
-            shift
             ;;
         -n | --netvm)
             netvm="$2"
-            shift 2
+            shift
             ;;
         -s | --seamless)
             seamless="true"
-            shift
             ;;
         -o | --optimize)
             optimize="true"
-            shift
             ;;
         -y | --spyless)
             spyless="true"
-            shift
             ;;
         -w | --whonix)
             whonix="true"
@@ -97,24 +130,25 @@ while true; do
             ;;
         -P | --pool)
             pool="$2"
-            shift 2
+            shift
             ;;
         -i | --iso)
             iso="$2"
-            shift 2
+            shift
             ;;
         -a | --answer-file)
             answer_file="$2"
-            shift 2
+            shift
             ;;
         --)
             shift
             break
             ;;
     esac
+    shift
 done
 
-# Handle postitional arguments
+# Handle positional arguments
 if [ $# != 1 ]; then
     usage >&2
     exit 1
@@ -122,19 +156,17 @@ fi
 name="$1"
 
 # Validate this is Dom0
-if [ "$(hostname)" != "dom0" ]; then
+if ! is_dom0; then
     echo -e "${RED}[!]${NC} This script must be run in Dom0" >&2
     exit 1
 fi
 
-# Qubes version impacts RPC policy format later
-qubes_version="$(awk -F"[()]" '{ print $2 }' /etc/qubes-release)"
-
 # Validate Qubes OS version support
+qubes_version="$(awk -F"[()]" '{ print $2 }' /etc/qubes-release)"
 case "$qubes_version" in
     "R4.0")
         ;;
-    "R4.1"|"R4.2")
+    "R4.1" | "R4.2")
         if ! [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
             echo -e "${RED}[!]${NC} Qubes version $qubes_version is supported. However, Qubes OS does not currently offer an official build of Qubes Windows Tools for $qubes_version. To continue, please build Qubes Windows Tools yourself and place it at: /usr/lib/qubes/qubes-windows-tools.iso" >&2
             exit 1
@@ -181,9 +213,6 @@ if [ "$netvm" ]; then
     fi
 fi
 
-resources_qube="windows-mgmt"
-resources_dir="/home/user/Documents/qvm-create-windows-qube"
-
 if ! qvm-check --running "$resources_qube" &> /dev/null; then
     echo -e "${BLUE}[i]${NC} Starting $resources_qube..." >&2
     if ! qvm-start "$resources_qube"; then
@@ -204,12 +233,13 @@ if [ "$packages" ]; then
         exit 1
     fi
 
-    # If resources qube has a NetVM (is not air gapped) that is not an anon-gateway (Tor is blocked) then check if packages exist
-    resources_netvm="$(qvm-prefs "$resources_qube" netvm)"
-    if [ "$resources_netvm" ] && ! qvm-tags "$resources_netvm" list anon-gateway &> /dev/null; then
-        IFS="," read -ra package_arr <<< "$packages"
-        for package in "${package_arr[@]}"; do
-            if qvm-run -q "$resources_qube" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://chocolatey.org/api/v2/package/$package')\" != 404 ]; then exit 1; fi"; then
+    if [ "$choco_pkgs" ]; then
+        # Use same NetVM as configured for Windows VM to check if packages exist
+        # This way, there are no info leaks if an anon-gateway or custom VPN NetVM is configured
+        # Chocolatey doesn't block Tor here
+        IFS="," read -ra choco_pkgs_arr <<< "$choco_pkgs"
+        for package in "${choco_pkgs_arr[@]}"; do
+            if qvm-run -q "$netvm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://community.chocolatey.org/api/v2/package/$package')\" != 404 ]; then exit 1; fi"; then
                 echo -e "${RED}[!]${NC} Package not found: $package" >&2
                 exit 1
             fi
@@ -217,40 +247,26 @@ if [ "$packages" ]; then
     fi
 fi
 
-no_iso_error() {
-    echo -e "${BLUE}[i]${NC} Available ISOs (Make sure to download them with download-windows.sh as instructed in the README):" >&2
-    qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && find -type f -name '*.iso' -printf '%P\n'"
-    exit 1
-}
-
 # Validate iso
 if ! [ "$iso" ]; then
     echo -e "${RED}[!]${NC} ISO not specified"
-    no_iso_error
+    print_isos
+    exit 1
 elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
     echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/isos: $iso" >&2
-    no_iso_error
-fi
-
-no_answer_file_error() {
-    echo -e "${BLUE}[i]${NC} Available answer files:" >&2
-    qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && find -type f -name '*.xml' -printf '%P\n'"
+    print_isos
     exit 1
-}
-
-break_airgap() {
-    echo -e "${BLUE}[i]${NC} Breaking air gap so Windows can connect to the Internet..." >&2
-    qvm-firewall "$qube" del drop
-    qvm-firewall "$qube" add accept
-}
+fi
 
 # Validate answer-file
 if ! [ "$answer_file" ]; then
     echo -e "${RED}[!]${NC} Answer file not specified"
-    no_answer_file_error
+    print_answer_files
+    exit 1
 elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
     echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/answer-files: $answer_file" >&2
-    no_answer_file_error
+    print_answer_files
+    exit 1
 fi
 
 # Put answer file into Windows media
@@ -278,13 +294,13 @@ for (( counter = 1; counter <= count; counter++ )); do
     echo -e "${BLUE}[i]${NC} Starting creation of $qube" >&2
     qvm-create --class "$class" --label red "$qube" -P "$pool"
     qvm-prefs "$qube" virt_mode hvm
-    qvm-prefs "$qube" memory 2048
-    qvm-prefs "$qube" maxmem 0 # Disable currently unstable Qubes memory manager (Also gray the option out in qubes-vm-settings)
+    qvm-prefs "$qube" memory 2048 # Minimum starting with newer versions of Windows 10
+    qvm-prefs "$qube" maxmem 0 # Disable currently unstable Qubes memory manager
     qvm-prefs "$qube" kernel ""
-    qvm-prefs "$qube" qrexec_timeout 999999 # Windows startup can take longer, especially if a disk scan is performed. Also, to account for the duration of a Windows update
+    qvm-prefs "$qube" qrexec_timeout 999999 # Windows startup can take longer, especially if a chkdsk is performed. Also, to account for the duration of a Windows update
     qvm-features "$qube" video-model cirrus
     qvm-volume extend "$qube:root" 30GiB
-    qvm-volume extend "$qube:private" 10GiB
+    qvm-volume extend "$qube:private" 10GiB # Minimum starting with newer versions of Windows 10
     qvm-prefs "$qube" netvm ""
 
     echo -e "${BLUE}[i]${NC} Starting first part of Windows installation process..." >&2
@@ -319,9 +335,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     # NetVM must be attached for Xen PV network driver setup
     # However, to keep Windows air gapped for the entire setup we drop all packets at the firewall so Windows cannot connect to the Internet yet
     if [ "$netvm" ]; then
-        qvm-firewall "$qube" del accept
-        qvm-firewall "$qube" add drop
-        qvm-prefs "$qube" netvm "$netvm"
+        airgap
     fi
 
     until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-qwt.iso" "$qube"; do
@@ -369,7 +383,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         policy_file="/etc/qubes-rpc/policy/qubes.Filecopy"
         sed -i "1i$policy" "$policy_file"
     else
-        # For R4.1 and later: Create a new, temporary policy file, just for this session, in the new policy directory
+        # For R4.1 and later: Create a temporary allowing policy file based on the shell PID in the policy.d directory
         policy="qubes.Filecopy        *           $resources_qube $qube allow"
         policy_file="/etc/qubes/policy.d/25-qvm-create-windows-qube-$$.policy"
         echo "$policy" | sudo tee "$policy_file" > /dev/null
@@ -420,10 +434,10 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-run -q "$qube" "rmdir /s /q $post_incoming_dir\\..\\.." || true
 
     if [ "$qubes_version" == "R4.0" ]; then
-        # Remove modification to R4.0 policy file
+        # For R4.0: Remove modification from policy file
         sed -i "/^$policy$/d" "$policy_file"
     else
-        # Remove custom policy file from new policy directory for R4.1 and later
+        # For R4.1 and later: Remove temporary policy file from policy.d directory
         sudo rm -f "$policy_file"
     fi
 
@@ -434,12 +448,10 @@ for (( counter = 1; counter <= count; counter++ )); do
         wait_for_shutdown
     else
         echo -e "${RED}[!]${NC} Qubes Windows Tools has stopped working! This is probably the result of installing a conflicting package. Shutting down..." >&2
-        # Example of conflicting package: vcredist140 (during install of vcredist140-x64)
+        # Example of conflicting Chocolatey package: vcredist140 (during install of vcredist140-x64)
+        # This package is commonly pulled in as a dependency thus triggering the error
         qvm-shutdown --wait "$qube"
     fi
-
-    # Give reasonable amount of memory for actual use
-    qvm-prefs "$qube" memory 2048
 
     # Let Windows connect to the Internet with the user selected NetVM later when package installation is disabled
     if [ "$netvm" ] && [ ! "$packages" ]; then
