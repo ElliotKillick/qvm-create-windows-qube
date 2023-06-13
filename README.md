@@ -82,7 +82,7 @@ For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handli
 
 ### Creating Windows VM
 
-**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/elliotkillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a couple small upstream issues.
+**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/elliotkillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a small upstream issue.
 
 #### Windows 10
 
