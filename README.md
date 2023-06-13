@@ -204,13 +204,13 @@ It's recommended that you license the product when the trial is up in all cases.
 
 Giving Windows Internet access is not required for using the trial key (as it's embedded within each ISO). However, it is required for activating Windows with a product key of your own (unless you do activation by phone).
 
-## What is the purpose of the `windows-mgmt` AppVM? May I delete it once the Windows installation is complete?
+### What is the purpose of the `windows-mgmt` AppVM? May I delete it once the Windows installation is complete?
 
 The purpose of the `windows-mgmt` AppVM is to securely isolate everything that goes on as part of the Windows installation to a single virtual machine. That way, the exploitation of any bugs that exist in, for example, in the Linux ISO filesystem parsing code is limited in the amount of harm it can do should a Windows ISO be malicious. This is the security principle upon which all of Qubes OS is built upon, it's known as "security by isolation" or "security by compartmentalization".
 
 Feel free to delete `windows-mgmt` if you are sure there are no more Windows VMs you would like to create. However, if it's just the disk space you want to reclaim then you can simply delete the ISOs located at `/home/user/Documents/qvm-create-windows-qube/windows/isos` and `/home/user/Documents/qvm-create-windows-qube/windows/out` (in `windows-mgmt`) to save the vast majority of that space.
 
-## Anything else I should know?
+### Anything else I should know?
 
 Don't enable "Include in memory balancing" (the checkbox) in the Windows qube settings. This feature of Qubes OS is currently unstable on Windows and enabling it will lead to frequent Windows crashes (BSODs).
 
