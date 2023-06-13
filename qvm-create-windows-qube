@@ -37,18 +37,19 @@ usage() {
     echo "  -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube"
     echo "  -y, --spyless Configure Windows telemetry settings to respect privacy"
     echo "  -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation"
-    echo "  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)"
+    echo "      --winget-pkgs <packages> Comma-separated list of WinGet packages to pre-install (see available packages at: https://winget.run)"
+    echo "      --choco-pkgs <packages> Comma-separated list of Chocolatey packages to pre-install (see available packages at: https://community.chocolatey.org/packages)"
     echo "  -P, --pool <name> LVM storage pool to install Windows on (https://www.qubes-os.org/doc/secondary-storage/)"
     echo "  -i, --iso <file> Windows media to automatically install and setup"
     echo "  -a, --answer-file <xml file> Settings for Windows installation"
 }
 
 # Option strings
-short="hc:tn:soywp:P:i:a:"
-long="help,count:,template,netvm:,seamless,optimize,spyless,whonix,packages:,pool:,iso:,answer-file:"
+short_opts="hc:tn:soyw:P:i:a:"
+long_opts="help,count:,template,netvm:,seamless,optimize,spyless,whonix,winget-pkgs:,choco-pkgs:,pool:,iso:,answer-file:"
 
 # Read options
-if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
+if ! opts=$(getopt --options=$short_opts --longoptions=$long_opts --name "$0" -- "$@"); then
     exit 1
 fi
 eval set -- "$opts"
@@ -89,11 +90,14 @@ while true; do
             ;;
         -w | --whonix)
             whonix="true"
+            ;;
+        --winget-pkgs)
+            winget_pkgs="$2"
             shift
             ;;
-        -p | --packages)
-            packages="$2"
-            shift 2
+        --choco-pkgs)
+            choco_pkgs="$2"
+            shift
             ;;
         -P | --pool)
             pool="$2"
@@ -192,14 +196,14 @@ if ! qvm-check --running "$resources_qube" &> /dev/null; then
     fi
 fi
 
-# Validate packages
-if [ "$packages" ]; then
+# Validate winget-pkgs and choco-pkgs
+if [ "$winget_pkgs" ] || [ "$choco_pkgs" ]; then
     if ! [ "$netvm" ]; then
         echo -e "${RED}[!]${NC} A NetVM must be configured to use packages" >&2
         exit 1
     fi
 
-    if qvm-tags "$netvm" list anon-gateway &> /dev/null; then
+    if [ "$choco_pkgs" ] && qvm-tags "$netvm" list anon-gateway &> /dev/null; then
         echo -e "${RED}[!]${NC} Due to Chocolatey blocking Tor, packages cannot be used with NetVM: $netvm" >&2
         exit 1
     fi
@@ -401,15 +405,23 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     # Let Windows connect to the Internet earlier for package installation
-    if [ "$packages" ]; then
+    if [ "$winget_pkgs" ] || [ "$choco_pkgs" ]; then
         break_airgap
     fi
 
-    if [ "$packages" ]; then
-        echo -e "${BLUE}[i]${NC} Installing packages..." >&2
-        qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 $packages <nul" || true
+    if [ "$winget_pkgs" ]; then
+        echo -e "${BLUE}[i]${NC} Installing WinGet packages..." >&2
+        # <nul is for a Windows 7 bug that causes PowerShell not to exit when run from CMD
+        qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -Command .\\winget.ps1 $winget_pkgs <nul" || true
+    fi
 
-        # Add new apps to app menu
+    if [ "$choco_pkgs" ]; then
+        echo -e "${BLUE}[i]${NC} Installing Chocolatey packages..." >&2
+        qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -Command .\\choco.ps1 $choco_pkgs <nul" || true
+    fi
+
+    # Add new apps from packages to app menu
+    if [ "$winget_pkgs" ] || [ "$choco_pkgs" ]; then
         qvm-sync-appmenus "$qube" &> /dev/null
     fi
 
@@ -442,7 +454,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" memory 2048
 
     # Let Windows connect to the Internet with the user selected NetVM later when package installation is disabled
-    if [ "$netvm" ] && [ ! "$packages" ]; then
+    if [ "$netvm" ] && ! { [ "$winget_pkgs" ] || [ "$choco_pkgs" ]; }; then
         break_airgap
     fi
 

@@ -28,7 +28,7 @@ Qvm-Create-Windows-Qube is a tool for quickly and conveniently installing fresh 
 
 The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. The installation takes place 100% air gapped and features optional [Whonix integration](https://github.com/elliotkillick/qvm-create-windows-qube#whonix-recommendations-for-windows-whonix-workstation) on the finished Windows qube for added privacy.
 
-It also features other niceties such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using Chocolatey to get you up and running quickly in your new environment.
+It also features other niceties such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using WinGet or Chocolatey to get you up and running quickly in your new environment.
 
 **As featured on: [<img width="15" src="https://news.ycombinator.com/favicon.ico" alt="Hacker News Favicon" /> Hacker News](https://news.ycombinator.com/item?id=28900125)** | *Proudly ranked in the top 10 on the front page of Hacker News as well as first place for Show HN*
 
@@ -66,7 +66,8 @@ Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
   -o, --optimize Optimize Windows by disabling unnecessary functionality for a qube
   -y, --spyless Configure Windows telemetry settings to respect privacy
   -w, --whonix Apply Whonix recommended settings for a Windows-Whonix-Workstation
-  -p, --packages <packages> Comma-separated list of packages to pre-install (see available packages at: https://chocolatey.org/packages)
+      --winget-pkgs <packages> Comma-separated list of WinGet packages to pre-install (see available packages at: https://winget.run)
+      --choco-pkgs <packages> Comma-separated list of Chocolatey packages to pre-install (see available packages at: https://community.chocolatey.org/packages)
   -P, --pool <name> LVM storage pool to install Windows on (https://www.qubes-os.org/doc/secondary-storage/)
   -i, --iso <file> Windows media to automatically install and setup
   -a, --answer-file <xml file> Settings for Windows installation
@@ -88,9 +89,9 @@ For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handli
 
 *[Video demonstration](https://www.youtube.com/watch?v=cCi2MOUwS_Q)*
 
-`qvm-create-windows-qube -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64.iso -a win10x64-pro.xml work-win10`
+`qvm-create-windows-qube -n sys-firewall -oy --winget-pkgs Mozilla.Firefox,Notepad++.Notepad++ --choco-pkgs office365proplus -i win10x64.iso -a win10x64-pro.xml work-win10`
 
-`qvm-create-windows-qube -n sys-firewall -oyp steam -i win10x64.iso -a win10x64-pro.xml game-console`
+`qvm-create-windows-qube -n sys-firewall -oy --winget-pkgs Valve.Steam -i win10x64.iso -a win10x64-pro.xml game-console`
 
 #### Windows Server 2019
 
@@ -101,9 +102,9 @@ For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handli
 - A more stable, minified, secure and private version of Windows 10 officially provided by Microsoft
 - This version of Windows 10 is recommended for those who need the best in Windows security and privacy
 
-`qvm-create-windows-qube -n sys-firewall -oyp firefox,notepadplusplus,office365proplus -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml work-win10`
+`qvm-create-windows-qube -n sys-firewall -oy --winget-pkgs Mozilla.Firefox,Notepad++.Notepad++ --choco-pkgs office365proplus -i win10x64-enterprise-ltsc-eval.iso -a win10x64-enterprise-ltsc-eval.xml work-win10`
 
-`qvm-create-windows-qube -n sys-whonix -oyw -i win10x64-ltsc-eval.iso -a win10x64-ltsc-eval.xml anon-win10`
+`qvm-create-windows-qube -n sys-whonix -oyw -i win10x64-enterprise-ltsc-eval.iso -a win10x64-enterprise-ltsc-eval.xml anon-win10`
 
 #### Windows 7
 
@@ -111,7 +112,7 @@ For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handli
 
 *[Video demonstration](https://www.youtube.com/watch?v=duUM1VLrXIQ)*
 
-`qvm-create-windows-qube -n sys-firewall -soyp firefox,notepadplusplus,office365proplus -i win7x64-ultimate.iso -a win7x64-ultimate.xml work-win7`
+`qvm-create-windows-qube -n sys-firewall -soy --winget-pkgs Mozilla.Firefox,Notepad++.Notepad++ --choco-pkgs office365proplus -i win7x64-ultimate.iso -a win7x64-ultimate.xml work-win7`
 
 ## Security
 
@@ -274,11 +275,12 @@ Once the Windows qube gets up and running though, community reports have proven 
 - [x] Support Windows 10 Enterprise LTSC (Long Term Support Channel)
     - Provides security updates for 10 years, very stable and less bloat than stock Windows 10
 - [ ] Support Windows 11
-    - Qvm-Create-Windows-Qube was made to be Windows version independent, the only real work to do here is creating an answer file (probably just slightly modifying the Windows 10 one) and adding it `mido.sh` (which will not be a problem now that I've extended it's functionality to download from behind the gated Microsoft ISO download API)
+    - Qvm-Create-Windows-Qube was made to be Windows version independent, I've already added a Windows 11 download to Mido, and added answer files for Windows 11 (just slightly modifying the Windows 10 ones)
     - The real question is whether Qubes Windows Tools is going to work under Windows 11
         - Microsoft has a fantastic track record for backwards compatibility even at the kernel API level though (because businesses love backwards compatibility) so it's possible it works just fine
         - Help wanted, testers welcome
 - [x] Provision Chocolatey
+- [x] Provision WinGet
 - [x] Add an option to slim down Windows as documented for Qubes [here](https://www.qubes-os.org/doc/windows-template-customization/)
 - [x] Make `windows-mgmt` air gapped
 - [x] Extend functionality of `download-windows.sh` (now `mido.sh` to download ISOs from behind Microsoft's gated ISO download API
