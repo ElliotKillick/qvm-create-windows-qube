@@ -28,7 +28,7 @@ format() { fmt --width 80; }
 word_count() { echo $#; }
 
 usage() {
-    echo "Mido - The secure Microsoft Windows Downloader (for UNIX)"
+    echo "Mido - The secure Microsoft Windows Downloader (for Unix)"
     echo ""
     echo "Usage: $0 <windows_media>..."
     echo ""

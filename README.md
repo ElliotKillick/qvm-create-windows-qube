@@ -74,7 +74,7 @@ Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
 
 ### Downloading Windows ISO
 
-Mido (`mido.sh`) is the secure Microsoft Windows Downloader (for Linux), inspired by [Fido](https://github.com/pbatard/Fido) from Rufus. It's capable of automating the download process for a few Windows ISOs that Microsoft has behind a [gated download web interface](https://www.microsoft.com/en-us/software-download/windows10ISO). Mido is robust and securely downloads Windows ISOs to be used by Qvm-Create-Windows-Qube from official Microsoft servers. You can find it located at `/home/user/qvm-create-windows-qube/windows/isos/mido.sh` in `windows-mgmt`.
+Mido (`mido.sh`) is the secure Microsoft Windows Downloader (for Unix), inspired by [Fido](https://github.com/pbatard/Fido) from [Rufus](https://github.com/pbatard/rufus). It's capable of automating the download process for a few Windows ISOs that Microsoft has behind a [gated download web interface](https://www.microsoft.com/en-us/software-download/windows10ISO). Mido is robust and securely downloads Windows ISOs to be used by Qvm-Create-Windows-Qube from official Microsoft servers. You can find it located at `/home/user/qvm-create-windows-qube/windows/isos/mido.sh` in `windows-mgmt`.
 
 `windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `mido.sh` script to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `/home/user/qvm-create-windows-qube/windows/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
 
