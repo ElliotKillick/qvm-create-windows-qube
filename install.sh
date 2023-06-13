@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2021 Elliot Killick <elliotkillick@zohomail.eu>
+# Copyright (C) 2023 Elliot Killick <contact@elliotkillick.com>
 # Licensed under the MIT License. See LICENSE file for details.
 
 error() {

@@ -5,7 +5,7 @@ Install Chocolatey and specified packages
 Comma-separated list of packages to install (see available packages at: https://chocolatey.org/packages)
 #>
 
-# Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
+# Copyright (C) 2023 Elliot Killick <contact@elliotkillick.com>
 # Licensed under the MIT License. See LICENSE file for details.
 
 Param (
