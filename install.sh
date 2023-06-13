@@ -98,7 +98,7 @@ if ! qvm-check --running "$template"; then
 fi
 
 echo -e "${BLUE}[i]${NC} Installing package dependencies on $template..." >&2
-fedora_packages="genisoimage geteltorito datefudge dash"
+fedora_packages="genisoimage datefudge dash"
 debian_packages="genisoimage curl datefudge"
 qvm-run -p "$template" "if [ -f /etc/fedora-release ]; then sudo dnf -y install $fedora_packages; else sudo apt-get -y install $debian_packages; fi"
 
