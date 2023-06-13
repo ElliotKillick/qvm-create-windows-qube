@@ -66,7 +66,7 @@ else
 fi
 
 resources_qube="windows-mgmt"
-resources_dir="/home/user/Documents/qvm-create-windows-qube"
+resources_dir="/home/user/qvm-create-windows-qube"
 template="$(qubes-prefs default_template)"
 
 echo -e "${BLUE}[i]${NC} Creating $resources_qube..." >&2
