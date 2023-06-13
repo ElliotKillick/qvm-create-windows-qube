@@ -126,7 +126,7 @@ while true; do
             ;;
         -p | --packages)
             packages="$2"
-            shift 2
+            shift
             ;;
         -P | --pool)
             pool="$2"
