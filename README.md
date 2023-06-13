@@ -78,6 +78,8 @@ Mido (`mido.sh`) is the secure Microsoft Windows Downloader (for Linux), inspire
 
 `windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `mido.sh` script to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `/home/user/Documents/qvm-create-windows-qube/windows/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
 
+Once generated, Windows ISOs are cached in `/home/user/Documents/qvm-create-windows-qube/windows/out` for later use. If you download an updated ISO with Mido, then make sure to remove the same ISO from the aforementioned cache directory. This will cause the cache to be regenerated from the updated ISO.
+
 For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handling ISOs that can work with any given Windows ISO. If you have your own Windows ISO you would like to use then likely only a very slight adjustment to the closest matching answer file (namely the `/IMAGE/NAME` key) would be needed to make it work. You can get the valid `/IMAGE/NAME` values for your ISO by parsing the `install.wim` inside using the `wiminfo` command (packaged as `wimlib-utils` on Fedora or `wimtools` on Debian) or from within Windows using Windows ADK.
 
 ### Creating Windows VM
