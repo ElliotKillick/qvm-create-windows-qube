@@ -285,7 +285,7 @@ Once the Windows qube gets up and running though, community reports have proven 
     - [ ] Once core admin is extended to allow for libvirt XML templates (answer files) becomes possible (previous todo, it's a blocking issue), we could also securely read the characteristics of the install.wim from the ISO without even having to mount the ISO as a loop device using [`libguestfs`](https://libguestfs.org)
         - I've also seen `libguestfs` used on QEMU/KVM so it's definitely a good candidate for this use case
         - Note that `libguestfs` cannot write (an answer file) to an ISO which is why we there's no point in using using this library until we no longer need to create a whole new ISO to add the answer file to it
-- [x] Follow [this](https://www.whonix.org/wiki/Other_Operating_Systems) Whonix documentation to make Windows-Whonix-Workstation
+- [x] Follow [Whonix documentation](https://www.whonix.org/wiki/Other_Operating_Systems) to make Windows-Whonix-Workstation
 - [ ] Add functionality for `create-media.sh` to add MSUs (Microsoft Update standalone packages) to be installed during the Windows PE pass (specifically "Installing updates...") of Windows setup
     - We could fix currently not working QWT installation for old Windows 7 SP1 and Windows Server 2008 (non-R2) ISOs using [KB4474419](https://github.com/QubesOS/qubes-issues/issues/3585#issuecomment-521280301) to add SHA-256 driver signing support
         - The other option is to have Xen sign their drivers with SHA-1 as well, which other driver vendors seem to do, but is not ideal from a security standpoint
