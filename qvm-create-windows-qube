@@ -57,12 +57,12 @@ is_dom0() {
 
 print_isos() {
     echo_info "Available ISOs (Make sure to download them with Mido as instructed in the README):"
-    qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && find -type f -name '*.iso' -printf '%P\n'"
+    qvm-run -p "$resources_qube" "cd '$resources_dir/windows/isos' && find -type f -name '*.iso' -printf '%P\n'"
 }
 
 print_answer_files() {
     echo_info "Available answer files:"
-    qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && find -type f -name '*.xml' -printf '%P\n'"
+    qvm-run -p "$resources_qube" "cd '$resources_dir/windows/answer-files' && find -type f -name '*.xml' -printf '%P\n'"
     exit 1
 }
 
@@ -261,8 +261,8 @@ if ! [ "$iso" ]; then
     echo_err "ISO not specified"
     print_isos
     exit 1
-elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
-    echo_err "File not found in $resources_qube:$resources_dir/windows-media/isos: $iso"
+elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
+    echo_err "File not found in $resources_qube:$resources_dir/windows/isos: $iso"
     print_isos
     exit 1
 fi
@@ -272,15 +272,15 @@ if ! [ "$answer_file" ]; then
     echo_err "Answer file not specified"
     print_answer_files
     exit 1
-elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
-    echo_err "File not found in $resources_qube:$resources_dir/windows-media/answer-files: $answer_file"
+elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
+    echo_err "File not found in $resources_qube:$resources_dir/windows/answer-files: $answer_file"
     print_answer_files
     exit 1
 fi
 
 # Put answer file into Windows media
 echo_info "Preparing Windows media for automatic installation..."
-if ! qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media' && if ! [ -f out/$iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
+if ! qvm-run -p "$resources_qube" "cd '$resources_dir/windows' && if ! [ -f out/$iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
     echo_err "Failed to create media! Out of disk space? Exiting..."
     exit 1
 fi
@@ -313,7 +313,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" netvm ""
 
     echo_info "Starting first part of Windows installation process..."
-    until qvm-start --cdrom "$resources_qube:$resources_dir/windows-media/out/$iso" "$qube"; do
+    until qvm-start --cdrom "$resources_qube:$resources_dir/windows/out/$iso" "$qube"; do
         echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
         sleep 10
     done
@@ -333,11 +333,11 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo_info "Preparing Qubes Windows Tools for automatic installation..."
     # Unpack latest QWT into auto-qwt
-    qvm-run -p "$resources_qube" "cat > '$resources_dir/tools-media/qwt-installer.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
-    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './unpack-qwt-installer-media.sh'"
+    qvm-run -p "$resources_qube" "cat > '$resources_dir/tools/qwt-installer.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
+    qvm-run -q "$resources_qube" "cd '$resources_dir/tools' && './unpack-qwt-installer-media.sh'"
 
     # Create auto-qwt media
-    qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './pack-auto-qwt.sh'"
+    qvm-run -q "$resources_qube" "cd '$resources_dir/tools' && './pack-auto-qwt.sh'"
 
     echo_info "Installing Qubes Windows Tools..."
 
@@ -347,7 +347,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         airgap
     fi
 
-    until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-qwt.iso" "$qube"; do
+    until qvm-start --cdrom "$resources_qube:$resources_dir/tools/auto-qwt.iso" "$qube"; do
         echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
         sleep 10
     done

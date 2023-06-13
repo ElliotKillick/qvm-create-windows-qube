@@ -52,7 +52,7 @@ To update Qvm-Create-Windows-Qube, start by simply deleting the `windows-mgmt` V
 
 Lastly, follow the installation steps above to reinstall.
 
-Note that this will also delete any Windows ISOs that have already been downloaded. This may be desirable in the case that Microsoft has updated the Windows ISOs (meaning you should redownload them anyway). However, if you would like to avoid downloading any of the Windows ISOs again, simply navigate to `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` in the `windows-mgmt` VM and copy its contents to another (preferably disposable) qube. After the reinstall is complete, copy those ISOs back into `windows-mgmt` at the aforementioned directory.
+Note that this will also delete any Windows ISOs that have already been downloaded. This may be desirable in the case that Microsoft has updated the Windows ISOs (meaning you should redownload them anyway). However, if you would like to avoid downloading any of the Windows ISOs again, simply navigate to `/home/user/Documents/qvm-create-windows-qube/windows/isos` in the `windows-mgmt` VM and copy its contents to another (preferably disposable) qube. After the reinstall is complete, copy those ISOs back into `windows-mgmt` at the aforementioned directory.
 
 ## Usage
 
@@ -74,9 +74,9 @@ Usage: qvm-create-windows-qube [options] -i <iso> -a <answer file> <name>
 
 ### Downloading Windows ISO
 
-Mido (`mido.sh`) is the secure Microsoft Windows Downloader (for Linux), inspired by [Fido](https://github.com/pbatard/Fido) from Rufus. It's capable of automating the download process for a few Windows ISOs that Microsoft has behind a [gated download web interface](https://www.microsoft.com/en-us/software-download/windows10ISO). Mido is robust and securely downloads Windows ISOs to be used by Qvm-Create-Windows-Qube from official Microsoft servers. You can find it located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos/mido.sh` in `windows-mgmt`.
+Mido (`mido.sh`) is the secure Microsoft Windows Downloader (for Linux), inspired by [Fido](https://github.com/pbatard/Fido) from Rufus. It's capable of automating the download process for a few Windows ISOs that Microsoft has behind a [gated download web interface](https://www.microsoft.com/en-us/software-download/windows10ISO). Mido is robust and securely downloads Windows ISOs to be used by Qvm-Create-Windows-Qube from official Microsoft servers. You can find it located at `/home/user/Documents/qvm-create-windows-qube/windows/isos/mido.sh` in `windows-mgmt`.
 
-`windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `mido.sh` script to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
+`windows-mgmt` is air gapped from the network. This means that in order to securely perform the download, one must copy the `mido.sh` script to another (disposable) qube followed by transferring the newly downloaded ISO(s) into `windows-mgmt` and placing them into the `/home/user/Documents/qvm-create-windows-qube/windows/isos` directory. Alternatively, `windows-mgmt` can temporarily be given network access, however, this isn't recommended for security reasons.
 
 For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handling ISOs that can work with any given Windows ISO. If you have your own Windows ISO you would like to use then likely only a very slight adjustment to the closest matching answer file (namely the `/IMAGE/NAME` key) would be needed to make it work. You can get the valid `/IMAGE/NAME` values for your ISO by parsing the `install.wim` inside using the `wiminfo` command (packaged as `wimlib-utils` on Fedora or `wimtools` on Debian) or from within Windows using Windows ADK.
 
@@ -206,7 +206,7 @@ Giving Windows Internet access is not required for using the trial key (as it's 
 
 The purpose of the `windows-mgmt` AppVM is to securely isolate everything that goes on as part of the Windows installation to a single virtual machine. That way, the exploitation of any bugs that exist in, for example, in the Linux ISO filesystem parsing code is limited in the amount of harm it can do should a Windows ISO be malicious. This is the security principle upon which all of Qubes OS is built upon, it's known as "security by isolation" or "security by compartmentalization".
 
-Feel free to delete `windows-mgmt` if you are sure there are no more Windows VMs you would like to create. However, if it's just the disk space you want to reclaim then you can simply delete the ISOs located at `/home/user/Documents/qvm-create-windows-qube/windows-media/isos` and `/home/user/Documents/qvm-create-windows-qube/windows-media/out` (in `windows-mgmt`) to save the vast majority of that space.
+Feel free to delete `windows-mgmt` if you are sure there are no more Windows VMs you would like to create. However, if it's just the disk space you want to reclaim then you can simply delete the ISOs located at `/home/user/Documents/qvm-create-windows-qube/windows/isos` and `/home/user/Documents/qvm-create-windows-qube/windows/out` (in `windows-mgmt`) to save the vast majority of that space.
 
 ## Anything else I should know?
 
