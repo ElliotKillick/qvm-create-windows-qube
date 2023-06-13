@@ -57,10 +57,17 @@
 '     - No support for verifying MSUs with Authenticode on Linux means we will have to do it before it's installed on Windows (Get-AuthenticodeSignature PowerShell cmdlet avilable in Windows 7)
 '         - Even if it was supported we wouldn't do it for security reasons: https://blog.reversinglabs.com/blog/breaking-the-linux-authenticode-security-model
 '     - thehotfixshare.net does not support HTTPS
-'     - I have archived the site and the MSU download (web.archive.org does support HTTPS so download it from here)
+'     - I have archived the site and the MSU download
 '         - https://web.archive.org/http://thehotfixshare.net/board/index.php?autocom=downloads&showfile=18882
 '         - https://web.archive.org/http://thehotfixshare.net/board/index.php?autocom=downloads&req=download&code=confirm_download&id=18882
 '         - This file is authenticode signed by Microsoft
+'         - I confirmed this MSU fixes the issue
+
+' UPDATE: In newer versions of Windows 10, Microsoft intentionally breaks using certificate trusting (as seen in trust-certificates.bat) to bypass this prompt
+' The only known way of bypassing the prompt now is to check the "Always trust software from <PUBLISHER>" box in the shown "Windows Security" prompt
+' Someone would have to reverse engineer the new mechanism they're using to remember which publishers not to show this prompt for after that box is checked
+' So once again, we're relying on this script to programmatically install drivers
+' Microsoft security theatre BS has gone too far...
 
 Set wshShell = WScript.CreateObject("WScript.Shell")
 
