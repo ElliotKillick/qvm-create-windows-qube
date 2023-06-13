@@ -82,7 +82,7 @@ For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handli
 
 ### Creating Windows VM
 
-**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/elliotkillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a couple small upstream issues in the case of Windows 10 and other newer OSs all of which have easy workarounds available.
+**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/elliotkillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a couple small upstream issues.
 
 #### Windows 10
 
@@ -224,12 +224,9 @@ This project is the product of an independent effort that is not officially endo
 
 ## Qubes Windows Tools Known Issues
 
-Please send patches for these if you are able to. Although, be aware that Qubes Windows Tools is [currently unmaintained](https://github.com/elliotkillick/qvm-create-windows-qube/issues/15).
-
-### Windows 10 and Windows Server 2019
-- [Private disk creation fails](https://github.com/QubesOS/qubes-issues/issues/5090)
-    - **Temporary fix:** Close the `prepare-volume.exe` window causing there to be no private disk (can't make a `TemplateVM`) but besides that Windows qube creation will continue as normal
-    - Has been merged but QWT needs to be rebuilt to include it and there's currently no maintainer
+- The new QWT installer disables private disk creation by default
+    - This is probably due to stability concerns
+    - Can't make a TemplateVM
 
 ### Older Xen Drivers Notice (for newer OSs such as Windows 10)
 
