@@ -24,7 +24,8 @@ error() {
 
 trap error ERR
 
-resources_qube="windows-mgmt"
+# Allow externally setting custom resources VM for advanced users
+resources_qube="${RESOURCES_VM:-windows-mgmt}"
 resources_dir="/home/user/Documents/qvm-create-windows-qube"
 
 wait_for_shutdown() {
