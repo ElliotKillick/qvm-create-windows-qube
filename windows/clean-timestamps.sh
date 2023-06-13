@@ -18,18 +18,10 @@ run_clean_time_command() {
 }
 
 # Set file/folder timestamp to the Unix epoch
-# I think only QEMU would have access to this but as a result of it being buggy (that's why we keep it in a stubdomain), we clean this timestamp too
+# I think only QEMU may have access to this but as a result of it being buggy (that's why we keep it in a stubdomain), we clean this timestamp too
 clean_file_timestamp() {
     file="$1"
 
     # --no-dereference: Change the timestamp of symlinks too (instead of following them which could be dangerous)
     touch --no-dereference --no-create --date @0 -- "$file"
-}
-
-# Set file/folder timestamps to the Unix epoch recursively
-# Testing proved that these timestamps were kept intact in the newly created ISO and could be seen from within Windows
-clean_file_timestamps_recursively() {
-    dir="$1"
-
-    find "$dir" -exec touch --no-dereference --no-create --date @0 -- {} +
 }

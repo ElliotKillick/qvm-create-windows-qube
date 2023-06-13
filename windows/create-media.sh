@@ -69,28 +69,26 @@ clean_exit() {
         udisksctl loop-delete --block-device "$iso_device"
     fi
 
-    if [ -d "$temp_dir" ]; then
-        echo_info "Deleting temporary folder..."
-        chmod -R +w "$temp_dir" # Read-only permissions were inherited because ISO 9660 is a read-only filesystem
-        rm -r "$temp_dir"
+    if [ -f "$boot_img" ]; then
+        echo_info "Deleting temporary boot image..."
+        rm -f "$boot_img"
     fi
 
     if [ "$exit_code" != 0 ]; then
-        if [ -f "$final_iso" ]; then
-            echo_info "Deleting incomplete ISO output..."
-            rm "$final_iso"
+        if [ -f "$out_iso" ]; then
+            echo_info "Deleting partial ISO output..."
+            rm "$out_iso"
         fi
 
         echo_err "Failed to create automatic Windows installation media!"
         exit "$exit_code"
     fi
 
-    echo_ok "Created automatic Windows installation media for $(basename "$final_iso") successfully!"
+    echo_ok "Created automatic Windows installation media for $(basename "$out_iso") successfully!"
 }
 
 trap clean_exit EXIT
-trap exit ERR
-trap exit INT
+trap exit ERR INT
 
 # shellcheck source=clean-timestamps.sh
 source clean-timestamps.sh
@@ -108,13 +106,6 @@ done
 iso_mntpoint="${iso_mntpoint#Mounted * at }"
 iso_mntpoint="${iso_mntpoint%.}"
 
-echo_info "Copying loop device contents to temporary folder..."
-temp_dir="$(mktemp --directory --tmpdir=out)" # The default /tmp may be too small
-cp -r "$iso_mntpoint/." "$temp_dir"
-
-echo_info "Copying answer file to Autounattend.xml in temporary folder..."
-cp "$answer_file" "$temp_dir/Autounattend.xml"
-
 echo_info "Creating new ISO..."
 # https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso
 # https://theunderbase.blogspot.com/2013/03/editing-bootable-dvds-as-iso-images.html
@@ -122,12 +113,13 @@ echo_info "Creating new ISO..."
 local_dir="$(dirname "$(readlink -f -- "$0")")"
 
 # Get boot image
-PATH="$PATH:$local_dir" geteltorito -o "$temp_dir/boot.bin" "$iso"
+boot_img="$(mktemp --tmpdir boot.bin.XXXXX )"
+PATH="$PATH:$local_dir" geteltorito -o "$boot_img" "$iso"
 
-clean_file_timestamps_recursively "$temp_dir"
+out_iso="${iso/isos/out}"
+# -allow-limited-size allows for larger files such as install.wim which is the Windows image
+run_clean_time_command \
+    genisoimage -udf -b boot.bin -no-emul-boot -allow-limited-size -quiet -graft-points -o "$out_iso" \
+    "$iso_mntpoint" "boot.bin=$boot_img" "Autounattend.xml=$answer_file"
 
-final_iso="${iso/isos/out}"
-# -allow-limited-size allows for larger files such as the install.wim which is the Windows image
-run_clean_time_command genisoimage -udf -b boot.bin -no-emul-boot -allow-limited-size -quiet -o "$final_iso" "$temp_dir"
-
-clean_file_timestamp "$final_iso"
+clean_file_timestamp "$out_iso"
