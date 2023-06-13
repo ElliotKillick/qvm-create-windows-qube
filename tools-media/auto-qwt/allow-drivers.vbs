@@ -57,9 +57,10 @@
 '     - No support for verifying MSUs with Authenticode on Linux means we will have to do it before it's installed on Windows (Get-AuthenticodeSignature PowerShell cmdlet avilable in Windows 7)
 '         - Even if it was supported we wouldn't do it for security reasons: https://blog.reversinglabs.com/blog/breaking-the-linux-authenticode-security-model
 '     - thehotfixshare.net does not support HTTPS
-'     - I have archived the site and the MSU download (They do support HTTPS so maybe we download is from there)
+'     - I have archived the site and the MSU download (web.archive.org does support HTTPS so download it from here)
 '         - https://web.archive.org/http://thehotfixshare.net/board/index.php?autocom=downloads&showfile=18882
 '         - https://web.archive.org/http://thehotfixshare.net/board/index.php?autocom=downloads&req=download&code=confirm_download&id=18882
+'         - This file is authenticode signed by Microsoft
 
 Set wshShell = WScript.CreateObject("WScript.Shell")
 
@@ -67,8 +68,9 @@ Do
     ' Set focus to window with given window title
     isFocused = wshShell.AppActivate("Windows Security")
 
-    ' Press "i" (ALT key) to install device software if focus is successful
+    ' If focus is successful
     If isFocused = True Then
+        ' Press "i" (ALT key) to install device software
         wshShell.SendKeys "i"
     End If
 

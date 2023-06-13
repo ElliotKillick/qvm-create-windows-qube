@@ -1,6 +1,7 @@
 *.swp
 *.iso
 *.exe
+*.msi
 *.txt
 *.PART
 *.UNVERIFIED
