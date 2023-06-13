@@ -1,6 +1,6 @@
 <div align="center">
     <a href="https://github.com/elliotkillick/qvm-create-windows-qube">
-        <img width="160" src="icons/logo.png" alt="Logo" />
+        <img width="160" src="logo.png" alt="Logo" />
     </a>
 </div>
 
