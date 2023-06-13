@@ -22,6 +22,11 @@ if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
     NC='\033[0m'
 fi
 
+# Avoid printing messages as potential terminal escape sequences
+echo_ok() { printf "%b%s%b" "${GREEN}[+]${NC} " "$1" "\n" >&2; }
+echo_info() { printf "%b%s%b" "${BLUE}[i]${NC} " "$1" "\n" >&2; }
+echo_err() { printf "%b%s%b" "${RED}[!]${NC} " "$1" "\n" >&2; }
+
 usage() {
     echo "Usage: $0 iso answer_file"
 }
@@ -42,12 +47,12 @@ iso="$1"
 answer_file="$2"
 
 if ! [ -f "$iso" ]; then
-    echo -e "${RED}[!]${NC} ISO file not found: $iso" >&2
+    echo_err "ISO file not found: $iso"
     exit 1
 fi
 
 if ! [ -f "$answer_file" ]; then
-    echo -e "${RED}[!]${NC} Answer file not found: $answer_file" >&2
+    echo_err "Answer file not found: $answer_file"
     exit 1
 fi
 
@@ -56,31 +61,31 @@ clean_exit() {
 
     if [ "$iso_device" ]; then
         if findmnt "$iso_device" > /dev/null; then
-            echo -e "${BLUE}[i]${NC} Unmounting loop device..." >&2
+            echo_info "Unmounting loop device..."
             udisksctl unmount --block-device "$iso_device"
         fi
 
-        echo -e "${BLUE}[i]${NC} Deleting loop device..." >&2
+        echo_info "Deleting loop device..."
         udisksctl loop-delete --block-device "$iso_device"
     fi
 
     if [ -d "$temp_dir" ]; then
-        echo -e "${BLUE}[i]${NC} Deleting temporary folder..." >&2
+        echo_info "Deleting temporary folder..."
         chmod -R +w "$temp_dir" # Read-only permissions were inherited because ISO 9660 is a read-only filesystem
         rm -r "$temp_dir"
     fi
 
     if [ "$exit_code" != 0 ]; then
         if [ -f "$final_iso" ]; then
-            echo -e "${BLUE}[i]${NC} Deleting incomplete ISO output..." >&2
+            echo_info "Deleting incomplete ISO output..."
             rm "$final_iso"
         fi
 
-        echo -e "${RED}[!]${NC} Failed to create automatic Windows installation media!"
+        echo_err "Failed to create automatic Windows installation media!"
         exit "$exit_code"
     fi
 
-    echo -e "${GREEN}[+]${NC} Created automatic Windows installation media for $(basename "$final_iso") successfully!"
+    echo_ok "Created automatic Windows installation media for $(basename "$final_iso") successfully!"
 }
 
 trap clean_exit EXIT
@@ -90,12 +95,12 @@ trap exit INT
 # shellcheck source=clean-timestamps.sh
 source clean-timestamps.sh
 
-echo -e "${BLUE}[i]${NC} Creating loop device from ISO..." >&2
+echo_info "Creating loop device from ISO..."
 iso_device="$(udisksctl loop-setup --file "$iso")"
 iso_device="${iso_device#Mapped file * as }"
 iso_device="${iso_device%.}"
 
-echo -e "${BLUE}[i]${NC} Mounting loop device..." >&2
+echo_info "Mounting loop device..."
 # Fix race condition where disk tries to mount before finishing setup
 until iso_mntpoint="$(udisksctl mount --block-device "$iso_device")"; do
     sleep 1
@@ -103,14 +108,14 @@ done
 iso_mntpoint="${iso_mntpoint#Mounted * at }"
 iso_mntpoint="${iso_mntpoint%.}"
 
-echo -e "${BLUE}[i]${NC} Copying loop device contents to temporary folder..." >&2
+echo_info "Copying loop device contents to temporary folder..."
 temp_dir="$(mktemp --directory --tmpdir=out)" # The default /tmp may be too small
 cp -r "$iso_mntpoint/." "$temp_dir"
 
-echo -e "${BLUE}[i]${NC} Copying answer file to Autounattend.xml in temporary folder..." >&2
+echo_info "Copying answer file to Autounattend.xml in temporary folder..."
 cp "$answer_file" "$temp_dir/Autounattend.xml"
 
-echo -e "${BLUE}[i]${NC} Creating new ISO..." >&2
+echo_info "Creating new ISO..."
 # https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso
 # https://theunderbase.blogspot.com/2013/03/editing-bootable-dvds-as-iso-images.html
 

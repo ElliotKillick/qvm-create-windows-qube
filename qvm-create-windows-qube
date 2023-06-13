@@ -3,14 +3,22 @@
 # Copyright (C) 2019 Elliot Killick <elliotkillick@zohomail.eu>
 # Licensed under the MIT License. See LICENSE file for details.
 
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-GREEN='\033[0;32m'
-NC='\033[0m'
+# Test for 4-bit color (16 colors)
+if [ "0$(tput colors 2> /dev/null)" -ge 16 ]; then
+    RED='\033[0;31m'
+    BLUE='\033[0;34m'
+    GREEN='\033[0;32m'
+    NC='\033[0m'
+fi
+
+# Avoid printing messages as potential terminal escape sequences
+echo_ok() { printf "%b%s%b" "${GREEN}[+]${NC} " "$1" "\n" >&2; }
+echo_info() { printf "%b%s%b" "${BLUE}[i]${NC} " "$1" "\n" >&2; }
+echo_err() { printf "%b%s%b" "${RED}[!]${NC} " "$1" "\n" >&2; }
 
 error() {
     exit_code="$?"
-    echo -e "${RED}[!]${NC} An unexpected error has occurred! Exiting..." >&2
+    echo_err "An unexpected error has occurred! Exiting..."
     exit "$exit_code"
 }
 
@@ -37,7 +45,7 @@ airgap() {
 }
 
 break_airgap() {
-    echo -e "${BLUE}[i]${NC} Breaking air gap so Windows can connect to the Internet..." >&2
+    echo_info "Breaking air gap so Windows can connect to the Internet..."
     qvm-firewall "$qube" del drop
     qvm-firewall "$qube" add accept
 }
@@ -47,12 +55,12 @@ is_dom0() {
 }
 
 print_isos() {
-    echo -e "${BLUE}[i]${NC} Available ISOs (Make sure to download them with Mido as instructed in the README):" >&2
+    echo_info "Available ISOs (Make sure to download them with Mido as instructed in the README):"
     qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/isos' && find -type f -name '*.iso' -printf '%P\n'"
 }
 
 print_answer_files() {
-    echo -e "${BLUE}[i]${NC} Available answer files:" >&2
+    echo_info "Available answer files:"
     qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && find -type f -name '*.xml' -printf '%P\n'"
     exit 1
 }
@@ -157,7 +165,7 @@ name="$1"
 
 # Validate this is Dom0
 if ! is_dom0; then
-    echo -e "${RED}[!]${NC} This script must be run in Dom0" >&2
+    echo_err "This script must be run in Dom0"
     exit 1
 fi
 
@@ -168,12 +176,12 @@ case "$qubes_version" in
         ;;
     "R4.1" | "R4.2")
         if ! [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
-            echo -e "${RED}[!]${NC} Qubes version $qubes_version is supported. However, Qubes OS does not currently offer an official build of Qubes Windows Tools for $qubes_version. To continue, please build Qubes Windows Tools yourself and place it at: /usr/lib/qubes/qubes-windows-tools.iso" >&2
+            echo_err "Qubes version $qubes_version is supported. However, Qubes OS does not currently offer an official build of Qubes Windows Tools for $qubes_version. To continue, please build Qubes Windows Tools yourself and place it at: /usr/lib/qubes/qubes-windows-tools.iso"
             exit 1
         fi
         ;;
     *)
-        echo -e "${RED}[!]${NC} Qubes version is unknown and therefore support cannot be guaranteed. Exiting..." >&2
+        echo_err "Qubes version is unknown and therefore support cannot be guaranteed. Exiting..."
         exit 1
         ;;
 esac
@@ -181,17 +189,17 @@ esac
 # Validate name
 if [ "$count" == 1 ]; then
     if qvm-check "$name" &> /dev/null; then
-        echo -e "${RED}[!]${NC} Qube already exists: $name" >&2
+        echo_err "Qube already exists: $name"
         exit 1
     fi
 fi
 
 # Validate count
 if ! [[ "$count" =~ ^[0-9]+$ ]]; then
-    echo -e "${RED}[!]${NC} Count is not a number" >&2
+    echo_err "Count is not a number"
     exit 1
 elif [ "$count" -lt 1 ]; then
-    echo -e "${RED}[!]${NC} Count should be 1 or more" >&2
+    echo_err "Count should be 1 or more"
     exit 1
 fi
 
@@ -205,18 +213,18 @@ fi
 # Validate netvm
 if [ "$netvm" ]; then
     if ! qvm-check "$netvm" &> /dev/null; then
-        echo -e "${RED}[!]${NC} NetVM does not exist: $netvm" >&2
+        echo_err "NetVM does not exist: $netvm"
         exit 1
     elif [ "$(qvm-prefs "$netvm" provides_network)" != "True" ]; then
-        echo -e "${RED}[!]${NC} Not a NetVM: $netvm" >&2
+        echo_err "Not a NetVM: $netvm"
         exit 1
     fi
 fi
 
 if ! qvm-check --running "$resources_qube" &> /dev/null; then
-    echo -e "${BLUE}[i]${NC} Starting $resources_qube..." >&2
+    echo_info "Starting $resources_qube..."
     if ! qvm-start "$resources_qube"; then
-        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory?" >&2
+        echo_err "Failed to start $qube! Not enough memory?"
         exit 1
     fi
 fi
@@ -224,12 +232,12 @@ fi
 # Validate packages
 if [ "$packages" ]; then
     if ! [ "$netvm" ]; then
-        echo -e "${RED}[!]${NC} A NetVM must be configured to use packages" >&2
+        echo_err "A NetVM must be configured to use packages"
         exit 1
     fi
 
     if qvm-tags "$netvm" list anon-gateway &> /dev/null; then
-        echo -e "${RED}[!]${NC} Due to Chocolatey blocking Tor, packages cannot be used with NetVM: $netvm" >&2
+        echo_err "Due to Chocolatey blocking Tor, packages cannot be used with NetVM: $netvm"
         exit 1
     fi
 
@@ -240,7 +248,7 @@ if [ "$packages" ]; then
         IFS="," read -ra choco_pkgs_arr <<< "$choco_pkgs"
         for package in "${choco_pkgs_arr[@]}"; do
             if qvm-run -q "$netvm" "if [ \"\$(curl -so /dev/null -w '%{http_code}' 'https://community.chocolatey.org/api/v2/package/$package')\" != 404 ]; then exit 1; fi"; then
-                echo -e "${RED}[!]${NC} Package not found: $package" >&2
+                 echo_err "Package not found: $package"
                 exit 1
             fi
         done
@@ -249,30 +257,30 @@ fi
 
 # Validate iso
 if ! [ "$iso" ]; then
-    echo -e "${RED}[!]${NC} ISO not specified"
+    echo_err "ISO not specified"
     print_isos
     exit 1
 elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/isos' && if ! [ -f '$iso' ]; then exit 1; fi"; then
-    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/isos: $iso" >&2
+    echo_err "File not found in $resources_qube:$resources_dir/windows-media/isos: $iso"
     print_isos
     exit 1
 fi
 
 # Validate answer-file
 if ! [ "$answer_file" ]; then
-    echo -e "${RED}[!]${NC} Answer file not specified"
+    echo_err "Answer file not specified"
     print_answer_files
     exit 1
 elif ! qvm-run -q "$resources_qube" "cd '$resources_dir/windows-media/answer-files' && if ! [ -f '$answer_file' ]; then exit 1; fi"; then
-    echo -e "${RED}[!]${NC} File not found in $resources_qube:$resources_dir/windows-media/answer-files: $answer_file" >&2
+    echo_err "File not found in $resources_qube:$resources_dir/windows-media/answer-files: $answer_file"
     print_answer_files
     exit 1
 fi
 
 # Put answer file into Windows media
-echo -e "${BLUE}[i]${NC} Preparing Windows media for automatic installation..." >&2
+echo_info "Preparing Windows media for automatic installation..."
 if ! qvm-run -p "$resources_qube" "cd '$resources_dir/windows-media' && if ! [ -f out/$iso ]; then './create-media.sh' 'isos/$iso' 'answer-files/$answer_file'; fi"; then
-    echo -e "${RED}[!]${NC} Failed to create media! Out of disk space? Exiting..." >&2
+    echo_err "Failed to create media! Out of disk space? Exiting..."
     exit 1
 fi
 
@@ -291,7 +299,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         qube="$name"
     fi
 
-    echo -e "${BLUE}[i]${NC} Starting creation of $qube" >&2
+    echo_info "Starting creation of $qube"
     qvm-create --class "$class" --label red "$qube" -P "$pool"
     qvm-prefs "$qube" virt_mode hvm
     qvm-prefs "$qube" memory 2048 # Minimum starting with newer versions of Windows 10
@@ -303,26 +311,26 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-volume extend "$qube:private" 10GiB # Minimum starting with newer versions of Windows 10
     qvm-prefs "$qube" netvm ""
 
-    echo -e "${BLUE}[i]${NC} Starting first part of Windows installation process..." >&2
+    echo_info "Starting first part of Windows installation process..."
     until qvm-start --cdrom "$resources_qube:$resources_dir/windows-media/out/$iso" "$qube"; do
-        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
+        echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
         sleep 10
     done
 
     # Waiting for first part of Windows installation process to finish...
     wait_for_shutdown
 
-    echo -e "${BLUE}[i]${NC} Starting second part of Windows installation process..." >&2
+    echo_info "Starting second part of Windows installation process..."
     qvm-features --unset "$qube" video-model
     until qvm-start "$qube"; do
-        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
+        echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
         sleep 10
     done
 
     # Waiting for second part of Windows installation process to finish...
     wait_for_shutdown
 
-    echo -e "${BLUE}[i]${NC} Preparing Qubes Windows Tools for automatic installation..." >&2
+    echo_info "Preparing Qubes Windows Tools for automatic installation..."
     # Unpack latest QWT into auto-qwt
     qvm-run -p "$resources_qube" "cat > '$resources_dir/tools-media/qwt-installer.iso'" < "/usr/lib/qubes/qubes-windows-tools.iso"
     qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './unpack-qwt-installer-media.sh'"
@@ -330,7 +338,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     # Create auto-qwt media
     qvm-run -q "$resources_qube" "cd '$resources_dir/tools-media' && './pack-auto-qwt.sh'"
 
-    echo -e "${BLUE}[i]${NC} Installing Qubes Windows Tools..." >&2
+    echo_info "Installing Qubes Windows Tools..."
 
     # NetVM must be attached for Xen PV network driver setup
     # However, to keep Windows air gapped for the entire setup we drop all packets at the firewall so Windows cannot connect to the Internet yet
@@ -339,16 +347,16 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     until qvm-start --cdrom "$resources_qube:$resources_dir/tools-media/auto-qwt.iso" "$qube"; do
-        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
+        echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
         sleep 10
     done
 
     # Waiting for automatic shutdown after Qubes Windows Tools installation...
     wait_for_shutdown
 
-    echo -e "${BLUE}[i]${NC} Completing setup of Qubes Windows Tools..." >&2
+    echo_info "Completing setup of Qubes Windows Tools..."
     until qvm-start "$qube"; do
-        echo -e "${RED}[!]${NC} Failed to start $qube! Not enough memory? Retrying in 10 seconds..." >&2
+        echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
         sleep 10
     done
 
@@ -394,22 +402,22 @@ for (( counter = 1; counter <= count; counter++ )); do
     post_incoming_dir="%USERPROFILE%\\Documents\\QubesIncoming\\$resources_qube\\post"
 
     if [ "$seamless" == "true" ]; then
-        echo -e "${BLUE}[i]${NC} Enabling seamless mode persistently..." >&2
+        echo_info "Enabling seamless mode persistently..."
         qvm-run -q "$qube" "cd $post_incoming_dir && seamless.bat" || true
     fi
 
     if [ "$optimize" == "true" ]; then
-        echo -e "${BLUE}[i]${NC} Optimizing Windows..." >&2
+        echo_info "Optimizing Windows..."
         qvm-run -q "$qube" "cd $post_incoming_dir && optimize.bat" || true
     fi
 
     if [ "$spyless" == "true" ]; then
-        echo -e "${BLUE}[i]${NC} Disabling Windows telemetry..." >&2
+        echo_info "Disabling Windows telemetry..."
         qvm-run -q "$qube" "cd $post_incoming_dir && spyless.bat" || true
     fi
 
     if [ "$whonix" == "true" ]; then
-        echo -e "${BLUE}[i]${NC} Applying Whonix recommended settings for a Windows-Whonix-Workstation..." >&2
+        echo_ok "Applying Whonix recommended settings for a Windows-Whonix-Workstation..."
         qvm-tags "$qube" add anon-vm
         qvm-run -q "$qube" "cd $post_incoming_dir && whonix.bat" || true
     fi
@@ -420,14 +428,14 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     if [ "$packages" ]; then
-        echo -e "${BLUE}[i]${NC} Installing packages..." >&2
+        echo_info "Installing packages..."
         qvm-run -p "$qube" "cd $post_incoming_dir && powershell -ExecutionPolicy Bypass -Command .\\packages.ps1 $packages <nul" || true
 
         # Add new apps to app menu
         qvm-sync-appmenus "$qube" &> /dev/null
     fi
 
-    echo -e "${BLUE}[i]${NC} Running user-defined custom commands..." >&2
+    echo_info "Running user-defined custom commands..."
     qvm-run -p "$qube" "cd $post_incoming_dir && run.bat" || true
 
     # Clean up post scripts and remove policy
@@ -441,13 +449,13 @@ for (( counter = 1; counter <= count; counter++ )); do
         sudo rm -f "$policy_file"
     fi
 
-    echo -e "${BLUE}[i]${NC} Shutting down Windows..." >&2
+    echo_info "Shutting down Windows..."
     # Shutdown and wait until complete before finishing or starting next installation
     if qvm-run -q "$qube" "shutdown /s /t 0"; then
         # This is a more graceful method of shutdown
         wait_for_shutdown
     else
-        echo -e "${RED}[!]${NC} Qubes Windows Tools has stopped working! This is probably the result of installing a conflicting package. Shutting down..." >&2
+        echo_err "Qubes Windows Tools has stopped working! This is probably the result of installing a conflicting package. Shutting down..."
         # Example of conflicting Chocolatey package: vcredist140 (during install of vcredist140-x64)
         # This package is commonly pulled in as a dependency thus triggering the error
         qvm-shutdown --wait "$qube"
@@ -459,8 +467,8 @@ for (( counter = 1; counter <= count; counter++ )); do
     fi
 
     if [ "$count" -gt 1 ]; then
-        echo -e "${GREEN}[+]${NC} Finished creation of $qube successfully!"
+        echo_ok "Finished creation of $qube successfully!"
     fi
 done
 
-echo -e "${GREEN}[+]${NC} Completed successfully!"
+echo_ok "Completed successfully!"
