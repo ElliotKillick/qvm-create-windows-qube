@@ -452,15 +452,7 @@ for (( counter = 1; counter <= count; counter++ )); do
 
     echo_info "Shutting down Windows..."
     # Shutdown and wait until complete before finishing or starting next installation
-    if qvm-run -q "$qube" "shutdown /s /t 0"; then
-        # This is a more graceful method of shutdown
-        wait_for_shutdown
-    else
-        echo_err "Qubes Windows Tools has stopped working! This is probably the result of installing a conflicting package. Shutting down..."
-        # Example of conflicting Chocolatey package: vcredist140 (during install of vcredist140-x64)
-        # This package is commonly pulled in as a dependency thus triggering the error
-        qvm-shutdown --wait "$qube"
-    fi
+    qvm-shutdown --wait "$qube"
 
     # Let Windows connect to the Internet with the user selected NetVM later when package installation is disabled
     if [ "$netvm" ] && [ ! "$packages" ]; then
