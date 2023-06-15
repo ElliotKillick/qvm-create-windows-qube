@@ -63,12 +63,6 @@
 '         - This file is authenticode signed by Microsoft
 '         - I confirmed this MSU fixes the issue
 
-' UPDATE: In newer versions of Windows 10, Microsoft intentionally breaks using certificate trusting (as seen in trust-certificates.bat) to bypass this prompt
-' The only known way of bypassing the prompt now is to check the "Always trust software from <PUBLISHER>" box in the shown "Windows Security" prompt
-' Someone would have to reverse engineer the new mechanism they're using to remember which publishers not to show this prompt for after that box is checked
-' So once again, we're relying on this script to programmatically install drivers
-' Microsoft security theatre BS has gone too far...
-
 Set wshShell = WScript.CreateObject("WScript.Shell")
 
 Do
