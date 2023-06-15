@@ -1,5 +1,5 @@
 <div align="center">
-    <a href="https://github.com/elliotkillick/qvm-create-windows-qube">
+    <a href="https://github.com/ElliotKillick/qvm-create-windows-qube">
         <img width="160" src="logo.png" alt="Logo" />
     </a>
 </div>
@@ -13,9 +13,9 @@
 </p>
 
 <div align="center">
-    <img src="https://img.shields.io/travis/com/elliotkillick/qvm-create-windows-qube?style=flat-square" alt="Travis CI build" />
+    <img src="https://img.shields.io/travis/com/ElliotKillick/qvm-create-windows-qube?style=flat-square" alt="Travis CI build" />
     <a href="LICENSE">
-        <img src="https://img.shields.io/github/license/elliotkillick/qvm-create-windows-qube?style=flat-square" alt="License" />
+        <img src="https://img.shields.io/github/license/ElliotKillick/qvm-create-windows-qube?style=flat-square" alt="License" />
     </a>
     <a href="https://www.qubes-os.org">
         <img src="https://img.shields.io/badge/Made%20for-Qubes%20OS-63a0ff?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACE0lEQVR4Ae2Vg5JdQRiE56HyQrGTQmzbTgqxbdu2bWvN09vLf3E1OlfTVV/pYvobqpCQHMyqMziy%2bizKCVr4rfIlLPuXIBGrzuKjytWw3Dspm5J6fvduLm2XG42lCDSp4m8PZbP4XpaoJLDkTzb2%2bU8Cl3BbvYljn7%2bQQb1Qx5W96mO7XOCf1xLERIXL7VJmM6NGB1z4YVsehpQk%2bK9qAhOUSZadMhqsltvtbIoz9JDfiQgyYQ1ZReYe1ZSYsBt3Ju8F5h0BVpzOaLCIAz3VWNkvmQgsPgGM2Q303QD0XIc7OgJoZep%2bYOExgDObbKDvhhfD5kTnaw1ZfgqYzHEHbAJ6rGP5FjQFhIlkxgFgyQnXN4XccCyOlZykmYeBoVulNLEVECbtAeZwAJ6Pn8px5h9D1fAdQO/1MuuOBQTlKVI8TwV6FoNAEAgCQSAIBIEgEATINw/lr8YjIJQ5LH%2bdIF4B4bhF8YsEGXJbR%2bC0pkREtqsM02sdjmsU15t9kcA9Ak2q0xTfzjKRFNObff8Swt8E26WawL68vsRlAhNG70RN7/Wo0y4t/FDWEZFbBgKggEnxSPkIS%2b0hUQwCF5WfyC3lVUD47VvkmlcB4aVPifWkzpuAUOd7NQ5mKFBHHhi%2bB79JN98i55MJ8CG70ult%2bOfzSrV%2bP0QgwWEUiZOkJkXxCrJT5XpY8iGRR49S5KrK8YQ0AG5m/ZMNiwL6AAAAAElFTkSuQmCC&style=flat-square" alt="Made for Qubes OS" />
@@ -26,7 +26,7 @@
 
 Qvm-Create-Windows-Qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org/doc/glossary/#qube) with [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) drivers automatically. It officially supports Windows 7, 8.1 and 10 as well as Windows Server 2008 R2, 2012 R2, 2016 and 2019.
 
-The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. The installation takes place 100% air gapped and features optional [Whonix integration](https://github.com/elliotkillick/qvm-create-windows-qube#whonix-recommendations-for-windows-whonix-workstation) on the finished Windows qube for added privacy.
+The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. The installation takes place 100% air gapped and features optional [Whonix integration](https://github.com/ElliotKillick/qvm-create-windows-qube#whonix-recommendations-for-windows-whonix-workstation) on the finished Windows qube for added privacy.
 
 It also features other niceties such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using Chocolatey to get you up and running quickly in your new environment.
 
@@ -34,7 +34,7 @@ It also features other niceties such as automatic installation of packages inclu
 
 ## Installation
 
-1. Download the [installation script](https://raw.githubusercontent.com/elliotkillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save [Page] as..."
+1. Download the [installation script](https://raw.githubusercontent.com/ElliotKillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save [Page] as..."
 2. Copy `install.sh` into Dom0 by running the following command in Dom0:
     - `qvm-run -p --filter-escape-chars --no-color-output <name_of_qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
     - Make sure to get all the single and double quotes
@@ -84,7 +84,7 @@ For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handli
 
 ### Creating Windows VM
 
-**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/elliotkillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a small upstream issue.
+**Important:** Be sure to read the [Qubes Windows Tools Known Issues](https://github.com/ElliotKillick/qvm-create-windows-qube#qubes-windows-tools-known-issues) section below for a small upstream issue.
 
 #### Windows 10
 
@@ -109,7 +109,7 @@ For advanced readers: Qvm-Create-Windows-Qube takes a generic approach to handli
 
 #### Windows 7
 
-- Not recommended because Windows 7 is [no longer supported](https://github.com/elliotkillick/qvm-create-windows-qube#advisories) by Microsoft, however, it's the only desktop OS the Qubes GUI driver (in Qubes Windows Tools) supports if seamless window integration or dynamic resizing is required
+- Not recommended because Windows 7 is [no longer supported](https://github.com/ElliotKillick/qvm-create-windows-qube#advisories) by Microsoft, however, it's the only desktop OS the Qubes GUI driver (in Qubes Windows Tools) supports if seamless window integration or dynamic resizing is required
 
 *[Video demonstration](https://www.youtube.com/watch?v=duUM1VLrXIQ)*
 
@@ -137,7 +137,7 @@ Qvm-Create-Windows-Qube is "reasonably secure" as [Qubes](https://www.qubes-os.o
 - The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
 - All commits by the maintainers are always signed with their respective PGP keys
     - Should signing ever cease, assume compromise
-    - Current maintainer 1: [Elliot Killick](https://github.com/elliotkillick) <a href="https://keybase.io/elliotkillick" target="_blank"><img src="https://img.shields.io/keybase/pgp/elliotkillick?style=flat-square" alt="PGP key" /></a>
+    - Current maintainer 1: [Elliot Killick](https://github.com/ElliotKillick) <a href="https://keybase.io/elliotkillick" target="_blank"><img src="https://img.shields.io/keybase/pgp/elliotkillick?style=flat-square" alt="PGP key" /></a>
         - PGP key: 018F B9DE 6DFA 13FB 18FB 5552 F9B9 0D44 F83D D5F2
     - Current maintainer 2: [Frédéric Pierret](https://github.com/fepitre) (No Keybase account)
         - PGP key: 9FA6 4B92 F95E 706B F28E 2CA6 4840 10B5 CDC5 76E2
@@ -227,14 +227,16 @@ This project is the product of an independent effort that is not officially endo
 ## Qubes Windows Tools Known Issues
 
 - The new QWT installer disables private disk creation by default
-    - This is probably due to stability concerns
+    - This is probably due to stability concerns?
     - Can't make a TemplateVM
 
-### Older Xen Drivers Notice (for newer OSs such as Windows 10)
+### Newer Xen Drivers Notice (for olders OSs such as Windows 7)
 
-Due to instabilities of the older Xen drivers currently packaged with Qubes Windows Tools, there is a non-zero chance (probably about 1 in 10) that the first boot after Qubes Windows Tools installation will result in a Windows crash (BSOD) in newer OSs such as Windows 10. This is an issue with the underlying drivers which Qvm-Create-Windows-Qube cannot help. If this occurs, it's recommended to delete that qube and re-run the same `qvm-create-windows-qube` command to restart the installation from scratch.
+In Qubes R4.1, Qubes Windows Tools comes with newer drivers that work better on newer versions of Windows such as Windows 10. Unfortunately, it's also been documented that these new drivers work less well with older versions of Windows such as Windows 7. Ideally, the fixes should be consolidated into a single driver but that is yet to happen.
 
-Once the Windows qube gets up and running though, community reports have proven these older Xen drivers to be stable even in Windows 10.
+Windows 7 is an EOL operating system at this point so this is less important. However, there are still some valid reasons for using (at least an air gapped) Windows 7 machine (e.g. for technical research/testing purposes like I do).
+
+There are community members documenting this experience (I can also attest to it) on the Qubes OS Forum and a few Qubes OS GitHub issues.
 
 #### Mailing list threads
 
