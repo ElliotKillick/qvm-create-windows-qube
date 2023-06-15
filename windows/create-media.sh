@@ -110,10 +110,10 @@ echo_info "Creating new ISO..."
 # https://rwmj.wordpress.com/2010/11/04/customizing-a-windows-7-install-iso
 # https://theunderbase.blogspot.com/2013/03/editing-bootable-dvds-as-iso-images.html
 
-local_dir="$(dirname "$(readlink -f -- "$0")")"
+local_dir="$(dirname -- "$(readlink -f -- "$0")")"
 
 # Get boot image
-boot_img="$(mktemp --tmpdir boot.bin.XXXXX )"
+boot_img="$(mktemp --tmpdir boot.bin.XXXXX)"
 PATH="$PATH:$local_dir" geteltorito -o "$boot_img" "$iso"
 
 out_iso="${iso/isos/out}"

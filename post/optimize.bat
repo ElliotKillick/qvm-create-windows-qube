@@ -22,7 +22,7 @@ echo Enabling never automatically reboot for updates with logged on users...
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f
 rem On newer versions of Windows 10, Microsoft intentionally breaks this feature to force users into automatically rebooting for updates at any time
 rem To disable automatic rebooting for updates anyway, simply make MusNotification.exe unable to start (this method is popular)
-reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MusNotification.exe" /v Debugger /t REG_SZ /d "cmd.exe"
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MusNotification.exe" /v Debugger /t REG_SZ /d "cmd.exe"
 
 rem echo Adjusting visual effects for best performance...
 rem Severely reduces Windows 7 appearance but on Windows 10 it's acceptable
