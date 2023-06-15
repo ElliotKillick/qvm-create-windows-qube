@@ -14,6 +14,9 @@ done
 iso_mntpoint="${iso_mntpoint#Mounted * at }"
 iso_mntpoint="${iso_mntpoint%.}"
 
+# Clean auto-qwt of previous installer contents
+rm -rf "auto-qwt/installer"
+
 # Unpack installer into auto-qwt
 cp -r "$iso_mntpoint/." "auto-qwt/installer"
 
