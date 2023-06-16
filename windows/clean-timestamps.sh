@@ -14,7 +14,7 @@
 run_clean_time_command() {
     cmd=("$@")
 
-    datefudge --static @0 -- "${cmd[@]}"
+    datefudge --static @0 "${cmd[@]}"
 }
 
 # Set file/folder timestamp to the Unix epoch
