@@ -601,7 +601,6 @@ echo "" >&2
 exit_code=0
 
 if [ "$media_download_failed_list" ]; then
-    # Build media download failed list
     for media in $media_download_failed_list; do
         media_download_failed_argument_list="$media_download_failed_argument_list ${media%%.iso}"
     done
