@@ -234,7 +234,7 @@ This project is the product of an independent effort that is not officially endo
 
 In Qubes R4.1, Qubes Windows Tools comes with newer drivers that work better on newer versions of Windows such as Windows 10. Unfortunately, it's also been documented that these new drivers work less well with older versions of Windows such as Windows 7. Ideally, the fixes should be consolidated into a single driver but that is yet to happen.
 
-Windows 7 is an EOL operating system at this point so this is less important. However, there are still some valid reasons for using (at least an air gapped) Windows 7 machine (e.g. for technical research/testing purposes like I do).
+Windows 7 is an EOL operating system at this point so this is less important. However, there are still some valid reasons for using (at least an air gapped) Windows 7 machine (e.g. for technical research/testing purposes).
 
 There are community members documenting this experience (I can also attest to it) on the Qubes OS Forum and a few Qubes OS GitHub issues.
 

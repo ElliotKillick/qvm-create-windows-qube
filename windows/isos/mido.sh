@@ -154,7 +154,7 @@ for arg in "$@"; do
     esac
 done
 
-local_dir="$(dirname "$(readlink -f "$0")")"
+local_dir="$(dirname -- "$(readlink -f -- "$0")")"
 cd "$local_dir" || exit
 
 set -e
@@ -167,7 +167,8 @@ handle_curl_error() {
             echo_err "Failed to contact Microsoft servers! Is there an Internet connection?"
             ;;
         23)
-            echo_err "Failed at writing Windows media to disk! Out of disk space or pemission error?"
+            # TODO: Perform verification of any already downloaded ISOs and then exit here
+            echo_err "Failed at writing Windows media to disk! Out of disk space or permission error?"
             ;;
         26)
             echo_err "Ran out of memory during download!"
@@ -180,7 +181,7 @@ handle_curl_error() {
             ;;
         *)
             # Must be some other server error (possibly with this specific request/file)
-            # This is when accounting for all possible errors in the curl manual assuming a correctly formed HTTP(S) request (using only the curl features we're using) and a sane build
+            # This is when accounting for all possible errors in the curl manual assuming a correctly formed HTTP(S) request, using only the curl features we're using, and a sane build
             echo_err "Server returned an error status!"
             ;;
     esac
@@ -205,10 +206,10 @@ scurl_file() {
         return 0
     }
 
-    error_code="$?"
+    error_code=$?
     handle_curl_error "$error_code"
 
-    # Clean up and make sure resumes don't happen from bad download resume files
+    # Clean up and make sure future resumes don't happen from bad download resume files
     if [ -f "$out_file" ]; then
         # If file is empty, bad HTTP code, or bad download resume file
         if [ ! -s "$out_file" ] || [ "$error_code" = 22 ] || [ "$error_code" = 36 ]; then
@@ -239,7 +240,7 @@ manual_verification() {
 
     for media in $media_verification_failed_list; do
         # Read current checksum in list and then read remaining checksums back into the list (effectively running "shift" on the variable)
-        # POSIX sh doesn't support indexing into lists so do this instead to iterate both lists at once
+        # POSIX sh doesn't support indexing so do this instead to iterate both lists at once
         # POSIX sh doesn't support here-strings (<<<). We could also use the "cut" program but that's slower
 IFS=' ' read -r checksum checksum_verification_failed_list << EOF
 $checksum_verification_failed_list
@@ -256,13 +257,12 @@ EOF
     echo "    Once validated, consider updating the checksums in Mido by submitting a pull request on GitHub." >&2
 
     # If you're looking for a single secondary source to cross-reference checksums then try here: https://files.rg-adguard.net/search
-    # This site is recommended by the creator of Rufus in the Fido README
-    # This site is Russian, but, that's actually a good thing when you consider that it means they're out of the "Fourteen Eyes" and not allies with the United States where Microsoft is based (so there's a conflict of interest)
+    # This site is recommended by the creator of Rufus in the Fido README and has worked well for me
 }
 
 consumer_download() {
     # Download newer consumer Windows versions from behind gated Microsoft API
-    # This function aims to precisely emulate what Fido does down to the URL requests and HTTP headers (exceptions: updated user agent and referer adapts to Windows version instead of always being "windows11") but written in POSIX sh with curl instead of PowerShell (also simplified to greatly reduce attack surface)
+    # This function aims to precisely emulate what Fido does down to the URL requests and HTTP headers (exceptions: updated user agent and referer adapts to Windows version instead of always being "windows11") but written in POSIX sh (with coreutils) and curl instead of PowerShell (also simplified to greatly reduce attack surface)
     # However, differences such as the order of HTTP headers and TLS stacks (could be used to do TLS fingerprinting) still exist
     #
     # Command emulated: ./Fido -Win 10 -Lang English -Verbose
@@ -301,7 +301,7 @@ consumer_download() {
     iso_download_page_html="$(echo "$iso_download_page_html" | head --bytes 102400)"
     # tr: Filter for only numerics to prevent HTTP parameter injection
     product_edition_id="$(echo "$iso_download_page_html" | grep --extended-regexp --only-matching '<option value="[0-9]+">Windows' | cut --delimiter '"' --fields 2 | head --lines 1 | tr --complement --delete '0-9' | head --bytes 16)"
-    [ "$VERBOSE" ] && echo "Product edition ID: $product_edition_id"
+    [ "$VERBOSE" ] && echo "Product edition ID: $product_edition_id" >&2
 
     # Permit Session ID
     # "org_id" is always the same value
@@ -324,7 +324,7 @@ consumer_download() {
     language_skuid_table_html="$(echo "$language_skuid_table_html" | head --bytes 10240)"
     # tr: Filter for only alphanumerics or "-" to prevent HTTP parameter injection
     sku_id="$(echo "$language_skuid_table_html" | grep "English (United States)" | sed 's/&quot;//g' | cut --delimiter ',' --fields 1  | cut --delimiter ':' --fields 2 | tr --complement --delete '[:alnum:]-' | head --bytes 16)"
-    [ "$VERBOSE" ] && echo "SKU ID: $sku_id"
+    [ "$VERBOSE" ] && echo "SKU ID: $sku_id" >&2
 
     # Get ISO download link
     # If any request is going to be blocked by Microsoft it's always this last one (the previous requests always seem to succeed)
@@ -429,8 +429,6 @@ enterprise_eval_download() {
     scurl_file "$iso_file" "$tls_version" "$iso_download_link"
 }
 
-echo_info "Downloading Windows media from official Microsoft servers..."
-
 exit_abrupt() {
     exit_code="${1:-$?}"
     echo "" >&2
@@ -438,12 +436,14 @@ exit_abrupt() {
     exit "$exit_code"
 }
 
+echo_info "Downloading Windows media from official Microsoft servers..."
+
 # All trappable (excludes KILL and STOP), by default fatal to shell process (excludes CHLD and CONT), and non-unused (excludes STKFLT) signals in order from 1-20 according to signal(7)
 # SIG prefixes removed for POSIX sh compatibility
 trap exit_abrupt HUP INT QUIT ILL TRAP ABRT BUS FPE USR1 SEGV USR2 PIPE ALRM TERM TSTP
 
 # Disable shell globbing
-# This isn't necessary given that all unquoted variables (e.g. lists) are set directly by us but it's just a precaution
+# This isn't necessary given that all unquoted variables (e.g. for determining word count) are set directly by us but it's just a precaution
 set -f
 
 media_list="$win7x64_ultimate $win81x64 $win10x64 $win11x64 $win81x64_enterprise_eval $win10x64_enterprise_eval $win11x64_enterprise_eval $win10x64_enterprise_ltsc_eval $win2008r2 $win2012r2_eval $win2016_eval $win2019_eval $win2022_eval"
@@ -601,9 +601,12 @@ echo "" >&2
 exit_code=0
 
 if [ "$media_download_failed_list" ]; then
+    # Build media download failed list
     for media in $media_download_failed_list; do
-        media_download_failed_argument_list="${media%%.iso}"
+        media_download_failed_argument_list="$media_download_failed_argument_list ${media%%.iso}"
     done
+    # Remove trailing space for printing
+    media_download_failed_argument_list="${media_download_failed_argument_list%% }"
 
     # shellcheck disable=SC2086
     echo_err "$(word_count $media_download_failed_list) download(s) failed! Please re-run Mido with these arguments to attempt downloading again (any partial downloads will be resumed): $media_download_failed_argument_list"
