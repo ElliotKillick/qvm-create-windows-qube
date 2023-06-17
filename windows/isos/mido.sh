@@ -86,7 +86,7 @@ for arg in "$@"; do
     fi
 done
 
-if [ "$#" -lt "1" ]; then
+if [ $# -lt 1 ]; then
     usage >&2
     exit 1
 fi
