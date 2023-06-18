@@ -32,7 +32,7 @@ rem I recommend this script because it's based on official Microsoft documentati
 rem https://github.com/cryps1s/DARKSURGEON/blob/master/configuration/configuration-scripts/Set-WindowsTelemetrySettings.ps1
 
 rem A firewall method may be suitable, however, it may block a few things it shouldn't:
-rem https://gist.github.com/elliotkillick/5762f91960454720bd42193f66d6e0ae
+rem https://gist.github.com/ElliotKillick/124cc87981a08e8a4e53b2d12ff543ee
 
 rem Use the LTSC edition of Windows 10 because it's debloated by default
 rem This means it's not necessary to run Microsoft unapproved tools to debloat Windows
