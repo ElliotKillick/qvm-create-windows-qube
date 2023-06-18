@@ -193,32 +193,32 @@ part_ext=".PART"
 unverified_ext=".UNVERIFIED"
 
 scurl_file() {
-    out_file_base="$1"
+    out_file="$1"
     tls_version="$2"
     url="$3"
 
-    out_file="${out_file_base}${part_ext}"
+    part_file="${out_file}${part_ext}"
 
     # --location: Microsoft likes to change which endpoint these downloads are stored on but is usually kind enough to add redirects
-    curl --location --output "$out_file" --continue-at - --proto =https "--tlsv$tls_version" --fail -- "$url" && {
-        # Full downloaded succeeded, ready for verification check
-        mv "$out_file" "${out_file_base}${unverified_ext}"
-        return 0
+    # --fail: Return an error on server errors where the HTTP response code is 400 or greater
+    curl --location --output "$part_file" --continue-at - --fail --proto =https "--tlsv$tls_version" -- "$url" || {
+        error_code=$?
+        handle_curl_error "$error_code"
+
+        # Clean up and make sure future resumes don't happen from bad download resume files
+        if [ -f "$out_file" ]; then
+            # If file is empty, bad HTTP code, or bad download resume file
+            if [ ! -s "$out_file" ] || [ "$error_code" = 22 ] || [ "$error_code" = 36 ]; then
+                echo_info "Deleting failed download..."
+                rm -f "$out_file"
+            fi
+        fi
+
+        return 1
     }
 
-    error_code=$?
-    handle_curl_error "$error_code"
-
-    # Clean up and make sure future resumes don't happen from bad download resume files
-    if [ -f "$out_file" ]; then
-        # If file is empty, bad HTTP code, or bad download resume file
-        if [ ! -s "$out_file" ] || [ "$error_code" = 22 ] || [ "$error_code" = 36 ]; then
-            echo_info "Deleting failed download..."
-            rm -f "$out_file"
-        fi
-    fi
-
-    return 1
+    # Full downloaded succeeded, ready for verification check
+    mv "$part_file" "${out_file}${unverified_ext}"
 }
 
 manual_verification() {
@@ -274,7 +274,7 @@ consumer_download() {
     # If this function in Mido fails to work for you then please test with the Fido script before creating an issue because we basically just copy what Fido does exactly:
     # https://github.com/pbatard/Fido
 
-    iso_file="$1"
+    out_file="$1"
     # Either 8, 10, or 11
     windows_version="$2"
 
@@ -291,8 +291,8 @@ consumer_download() {
     # Product edition ID: This specifies both the Windows release (e.g. 22H2) and edition ("multi-edition" is default, either Home/Pro/Edu/etc., we select "Pro" in the answer files) in one number
     # This is the *only* request we make that Fido doesn't. Fido manually maintains a list of all the Windows release/edition product edition IDs in its script (see: $WindowsVersions array). This is helpful for downloading older releases (e.g. Windows 10 1909, 21H1, etc.) but we always want to get the newest release which is why we get this value dynamically
     # Also, keeping a "$WindowsVersions" array like Fido does would be way too much of a maintenance burden
-    # Remove "Accept" header that Curl sends by default
-    iso_download_page_html="$(curl "$url" --user-agent "$user_agent" --header "Accept:" --proto =https --tlsv1.3)" || {
+    # Remove "Accept" header that curl sends by default
+    iso_download_page_html="$(curl --user-agent "$user_agent" --header "Accept:" --fail --proto =https --tlsv1.3 -- "$url")" || {
         handle_curl_error $?
         return $?
     }
@@ -305,7 +305,7 @@ consumer_download() {
 
     # Permit Session ID
     # "org_id" is always the same value
-    curl --output /dev/null --user-agent "$user_agent" --header "Accept:" --proto =https --tlsv1.2 "https://vlscppe.microsoft.com/tags?org_id=y6jn8c31&session_id=$session_id" || {
+    curl --output /dev/null --user-agent "$user_agent" --header "Accept:" --fail --proto =https --tlsv1.2 -- "https://vlscppe.microsoft.com/tags?org_id=y6jn8c31&session_id=$session_id" || {
         # This should only happen if there's been some change to how this API works (copy whatever fix Fido implements)
         handle_curl_error $?
         return $?
@@ -318,7 +318,10 @@ consumer_download() {
     # SKU ID: This specifies the language of the ISO. We always use "English (United States)", however, the SKU for this changes with each Windows release
     # We must make this request so our next one will be allowed
     # --data "" is required otherwise no "Content-Length" header will be sent causing HTTP response "411 Length Required"
-    language_skuid_table_html="$(curl --request POST --user-agent "$user_agent" --data "" --header "Accept:" --proto =https --tlsv1.3 "https://www.microsoft.com/en-US/api/controls/contentinclude/html?pageId=a8f8f489-4c7f-463a-9ca6-5cff94d8d041&host=www.microsoft.com&segments=software-download,$url_segment_parameter&query=&action=getskuinformationbyproductedition&sessionId=$session_id&productEditionId=$product_edition_id&sdVersion=2")"
+    language_skuid_table_html="$(curl --request POST --user-agent "$user_agent" --data "" --header "Accept:" --fail --proto =https --tlsv1.3 -- "https://www.microsoft.com/en-US/api/controls/contentinclude/html?pageId=a8f8f489-4c7f-463a-9ca6-5cff94d8d041&host=www.microsoft.com&segments=software-download,$url_segment_parameter&query=&action=getskuinformationbyproductedition&sessionId=$session_id&productEditionId=$product_edition_id&sdVersion=2")" || {
+        handle_curl_error $?
+        return $?
+    }
 
     # Limit untrusted size for input validation
     language_skuid_table_html="$(echo "$language_skuid_table_html" | head --bytes 10240)"
@@ -329,13 +332,10 @@ consumer_download() {
     # Get ISO download link
     # If any request is going to be blocked by Microsoft it's always this last one (the previous requests always seem to succeed)
     # --referer: Required by Microsoft servers to allow request
-    # --fail: Return an error on server errors where the HTTP response code is 400 or greater
-    iso_download_link_html="$(curl --request POST --user-agent "$user_agent" --data "" --referer "$url" --header "Accept:" --fail --proto =https --tlsv1.3 "https://www.microsoft.com/en-US/api/controls/contentinclude/html?pageId=6e2a1789-ef16-4f27-a296-74ef7ef5d96b&host=www.microsoft.com&segments=software-download,$url_segment_parameter&query=&action=GetProductDownloadLinksBySku&sessionId=$session_id&skuId=$sku_id&language=English&sdVersion=2")" || {
+    iso_download_link_html="$(curl --request POST --user-agent "$user_agent" --data "" --referer "$url" --header "Accept:" --fail --proto =https --tlsv1.3 -- "https://www.microsoft.com/en-US/api/controls/contentinclude/html?pageId=6e2a1789-ef16-4f27-a296-74ef7ef5d96b&host=www.microsoft.com&segments=software-download,$url_segment_parameter&query=&action=GetProductDownloadLinksBySku&sessionId=$session_id&skuId=$sku_id&language=English&sdVersion=2")" || {
         # This should only happen if there's been some change to how this API works
-        error_code=$?
-        handle_curl_error "$error_code"
-        manual_verification="true"
-        return "$error_code"
+        handle_curl_error $?
+        return $?
     }
 
     # Limit untrusted size for input validation
@@ -369,20 +369,20 @@ consumer_download() {
     echo_ok "Got latest ISO download link (valid for 24 hours): $iso_download_link"
 
     # Download ISO
-    scurl_file "$iso_file" "1.3" "$iso_download_link"
+    scurl_file "$out_file" "1.3" "$iso_download_link"
 }
 
 enterprise_eval_download() {
     # Download enterprise evaluation Windows versions
 
-    iso_file="$1"
+    out_file="$1"
     tls_version="$2"
     windows_version="$3"
     enterprise_type="$4"
 
     url="https://www.microsoft.com/en-us/evalcenter/download-$windows_version"
 
-    iso_download_page_html="$(curl --location --proto =https --tlsv1.3 --fail -- "$url")" || {
+    iso_download_page_html="$(curl --location --fail --proto =https --tlsv1.3 -- "$url")" || {
         handle_curl_error $?
         return $?
     }
@@ -417,7 +417,7 @@ enterprise_eval_download() {
     fi
 
     # Follow redirect so proceeding log message is useful
-    iso_download_link="$(curl --location --output /dev/null --silent --proto =https "--tlsv$tls_version" --write-out "%{url_effective}" --head -- "$iso_download_link")" || {
+    iso_download_link="$(curl --location --output /dev/null --silent --write-out "%{url_effective}" --head --fail --proto =https "--tlsv$tls_version" -- "$iso_download_link")" || {
         # This should only happen if the Microsoft servers are down
         handle_curl_error $?
         return $?
@@ -426,7 +426,7 @@ enterprise_eval_download() {
     echo_ok "Got latest ISO download link: $iso_download_link"
 
     # Download ISO
-    scurl_file "$iso_file" "$tls_version" "$iso_download_link"
+    scurl_file "$out_file" "$tls_version" "$iso_download_link"
 }
 
 exit_abrupt() {
