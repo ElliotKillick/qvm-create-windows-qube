@@ -65,7 +65,8 @@ else
     fi
 fi
 
-resources_qube="windows-mgmt"
+# Allow externally setting custom resources qube for advanced users
+resources_qube="${RESOURCES_QUBE:-windows-mgmt}"
 resources_dir="/home/user/qvm-create-windows-qube"
 template="$(qubes-prefs default_template)"
 
