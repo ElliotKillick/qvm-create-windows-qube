@@ -292,7 +292,7 @@ consumer_download() {
     # This is the *only* request we make that Fido doesn't. Fido manually maintains a list of all the Windows release/edition product edition IDs in its script (see: $WindowsVersions array). This is helpful for downloading older releases (e.g. Windows 10 1909, 21H1, etc.) but we always want to get the newest release which is why we get this value dynamically
     # Also, keeping a "$WindowsVersions" array like Fido does would be way too much of a maintenance burden
     # Remove "Accept" header that curl sends by default
-    iso_download_page_html="$(curl --user-agent "$user_agent" --header "Accept:" --fail --proto =https --tlsv1.3 -- "$url")" || {
+    iso_download_page_html="$(curl --user-agent "$user_agent" --header "Accept:" --fail --proto =https --tlsv1.2 -- "$url")" || {
         handle_curl_error $?
         return $?
     }
@@ -318,7 +318,7 @@ consumer_download() {
     # SKU ID: This specifies the language of the ISO. We always use "English (United States)", however, the SKU for this changes with each Windows release
     # We must make this request so our next one will be allowed
     # --data "" is required otherwise no "Content-Length" header will be sent causing HTTP response "411 Length Required"
-    language_skuid_table_html="$(curl --request POST --user-agent "$user_agent" --data "" --header "Accept:" --fail --proto =https --tlsv1.3 -- "https://www.microsoft.com/en-US/api/controls/contentinclude/html?pageId=a8f8f489-4c7f-463a-9ca6-5cff94d8d041&host=www.microsoft.com&segments=software-download,$url_segment_parameter&query=&action=getskuinformationbyproductedition&sessionId=$session_id&productEditionId=$product_edition_id&sdVersion=2")" || {
+    language_skuid_table_html="$(curl --request POST --user-agent "$user_agent" --data "" --header "Accept:" --fail --proto =https --tlsv1.2 -- "https://www.microsoft.com/en-US/api/controls/contentinclude/html?pageId=a8f8f489-4c7f-463a-9ca6-5cff94d8d041&host=www.microsoft.com&segments=software-download,$url_segment_parameter&query=&action=getskuinformationbyproductedition&sessionId=$session_id&productEditionId=$product_edition_id&sdVersion=2")" || {
         handle_curl_error $?
         return $?
     }
@@ -332,7 +332,7 @@ consumer_download() {
     # Get ISO download link
     # If any request is going to be blocked by Microsoft it's always this last one (the previous requests always seem to succeed)
     # --referer: Required by Microsoft servers to allow request
-    iso_download_link_html="$(curl --request POST --user-agent "$user_agent" --data "" --referer "$url" --header "Accept:" --fail --proto =https --tlsv1.3 -- "https://www.microsoft.com/en-US/api/controls/contentinclude/html?pageId=6e2a1789-ef16-4f27-a296-74ef7ef5d96b&host=www.microsoft.com&segments=software-download,$url_segment_parameter&query=&action=GetProductDownloadLinksBySku&sessionId=$session_id&skuId=$sku_id&language=English&sdVersion=2")" || {
+    iso_download_link_html="$(curl --request POST --user-agent "$user_agent" --data "" --referer "$url" --header "Accept:" --fail --proto =https --tlsv1.2 -- "https://www.microsoft.com/en-US/api/controls/contentinclude/html?pageId=6e2a1789-ef16-4f27-a296-74ef7ef5d96b&host=www.microsoft.com&segments=software-download,$url_segment_parameter&query=&action=GetProductDownloadLinksBySku&sessionId=$session_id&skuId=$sku_id&language=English&sdVersion=2")" || {
         # This should only happen if there's been some change to how this API works
         handle_curl_error $?
         return $?
@@ -376,13 +376,12 @@ enterprise_eval_download() {
     # Download enterprise evaluation Windows versions
 
     out_file="$1"
-    tls_version="$2"
-    windows_version="$3"
-    enterprise_type="$4"
+    windows_version="$2"
+    enterprise_type="$3"
 
     url="https://www.microsoft.com/en-us/evalcenter/download-$windows_version"
 
-    iso_download_page_html="$(curl --location --fail --proto =https --tlsv1.3 -- "$url")" || {
+    iso_download_page_html="$(curl --location --fail --proto =https --tlsv1.2 -- "$url")" || {
         handle_curl_error $?
         return $?
     }
@@ -405,25 +404,28 @@ enterprise_eval_download() {
     # Limit untrusted size for input validation
     iso_download_links="$(echo "$iso_download_links" | head --bytes 1024)"
 
-    if [ "$enterprise_type" = "enterprise" ]; then
+    case "$enterprise_type" in
         # Select x64 download link
-        iso_download_link=$(echo "$iso_download_links" | head --lines 2 | tail --lines 1)
-    elif [ "$enterprise_type" = "ltsc" ]; then
+        "enterprise") iso_download_link=$(echo "$iso_download_links" | head --lines 2 | tail --lines 1) ;;
         # Select x64 LTSC download link
-        iso_download_link=$(echo "$iso_download_links" | head --lines 4 | tail --lines 1)
-    else
-        # Only one download link (Server)
-        iso_download_link="$iso_download_links"
-    fi
+        "ltsc") iso_download_link=$(echo "$iso_download_links" | head --lines 4 | tail --lines 1) ;;
+        *) iso_download_link="$iso_download_links" ;;
+    esac
 
     # Follow redirect so proceeding log message is useful
-    iso_download_link="$(curl --location --output /dev/null --silent --write-out "%{url_effective}" --head --fail --proto =https "--tlsv$tls_version" -- "$iso_download_link")" || {
+    iso_download_link="$(curl --location --output /dev/null --silent --write-out "%{url_effective}" --head --fail --proto =https --tlsv1.2 -- "$iso_download_link")" || {
         # This should only happen if the Microsoft servers are down
         handle_curl_error $?
         return $?
     }
 
     echo_ok "Got latest ISO download link: $iso_download_link"
+
+    # Use highest TLS version for endpoints that support it
+    case "$iso_download_link" in
+        "https://download.microsoft.com"*) tls_version="1.2" ;;
+        *) tls_version="1.3" ;;
+    esac
 
     # Download ISO
     scurl_file "$out_file" "$tls_version" "$iso_download_link"
@@ -493,15 +495,15 @@ for media in $media_list; do
             ;;
         "$win10x64_enterprise_eval")
             echo_info "Downloading Windows 10 Enterprise Evaluation..."
-            enterprise_eval_download "$media" 1.3 windows-10-enterprise enterprise
+            enterprise_eval_download "$media" windows-10-enterprise enterprise
             ;;
         "$win11x64_enterprise_eval")
             echo_info "Downloading Windows 11 Enterprise Evaluation..."
-            enterprise_eval_download "$media" 1.3 windows-11-enterprise enterprise
+            enterprise_eval_download "$media" windows-11-enterprise enterprise
             ;;
         "$win10x64_enterprise_ltsc_eval")
             echo_info "Downloading Windows 10 Enterprise LTSC Evaluation..."
-            enterprise_eval_download "$media" 1.3 windows-10-enterprise ltsc
+            enterprise_eval_download "$media" windows-10-enterprise ltsc
             ;;
 
         "$win2008r2")
@@ -513,19 +515,19 @@ for media in $media_list; do
             ;;
         "$win2012r2_eval")
             echo_info "Downloading Windows Server 2012 R2 Evaluation..."
-            enterprise_eval_download "$media" 1.2 windows-server-2012-r2 server
+            enterprise_eval_download "$media" windows-server-2012-r2 server
             ;;
         "$win2016_eval")
             echo_info "Downloading Windows Server 2016 Evaluation..."
-            enterprise_eval_download "$media" 1.3 windows-server-2016 server
+            enterprise_eval_download "$media" windows-server-2016 server
             ;;
         "$win2019_eval")
             echo_info "Downloading Windows Server 2019 Evaluation..."
-            enterprise_eval_download "$media" 1.3 windows-server-2019 server
+            enterprise_eval_download "$media" windows-server-2019 server
             ;;
         "$win2022_eval")
             echo_info "Downloading Windows Server 2022 Evaluation..."
-            enterprise_eval_download "$media" 1.3 windows-server-2022 server
+            enterprise_eval_download "$media" windows-server-2022 server
             ;;
     esac || {
         media_download_failed_list="$media_download_failed_list $media"
