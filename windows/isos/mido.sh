@@ -608,7 +608,7 @@ if [ "$media_download_failed_list" ]; then
     media_download_failed_argument_list="${media_download_failed_argument_list%% }"
 
     # shellcheck disable=SC2086
-    echo_err "$(word_count $media_download_failed_list) download(s) failed! Please re-run Mido with these arguments to attempt downloading again (any partial downloads will be resumed): $media_download_failed_argument_list"
+    echo_err "$(word_count $media_download_failed_list) download(s) failed! Please re-run Mido with these arguments to attempt downloading again (any partial downloads will be resumed):$media_download_failed_argument_list"
     exit_code=1
 fi
 
