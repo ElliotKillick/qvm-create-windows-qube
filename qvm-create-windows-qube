@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2023 Elliot Killick <contac@elliotkillick.com>
+# Copyright (C) 2023 Elliot Killick <contact@elliotkillick.com>
 # Licensed under the MIT License. See LICENSE file for details.
 
 # Test for 4-bit color (16 colors)
