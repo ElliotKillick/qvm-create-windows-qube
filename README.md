@@ -250,12 +250,13 @@ There are community members documenting this experience (I can also attest to it
 
 ## Todo
 
-- [x] Gain the ability to reliably unpack/insert answer file/repack for any given ISO 9660 (Windows ISO format)
-    - ISO 9660 is write-once (i.e. read-only) filesystem; you cannot just add a file to it without creating a whole new ISO
-    - Blocking issue for supporting other versions of Windows
+- [x] Gain the ability to reliably unpack/insert answer file/repack for any given ISO file containing a UDF filesystem ([ISO 13346](https://en.wikipedia.org/wiki/Universal_Disk_Format), i.e. the Windows ISO format)
+    - ISO file containers are essentially write-once filesystems; you cannot just add a file to it without creating a whole new ISO
+    - Opening an official Microsoft Windows ISO file in a hex editor shows clear evidence of it containing a UDF filesystem and specifically mentions `ISO-13346` at the top
+    - Note that the `file` command may slightly misidentify these ISO files as being the now supplanted ISO 9660 format but that's probably only because "UDF shares the basic volume descriptor format with ISO 9660"
     - This is the same way VMWare does it as can be seen by the "Creating Disk..." part in the video below (Further research indicates that they use `mkisofs`)
     - [ ] In the future, it would be best for Qubes to do this by [extending core admin for libvirt XML templates](https://github.com/QubesOS/qubes-issues/issues/5085)
-        - Much faster
+        - Faster
         - Saves storage due to not having to create a new ISO
 - [x] auto-qwt takes D:\\ making QWT put the user profile on E:\\; it would be nicer to have it on D:\\ so there is no awkward gap in the middle
 - [x] Make Windows answer file automatically use default trial key for Windows installation without hard-coding any product keys anywhere (Windows is finicky on this one)
