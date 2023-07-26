@@ -458,7 +458,7 @@ download_media() {
                 # Source, Google search this (it can be found many places): "dec04cbd352b453e437b2fe9614b67f28f7c0b550d8351827bc1e9ef3f601389" "download.microsoft.com"
                 # This Windows 7 ISO bundles MSU update packages
                 # It's the most up-to-date Windows 7 ISO that Microsoft offers (August 2018 update): https://files.rg-adguard.net/files/cea4210a-3474-a17a-88d4-4b3e10bd9f66
-                # In particular interest to us is the update that adds support for SHA-256 driver signatures so Qubes Windows Tools installs correctly
+                # Of particular interest to us is the update that adds support for SHA-256 driver signatures so Qubes Windows Tools installs correctly
                 #
                 # Microsoft purged Windows 7 from all their servers...
                 # More info about this event: https://github.com/pbatard/Fido/issues/64
