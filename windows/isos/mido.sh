@@ -28,7 +28,7 @@ format() { fmt --width 80; }
 word_count() { echo $#; }
 
 usage() {
-    echo "Mido - The secure Microsoft Windows Downloader (for Unix)"
+    echo "Mido - The secure Microsoft Windows Downloader"
     echo ""
     echo "Usage: $0 <windows_media>..."
     echo ""
@@ -71,7 +71,7 @@ usage() {
     echo ""
     echo "Architecture"
     echo "------------"
-    echo "All the downloads provided here are for x86-64 (x64). This is the only architecture Microsoft ships Windows Server in. Also, the only architecture Qubes OS supports." | format
+    echo "All the downloads provided here are for x86-64 (x64). This is the only architecture Microsoft ships Windows Server in.$([ -d /run/qubes ] && echo ' Also, the only architecture Qubes OS supports.')" | format
 }
 
 # Media naming scheme info:
