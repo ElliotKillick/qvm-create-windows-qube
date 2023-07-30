@@ -26,7 +26,7 @@
 
 Qvm-Create-Windows-Qube is a tool for quickly and conveniently installing fresh new Windows [qubes](https://www.qubes-os.org/doc/glossary/#qube) with [Qubes Windows Tools (QWT)](https://www.qubes-os.org/doc/windows-tools/) drivers automatically. It officially supports Windows 7, 8.1 and 10 as well as Windows Server 2008 R2, 2012 R2, 2016 and 2019.
 
-The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. The installation takes place 100% air gapped and features optional [Whonix integration](https://github.com/ElliotKillick/qvm-create-windows-qube#whonix-recommendations-for-windows-whonix-workstation) on the finished Windows qube for added privacy.
+The project emphasizes correctness, security and treating Windows as an untrusted guest operating system throughout the entire process. The installation takes place 100% air gapped and features optional [Whonix integration](https://github.com/ElliotKillick/qvm-create-windows-qube#whonix-recommendations-for-windows-whonix-workstation) on the finished Windows qube for added privacy. Accomplishing these goals in as few lines of code as possible to ensure simplicity and minimalism is key.
 
 It also features other niceties such as automatic installation of packages including Firefox, Office 365, Notepad++, Visual Studio and more using Chocolatey to get you up and running quickly in your new environment.
 
@@ -130,8 +130,7 @@ Qvm-Create-Windows-Qube is "reasonably secure" as [Qubes](https://www.qubes-os.o
     - HTTPS TLS 1.2/1.3
     - SHA-256 verification of the files after download
         - Each file is saved with the extension `.UNVERIFIED` until it's made certain that its checksum is a match
-    - Mido is robust and very explicit (but also user friendly) so you can be sure any downloaded ISOs are authentic and untampered with
-    - Mido is written in POSIX sh (the minimal Dash shell will be used if available) so interaction with Microsoft's gated download web interface is more secure
+    - Mido is robustly written in POSIX sh (the minimal Dash shell will be used if available) so interaction with Microsoft's gated download web interface is more secure
         - For more security, it could even be run in a POSIX-compliant Rust shell (e.g. nsh) with Rust coreutils (e.g. uutils). This is not the default configuration.
 - Windows is treated as an untrusted guest operating system the entire way through
 - The impact of any theoretical vulnerabilities in handling of the Windows ISO (e.g. vulnerability in filesystem parsing) or answer file is limited to `windows-mgmt`
