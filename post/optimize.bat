@@ -59,6 +59,11 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpywar
     rem The Microsoft Security Response Center (MSRC) does not consider this to be a security vulnerability because it requires administrator privileges and "a malicious administrator can do much worse things"
     rem I expected this, but reported it anyway just to be sure
     rem Additionally, it's perfectly reasonable for an enterprise administrator to want to disable Windows Defender across all their Windows machines programmatically
+
+    rem UPDATE: Even newer versions of Windows 10 now has Tamper Protection disabled by default
+    rem Also, detecting wheather setting the above registry value suceeded no longer works to check if Tamper Protection is enabled
+    rem Instead, setting the above registry value always succeeds but it's just ignored if Tamper Protection is enabled (on the next boot it will also be deleted)
+
     powershell -Command "$path = 'HKLM:\SYSTEM\CurrentControlSet\Services\WinDefend'; $acl = Get-Acl -Path $path; $acl.SetOwner((New-Object System.Security.Principal.NTAccount('Builtin', 'Administrators'))); $acl.SetAccessRuleProtection($true, $false); Set-Acl -Path $path -AclObject $acl"
 )
 
