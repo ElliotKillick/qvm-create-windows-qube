@@ -131,7 +131,6 @@ while true; do
             ;;
         -w | --whonix)
             whonix="true"
-            shift
             ;;
         -p | --packages)
             packages="$2"
