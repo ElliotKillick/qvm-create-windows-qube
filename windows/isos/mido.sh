@@ -193,9 +193,9 @@ handle_curl_error() {
         # POSIX defines exit statuses 1-125 as usable by us
         # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_08_02
         $((error_code <= 125)))
-            # Must be some other server error (possibly with this specific request/file)
+            # Must be some other server or network error (possibly with this specific request/file)
             # This is when accounting for all possible errors in the curl manual assuming a correctly formed curl command and HTTP(S) request, using only the curl features we're using, and a sane build
-            echo_err "Server returned an error status!"
+            echo_err "Miscellaneous server or network error!"
             ;;
         126 | 127)
             echo_err "Curl command not found! Please install curl and try again. Exiting..."
@@ -581,10 +581,10 @@ verify_media() {
     readonly sha256sums="\
 dec04cbd352b453e437b2fe9614b67f28f7c0b550d8351827bc1e9ef3f601389  win7x64-ultimate.iso
 d8333cf427eb3318ff6ab755eb1dd9d433f0e2ae43745312c1cd23e83ca1ce51  win81x64.iso
-# Windows 10 22H2 May 2023 Update
+# Windows 10 22H2
 a6f470ca6d331eb353b815c043e327a347f594f37ff525f17764738fe812852e  win10x64.iso
-# Windwws 11 22H2 May 2023 Update
-8059a99b8902906a90afe068ac00465c52588c2bd54f5d9d96c1297f88ef1076  win11x64.iso
+# Windows 11 23H2
+71a7ae6974866603d366a911b0c00eace476e0b49d12205d7529765cc50b4b39  win11x64.iso
 2dedd44c45646c74efc5a028f65336027e14a56f76686a4631cf94ffe37c72f2  win81x64-enterprise-eval.iso
 ef7312733a9f5d7d51cfa04ac497671995674ca5e1058d5164d6028f0938d668  win10x64-enterprise-eval.iso
 ebbc79106715f44f5020f77bd90721b17c5a877cbc15a3535b99155493a1bb3f  win11x64-enterprise-eval.iso
