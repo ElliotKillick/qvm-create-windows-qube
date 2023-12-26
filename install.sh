@@ -119,6 +119,7 @@ echo -e "${BLUE}[i]${NC} Please check for a \"Good signature\" from GPG (Verify 
 qvm-run -p "$resources_qube" "cd '$resources_dir' && gpg --import author.asc && git verify-commit \$(git rev-list --max-parents=0 HEAD)"
 
 echo -e "${BLUE}[i]${NC} Remember to download the desired version(s) of Windows using Mido in the $resources_qube qube..." >&2
+qvm-run -p "$resources_qube" "chmod +x '$resources_dir/windows/isos/mido.sh'"
 qvm-run -p "$resources_qube" "'$resources_dir/windows/isos/mido.sh' --help"
 
 echo -e "${BLUE}[i]${NC} Shutting down $resources_qube..." >&2
