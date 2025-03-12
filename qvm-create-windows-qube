@@ -28,13 +28,16 @@ trap error ERR
 resources_qube="${RESOURCES_QUBE:-windows-mgmt}"
 resources_dir="/home/user/qvm-create-windows-qube"
 
-wait_for_shutdown() {
+wait_for_shutdown_or_qwt() {
     # There is a small delay upon booting a qube before qvm-check will detect it as running
     # To account for this as well as scenarios where the qube is already running and is shutting down we need both loops
     until qvm-check --running "$qube" &> /dev/null; do
         sleep 1
     done
     while qvm-check --running "$qube" &> /dev/null; do
+        if [ "$(qvm-features "$qube" os)" == "Windows" ]; then
+            break
+        fi
         sleep 1
     done
 }
@@ -318,7 +321,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for first part of Windows installation process to finish...
-    wait_for_shutdown
+    wait_for_shutdown_or_qwt
 
     echo_info "Starting second part of Windows installation process..."
     qvm-features --unset "$qube" video-model
@@ -328,7 +331,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for second part of Windows installation process to finish...
-    wait_for_shutdown
+    wait_for_shutdown_or_qwt
 
     echo_info "Preparing Qubes Windows Tools for automatic installation..."
     # Unpack latest QWT into auto-qwt
@@ -352,18 +355,20 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for automatic shutdown after Qubes Windows Tools installation...
-    wait_for_shutdown
+    wait_for_shutdown_or_qwt
 
-    echo_info "Completing setup of Qubes Windows Tools..."
-    until qvm-start "$qube"; do
-        echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
-        sleep 10
-    done
+    if [ "$(qvm-features "$qube" os)" != "Windows" ]; then
+        echo_info "Completing setup of Qubes Windows Tools..."
+        until qvm-start "$qube"; do
+            echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
+            sleep 10
+        done
 
-    # Wait until QWT installation is advertised to Dom0
-    until [ "$(qvm-features "$qube" os)" == "Windows" ]; do
-        sleep 1
-    done
+        # Wait until QWT installation is advertised to Dom0
+        until [ "$(qvm-features "$qube" os)" == "Windows" ]; do
+            sleep 1
+        done
+    fi
 
     # At this point, qvm-run is working
 
