@@ -6,4 +6,7 @@ title %~f0
 
 rem Enable seamless mode persistently across reboots
 
+rem old QWT
 reg add "HKLM\SOFTWARE\Invisible Things Lab\Qubes Tools\qga" /v SeamlessMode /t REG_DWORD /d 1 /f
+rem new QWT
+reg add "HKLM\SOFTWARE\Invisible Things Lab\Qubes Tools" /v SeamlessMode /t REG_DWORD /d 1 /f
