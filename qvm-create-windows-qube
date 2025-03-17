@@ -83,6 +83,7 @@ usage() {
     echo "  -P, --pool <name> LVM storage pool to install Windows on (https://www.qubes-os.org/doc/secondary-storage/)"
     echo "  -i, --iso <file> Windows media to automatically install and setup"
     echo "  -a, --answer-file <xml file> Settings for Windows installation"
+    echo "  -d, --disk-size <size> Specify system disk size, in GiB; default: 30"
 
     if is_dom0; then
         echo ""
@@ -93,8 +94,8 @@ usage() {
 }
 
 # Option strings
-short="hc:tn:soywp:P:i:a:"
-long="help,count:,template,netvm:,seamless,optimize,spyless,whonix,packages:,pool:,iso:,answer-file:"
+short="hc:tn:soywp:P:i:a:d:"
+long="help,count:,template,netvm:,seamless,optimize,spyless,whonix,packages:,pool:,iso:,answer-file:,disk-size:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -104,6 +105,7 @@ eval set -- "$opts"
 
 # Set defaults
 count="1"
+disk_size="30"
 
 # Put options into variables
 while true; do
@@ -149,6 +151,14 @@ while true; do
             ;;
         -a | --answer-file)
             answer_file="$2"
+            shift
+            ;;
+        -d | --disk-size)
+            if ! [ "$2" -gt 0 ] 2>/dev/null; then
+                echo_err "Disk size must be positive number, without suffix"
+                exit 1
+            fi
+            disk_size="$2"
             shift
             ;;
         --)
@@ -310,7 +320,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" kernel ""
     qvm-prefs "$qube" qrexec_timeout 999999 # Windows startup can take longer, especially if a chkdsk is performed. Also, to account for the duration of a Windows update
     qvm-features "$qube" video-model cirrus
-    qvm-volume extend "$qube:root" 30GiB
+    qvm-volume extend "$qube:root" "$disk_size"GiB
     qvm-volume extend "$qube:private" 10GiB # Minimum starting with newer versions of Windows 10
     qvm-prefs "$qube" netvm ""
 
