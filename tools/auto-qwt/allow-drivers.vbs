@@ -67,7 +67,7 @@ Set wshShell = WScript.CreateObject("WScript.Shell")
 
 Do
     ' Set focus to window with given window title
-    isFocused = wshShell.AppActivate("Windows Security")
+    isFocused = wshShell.AppActivate("Windows Security", 0)
 
     ' If focus is successful
     If isFocused = True Then
