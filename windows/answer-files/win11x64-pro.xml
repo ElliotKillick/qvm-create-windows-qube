@@ -21,7 +21,7 @@
                     </InstallFrom>
                     <InstallTo>
                         <DiskID>0</DiskID>
-                        <PartitionID>1</PartitionID>
+                        <PartitionID>2</PartitionID>
                     </InstallTo>
                 </OSImage>
             </ImageInstall>
@@ -31,19 +31,6 @@
                     <Key/>
                 </ProductKey>
             </UserData>
-            <DiskConfiguration>
-                <Disk wcm:action="add">
-                    <DiskID>0</DiskID>
-                    <WillWipeDisk>true</WillWipeDisk>
-                    <CreatePartitions>
-                        <CreatePartition wcm:action="add">
-                            <Order>1</Order>
-                            <Type>Primary</Type>
-                            <Extend>true</Extend>
-                        </CreatePartition>
-                    </CreatePartitions>
-                </Disk>
-            </DiskConfiguration>
             <RunSynchronous>
                 <RunSynchronousCommand wcm:action="add">
                     <Order>1</Order>
@@ -59,6 +46,21 @@
                     <Order>3</Order>
                     <Description>BypassRAMCheck</Description>
                     <Path>cmd /c reg add "HKLM\SYSTEM\Setup\LabConfig" /v "BypassRAMCheck" /t REG_DWORD /d 1</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>4</Order>
+                    <Description>Prepare partitioning script 1</Description>
+                    <Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo SELECT DISK=0&amp;echo CLEAN&amp;echo CREATE PARTITION PRIMARY SIZE=100&amp;echo FORMAT QUICK FS=NTFS LABEL="System Reserved"&amp;echo ACTIVE&amp;echo CREATE PARTITION PRIMARY)"</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>5</Order>
+                    <Description>Prepare partitioning script 2</Description>
+                    <Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo FORMAT QUICK FS=NTFS LABEL="Windows")"</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>6</Order>
+                    <Description>Create partitions</Description>
+                    <Path>cmd.exe /c "diskpart.exe /s "X:\diskpart.txt" &gt;&gt;"X:\diskpart.log" || ( type "X:\diskpart.log" &amp; echo diskpart encountered an error. &amp; pause &amp; exit /b 1 )"</Path>
                 </RunSynchronousCommand>
             </RunSynchronous>
         </component>
