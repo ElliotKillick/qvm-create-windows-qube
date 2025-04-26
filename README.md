@@ -36,7 +36,7 @@ It also features other niceties such as automatic installation of packages inclu
 
 1. Download the [installation script](https://raw.githubusercontent.com/ElliotKillick/qvm-create-windows-qube/master/install.sh) by opening the link, right-clicking and then selecting "Save [Page] as..."
 2. Copy `install.sh` into Dom0 by running the following command in Dom0:
-    - `qvm-run -p --filter-escape-chars --no-color-output <name_of_qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
+    - `qvm-run qubes -p --filter-escape-chars --no-color-output <name_of_qube_script_is_located_on> "cat '/home/user/Downloads/install.sh'" > install.sh`
     - Make sure to get all the single and double quotes
 3. Review the code of `install.sh` to ensure its integrity
     - Safer with escape character filtering enabled in the previous step; `qvm-run` disables it by default when the output is a file
