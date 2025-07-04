@@ -28,13 +28,16 @@ trap error ERR
 resources_qube="${RESOURCES_QUBE:-windows-mgmt}"
 resources_dir="/home/user/qvm-create-windows-qube"
 
-wait_for_shutdown() {
+wait_for_shutdown_or_qwt() {
     # There is a small delay upon booting a qube before qvm-check will detect it as running
     # To account for this as well as scenarios where the qube is already running and is shutting down we need both loops
     until qvm-check --running "$qube" &> /dev/null; do
         sleep 1
     done
     while qvm-check --running "$qube" &> /dev/null; do
+        if [ "$(qvm-features "$qube" os)" == "Windows" ]; then
+            break
+        fi
         sleep 1
     done
 }
@@ -80,6 +83,7 @@ usage() {
     echo "  -P, --pool <name> LVM storage pool to install Windows on (https://www.qubes-os.org/doc/secondary-storage/)"
     echo "  -i, --iso <file> Windows media to automatically install and setup"
     echo "  -a, --answer-file <xml file> Settings for Windows installation"
+    echo "  -d, --disk-size <size> Specify system disk size, in GiB; default: 30"
 
     if is_dom0; then
         echo ""
@@ -90,8 +94,8 @@ usage() {
 }
 
 # Option strings
-short="hc:tn:soywp:P:i:a:"
-long="help,count:,template,netvm:,seamless,optimize,spyless,whonix,packages:,pool:,iso:,answer-file:"
+short="hc:tn:soywp:P:i:a:d:"
+long="help,count:,template,netvm:,seamless,optimize,spyless,whonix,packages:,pool:,iso:,answer-file:,disk-size:"
 
 # Read options
 if ! opts=$(getopt --options=$short --longoptions=$long --name "$0" -- "$@"); then
@@ -101,6 +105,7 @@ eval set -- "$opts"
 
 # Set defaults
 count="1"
+disk_size="30"
 
 # Put options into variables
 while true; do
@@ -148,6 +153,14 @@ while true; do
             answer_file="$2"
             shift
             ;;
+        -d | --disk-size)
+            if ! [ "$2" -gt 0 ] 2>/dev/null; then
+                echo_err "Disk size must be positive number, without suffix"
+                exit 1
+            fi
+            disk_size="$2"
+            shift
+            ;;
         --)
             shift
             break
@@ -174,7 +187,7 @@ qubes_version="$(awk -F"[()]" '{ print $2 }' /etc/qubes-release)"
 case "$qubes_version" in
     "R4.0")
         ;;
-    "R4.1" | "R4.2")
+    "R4.1" | "R4.2" | "R4.3")
         if ! [ -f "/usr/lib/qubes/qubes-windows-tools.iso" ]; then
             echo_err "Qubes version $qubes_version is supported. However, Qubes OS does not currently offer an official build of Qubes Windows Tools for $qubes_version. To continue, please build Qubes Windows Tools yourself and place it at: /usr/lib/qubes/qubes-windows-tools.iso"
             exit 1
@@ -307,7 +320,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     qvm-prefs "$qube" kernel ""
     qvm-prefs "$qube" qrexec_timeout 999999 # Windows startup can take longer, especially if a chkdsk is performed. Also, to account for the duration of a Windows update
     qvm-features "$qube" video-model cirrus
-    qvm-volume extend "$qube:root" 30GiB
+    qvm-volume extend "$qube:root" "$disk_size"GiB
     qvm-volume extend "$qube:private" 10GiB # Minimum starting with newer versions of Windows 10
     qvm-prefs "$qube" netvm ""
 
@@ -318,7 +331,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for first part of Windows installation process to finish...
-    wait_for_shutdown
+    wait_for_shutdown_or_qwt
 
     echo_info "Starting second part of Windows installation process..."
     qvm-features --unset "$qube" video-model
@@ -328,7 +341,7 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for second part of Windows installation process to finish...
-    wait_for_shutdown
+    wait_for_shutdown_or_qwt
 
     echo_info "Preparing Qubes Windows Tools for automatic installation..."
     # Unpack latest QWT into auto-qwt
@@ -352,18 +365,20 @@ for (( counter = 1; counter <= count; counter++ )); do
     done
 
     # Waiting for automatic shutdown after Qubes Windows Tools installation...
-    wait_for_shutdown
+    wait_for_shutdown_or_qwt
 
-    echo_info "Completing setup of Qubes Windows Tools..."
-    until qvm-start "$qube"; do
-        echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
-        sleep 10
-    done
+    if [ "$(qvm-features "$qube" os)" != "Windows" ]; then
+        echo_info "Completing setup of Qubes Windows Tools..."
+        until qvm-start "$qube"; do
+            echo_err "Failed to start $qube! Not enough memory? Retrying in 10 seconds..."
+            sleep 10
+        done
 
-    # Wait until QWT installation is advertised to Dom0
-    until [ "$(qvm-features "$qube" os)" == "Windows" ]; do
-        sleep 1
-    done
+        # Wait until QWT installation is advertised to Dom0
+        until [ "$(qvm-features "$qube" os)" == "Windows" ]; do
+            sleep 1
+        done
+    fi
 
     # At this point, qvm-run is working
 
@@ -397,7 +412,7 @@ for (( counter = 1; counter <= count; counter++ )); do
         echo "$policy" | sudo tee "$policy_file" > /dev/null
     fi
 
-    qvm-run -q "$resources_qube" "cd '$resources_dir' && qvm-copy-to-vm $qube post"
+    qvm-run -q "$resources_qube" "cd '$resources_dir' && { qvm-copy-to-vm $qube post || qvm-copy-to-vm $qube post; }"
 
     post_incoming_dir="%USERPROFILE%\\Documents\\QubesIncoming\\$resources_qube\\post"
 

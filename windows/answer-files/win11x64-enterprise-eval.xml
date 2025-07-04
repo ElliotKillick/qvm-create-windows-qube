@@ -21,26 +21,45 @@
                     </InstallFrom>
                     <InstallTo>
                         <DiskID>0</DiskID>
-                        <PartitionID>1</PartitionID>
+                        <PartitionID>2</PartitionID>
                     </InstallTo>
                 </OSImage>
             </ImageInstall>
             <UserData>
                 <AcceptEula>true</AcceptEula>
             </UserData>
-            <DiskConfiguration>
-                <Disk wcm:action="add">
-                    <DiskID>0</DiskID>
-                    <WillWipeDisk>true</WillWipeDisk>
-                    <CreatePartitions>
-                        <CreatePartition wcm:action="add">
-                            <Order>1</Order>
-                            <Type>Primary</Type>
-                            <Extend>true</Extend>
-                        </CreatePartition>
-                    </CreatePartitions>
-                </Disk>
-            </DiskConfiguration>
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <Description>BypassTPMCheck</Description>
+                    <Path>cmd /c reg add "HKLM\SYSTEM\Setup\LabConfig" /v "BypassTPMCheck" /t REG_DWORD /d 1</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>2</Order>
+                    <Description>BypassSecureBootCheck</Description>
+                    <Path>cmd /c reg add "HKLM\SYSTEM\Setup\LabConfig" /v "BypassSecureBootCheck" /t REG_DWORD /d 1</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>3</Order>
+                    <Description>BypassRAMCheck</Description>
+                    <Path>cmd /c reg add "HKLM\SYSTEM\Setup\LabConfig" /v "BypassRAMCheck" /t REG_DWORD /d 1</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>4</Order>
+                    <Description>Prepare partitioning script 1</Description>
+                    <Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo SELECT DISK=0&amp;echo CLEAN&amp;echo CREATE PARTITION PRIMARY SIZE=100&amp;echo FORMAT QUICK FS=NTFS LABEL="System Reserved"&amp;echo ACTIVE&amp;echo CREATE PARTITION PRIMARY)"</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>5</Order>
+                    <Description>Prepare partitioning script 2</Description>
+                    <Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo FORMAT QUICK FS=NTFS LABEL="Windows")"</Path>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>6</Order>
+                    <Description>Create partitions</Description>
+                    <Path>cmd.exe /c "diskpart.exe /s "X:\diskpart.txt" &gt;&gt;"X:\diskpart.log" || ( type "X:\diskpart.log" &amp; echo diskpart encountered an error. &amp; pause &amp; exit /b 1 )"</Path>
+                </RunSynchronousCommand>
+            </RunSynchronous>
         </component>
     </settings>
     <settings pass="offlineServicing">
@@ -70,6 +89,15 @@
             <DisableFirstRunWizard>true</DisableFirstRunWizard>
             <Home_Page>about:blank</Home_Page>
             <Help_Page>about:blank</Help_Page>
+        </component>
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                   <Path>bcdedit /set testsigning on</Path>
+                   <Description>Enable test signing for unsigned Qubes GUI driver</Description>
+                   <Order>1</Order>
+                </RunSynchronousCommand>
+             </RunSynchronous>
         </component>
     </settings>
     <settings pass="oobeSystem">
